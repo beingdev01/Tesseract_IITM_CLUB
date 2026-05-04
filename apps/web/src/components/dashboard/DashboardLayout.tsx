@@ -93,7 +93,7 @@ function resolveActiveNavId(items: NavItem[], pathname: string, search: string):
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [clickedNavId, setClickedNavId] = useState<string | null>(null);
-  const { user, token, logout } = useAuth();
+  const { user, logout } = useAuth();
   const { settings, loading: settingsLoading } = useSettings();
   const location = useLocation();
   const navigate = useNavigate();
