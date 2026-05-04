@@ -1,0 +1,841 @@
+import { Router, Request, Response } from 'express';
+import { z } from 'zod';
+import { Prisma, UserLevel } from '@prisma/client';
+import { prisma } from '../lib/prisma.js';
+import { authMiddleware, getAuthUser } from '../middleware/auth.js';
+import { requireRole } from '../middleware/role.js';
+import { auditLog } from '../utils/audit.js';
+import { logger } from '../utils/logger.js';
+import { socketEvents } from '../utils/socket.js';
+import { calculateConsecutiveDailyStreak } from '../utils/dateStreak.js';
+import { syncUserToTeamMember, syncUserToNetworkProfile } from '../utils/profileSync.js';
+import { getBranchFromEmail } from '../utils/iitmDomain.js';
+
+export const usersRouter = Router();
+
+const optionalUrl = z.union([z.string().url('Must be a valid URL'), z.literal('')]).optional();
+
+const profileUpdateSchema = z.object({
+  name: z.string().trim().min(1).max(100).optional(),
+  bio: z.string().max(3000).optional().nullable(),
+  avatarUrl: z.string().url('Avatar URL must be valid').optional().or(z.literal('')),
+  githubUrl: optionalUrl,
+  linkedinUrl: optionalUrl,
+  twitterUrl: optionalUrl,
+  websiteUrl: optionalUrl,
+  phone: z.string().trim().max(30).optional().nullable(),
+  course: z.string().trim().max(100).optional().nullable(),
+  branch: z.string().trim().max(100).optional().nullable(),
+  year: z.string().trim().max(30).optional().nullable(),
+  level: z.nativeEnum(UserLevel).optional().nullable(),
+}).strict();
+
+const adminProfileUpdateSchema = profileUpdateSchema;
+
+const roleUpdateSchema = z.object({
+  role: z.enum(['USER', 'MEMBER', 'CORE_MEMBER', 'ADMIN', 'PRESIDENT']),
+});
+
+const normalizeOptionalText = (value: string | null | undefined): string | null => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+};
+
+const deriveCourseFromLevel = (level: UserLevel | null | undefined): string | null => {
+  if (!level) {
+    return null;
+  }
+  return 'BS';
+};
+
+// Get current user profile
+usersRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+
+    const user = await prisma.user.findUnique({
+      where: { id: authUser.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        avatar: true,
+        bio: true,
+        phone: true,
+        course: true,
+        branch: true,
+        year: true,
+        level: true,
+        profileCompleted: true,
+        oauthProvider: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        twitterUrl: true,
+        websiteUrl: true,
+        createdAt: true,
+        _count: { select: { registrations: true, qotdSubmissions: true } },
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: { message: 'User not found' } });
+    }
+
+    res.json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to fetch profile' } });
+  }
+});
+
+// Update current user profile
+usersRouter.put('/me', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+    const parsed = profileUpdateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        error: { message: parsed.error.errors[0]?.message || 'Invalid profile update payload' },
+      });
+    }
+
+    const { name, bio, avatarUrl, githubUrl, linkedinUrl, twitterUrl, websiteUrl, phone, course, branch, year, level } = parsed.data;
+
+    const existing = await prisma.user.findUnique({
+      where: { id: authUser.id },
+      select: { phone: true, course: true, branch: true, year: true, level: true },
+    });
+
+    if (!existing) {
+      return res.status(404).json({ success: false, error: { message: 'User not found' } });
+    }
+
+    const nextPhone = normalizeOptionalText(phone === undefined ? existing.phone : phone);
+    const nextYear = normalizeOptionalText(year === undefined ? existing.year : year);
+    const nextLevel = level === undefined ? existing.level : level;
+    const domainBranch = getBranchFromEmail(authUser.email);
+    const nextBranch = domainBranch ?? normalizeOptionalText(branch === undefined ? existing.branch : branch);
+    const nextCourse = deriveCourseFromLevel(nextLevel) ?? normalizeOptionalText(course === undefined ? existing.course : course);
+    const isProfileCompletion = Boolean(nextPhone && nextBranch && nextLevel);
+
+    const user = await prisma.user.update({
+      where: { id: authUser.id },
+      data: {
+        ...(name !== undefined && { name: name.trim() }),
+        ...(bio !== undefined && { bio: normalizeOptionalText(bio) }),
+        ...(avatarUrl !== undefined && { avatar: normalizeOptionalText(avatarUrl) }),
+        ...(githubUrl !== undefined && { githubUrl: normalizeOptionalText(githubUrl) }),
+        ...(linkedinUrl !== undefined && { linkedinUrl: normalizeOptionalText(linkedinUrl) }),
+        ...(twitterUrl !== undefined && { twitterUrl: normalizeOptionalText(twitterUrl) }),
+        ...(websiteUrl !== undefined && { websiteUrl: normalizeOptionalText(websiteUrl) }),
+        ...(phone !== undefined && { phone: nextPhone }),
+        course: nextCourse,
+        branch: nextBranch,
+        ...(year !== undefined && { year: nextYear }),
+        ...(level !== undefined && { level: level ?? null }),
+        profileCompleted: isProfileCompletion,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        avatar: true,
+        bio: true,
+        phone: true,
+        course: true,
+        branch: true,
+        year: true,
+        level: true,
+        profileCompleted: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        twitterUrl: true,
+        websiteUrl: true,
+      },
+    });
+
+    await auditLog(authUser.id, 'UPDATE', 'user', authUser.id, { fields: Object.keys(req.body) });
+    res.json({ success: true, data: user, message: 'Profile updated successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to update profile' } });
+  }
+});
+
+// Get user's event registrations
+usersRouter.get('/me/registrations', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+
+    const registrations = await prisma.eventRegistration.findMany({
+      where: { userId: authUser.id },
+      select: {
+        id: true,
+        userId: true,
+        eventId: true,
+        timestamp: true,
+        customFieldResponses: true,
+        event: { select: { id: true, title: true, startDate: true, location: true, imageUrl: true } },
+      },
+      orderBy: { timestamp: 'desc' },
+      take: 100,
+    });
+
+    res.json({ success: true, data: registrations });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to fetch registrations' } });
+  }
+});
+
+// Get user's QOTD stats
+usersRouter.get('/me/qotd-stats', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+
+    const [totalSubmissions, streakSubmissions, recentSubmissions] = await Promise.all([
+      prisma.qOTDSubmission.count({
+        where: { userId: authUser.id },
+      }),
+      prisma.qOTDSubmission.findMany({
+        where: { userId: authUser.id },
+        select: { qotd: { select: { date: true } } },
+      }),
+      prisma.qOTDSubmission.findMany({
+        where: { userId: authUser.id },
+        orderBy: { timestamp: 'desc' },
+        take: 10,
+        select: {
+          timestamp: true,
+          qotd: {
+            select: {
+              date: true,
+              difficulty: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const streak = calculateConsecutiveDailyStreak(
+      streakSubmissions.map((submission) => submission.qotd.date),
+      new Date()
+    );
+
+    res.json({
+      success: true,
+      data: {
+        totalSubmissions,
+        currentStreak: streak,
+        recentSubmissions: recentSubmissions.map((submission) => ({
+          date: submission.qotd.date,
+          difficulty: submission.qotd.difficulty,
+          timestamp: submission.timestamp,
+        })),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to fetch QOTD stats' } });
+  }
+});
+
+// Search users (admin)
+usersRouter.get('/search', authMiddleware, requireRole('ADMIN'), async (req: Request, res: Response) => {
+  try {
+    const query = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+    if (!query || query.length < 2) {
+      return res.json({ success: true, data: [] });
+    }
+    if (query.length > 120) {
+      return res.status(400).json({ success: false, error: { message: 'Search query must be 120 characters or fewer' } });
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        role: { not: 'NETWORK' },
+        OR: [
+          { name: { contains: query, mode: 'insensitive' } },
+          { email: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+      take: 10,
+      select: { id: true, name: true, email: true, avatar: true, role: true },
+    });
+
+    res.json({ success: true, data: users });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to search users' } });
+  }
+});
+
+// Export all users to Excel (admin)
+usersRouter.get('/export', authMiddleware, requireRole('ADMIN'), async (_req: Request, res: Response) => {
+  try {
+    const users = await prisma.user.findMany({
+      where: { role: { not: 'NETWORK' } },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        phone: true,
+        course: true,
+        branch: true,
+        year: true,
+        bio: true,
+        profileCompleted: true,
+        oauthProvider: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        twitterUrl: true,
+        websiteUrl: true,
+        createdAt: true,
+        _count: { select: { registrations: true, qotdSubmissions: true } },
+      },
+    });
+
+    const ExcelJS = await import('exceljs');
+    const workbook = new ExcelJS.default.Workbook();
+    workbook.creator = 'Tesseract';
+    workbook.created = new Date();
+
+    const worksheet = workbook.addWorksheet('Users');
+
+    // Define columns
+    worksheet.columns = [
+      { header: 'S.No', key: 'sno', width: 8 },
+      { header: 'Name', key: 'name', width: 25 },
+      { header: 'Email', key: 'email', width: 35 },
+      { header: 'Role', key: 'role', width: 15 },
+      { header: 'Phone', key: 'phone', width: 15 },
+      { header: 'Course', key: 'course', width: 12 },
+      { header: 'Branch', key: 'branch', width: 15 },
+      { header: 'Year', key: 'year', width: 12 },
+      { header: 'Profile Complete', key: 'profileCompleted', width: 16 },
+      { header: 'Auth Method', key: 'authMethod', width: 14 },
+      { header: 'Events Registered', key: 'eventsRegistered', width: 18 },
+      { header: 'QOTD Submissions', key: 'qotdSubmissions', width: 18 },
+      { header: 'GitHub', key: 'github', width: 30 },
+      { header: 'LinkedIn', key: 'linkedin', width: 30 },
+      { header: 'Joined', key: 'joined', width: 22 },
+    ];
+
+    // Style header row
+    worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFD97706' }, // Amber color
+    };
+    worksheet.getRow(1).alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.getRow(1).height = 25;
+
+    // Add data rows
+    users.forEach((user, index) => {
+      worksheet.addRow({
+        sno: index + 1,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        phone: user.phone || 'N/A',
+        course: user.course || 'N/A',
+        branch: user.branch || 'N/A',
+        year: user.year || 'N/A',
+        profileCompleted: user.profileCompleted ? 'Yes' : 'No',
+        authMethod: user.oauthProvider || 'Email/Password',
+        eventsRegistered: user._count.registrations,
+        qotdSubmissions: user._count.qotdSubmissions,
+        github: user.githubUrl || '',
+        linkedin: user.linkedinUrl || '',
+        joined: user.createdAt.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      });
+    });
+
+    // Add alternating row colors
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        row.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: rowNumber % 2 === 0 ? 'FFFEF3C7' : 'FFFFFFFF' },
+        };
+      }
+      row.border = {
+        top: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        left: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+        right: { style: 'thin', color: { argb: 'FFE5E7EB' } },
+      };
+    });
+
+    // Add summary sheet
+    const summarySheet = workbook.addWorksheet('Summary');
+    summarySheet.addRow(['Total Users', users.length]);
+    summarySheet.addRow(['Admins', users.filter(u => u.role === 'ADMIN').length]);
+    summarySheet.addRow(['Core Members', users.filter(u => u.role === 'CORE_MEMBER').length]);
+    summarySheet.addRow(['Members', users.filter(u => u.role === 'USER').length]);
+    summarySheet.addRow(['Profiles Completed', users.filter(u => u.profileCompleted).length]);
+    summarySheet.addRow(['Export Date', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })]);
+
+    summarySheet.getColumn(1).width = 20;
+    summarySheet.getColumn(1).font = { bold: true };
+    summarySheet.getColumn(2).width = 30;
+
+    // Send Excel file
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="tesseract_iitm_club_users_${new Date().toISOString().split('T')[0]}.xlsx"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    logger.error('User export error:', { error: error instanceof Error ? error.message : String(error) });
+    res.status(500).json({ success: false, error: { message: 'Failed to export users' } });
+  }
+});
+
+// Get all users (admin)
+usersRouter.get('/', authMiddleware, requireRole('ADMIN'), async (req: Request, res: Response) => {
+  try {
+    const includeAllValue = String(req.query.includeAll ?? '').toLowerCase();
+    const includeAll = includeAllValue === 'true' || includeAllValue === '1' || includeAllValue === 'yes';
+    const parsedLimit = Number(req.query.limit);
+    const requestedLimit = Number.isFinite(parsedLimit) ? Math.trunc(parsedLimit) : 100;
+    const regularLimit = Math.min(2000, Math.max(1, requestedLimit));
+
+    const userListSelect = {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      avatar: true,
+      phone: true,
+      course: true,
+      branch: true,
+      year: true,
+      profileCompleted: true,
+      createdAt: true,
+    } as const;
+
+    const [totalUsers, privilegedUsersCount, regularUsersTotal] = await Promise.all([
+      prisma.user.count({ where: { role: { not: 'NETWORK' } } }),
+      prisma.user.count({ where: { role: { in: ['ADMIN', 'PRESIDENT'] } } }),
+      prisma.user.count({ where: { role: { notIn: ['NETWORK', 'ADMIN', 'PRESIDENT'] } } }),
+    ]);
+
+    if (includeAll) {
+      const users = await prisma.user.findMany({
+        where: { role: { not: 'NETWORK' } },
+        orderBy: { createdAt: 'desc' },
+        select: userListSelect,
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          users,
+          meta: {
+            totalUsers,
+            privilegedUsers: privilegedUsersCount,
+            regularUsersTotal,
+            regularUsersReturned: regularUsersTotal,
+            regularLimit: null,
+            includeAll: true,
+            hasMoreRegular: false,
+          },
+        },
+      });
+    }
+
+    // Keep payload bounded for regular users while always including privileged roles.
+    const [privilegedUsers, recentRegularUsers] = await Promise.all([
+      prisma.user.findMany({
+        where: { role: { in: ['ADMIN', 'PRESIDENT'] } },
+        orderBy: { createdAt: 'desc' },
+        select: userListSelect,
+      }),
+      prisma.user.findMany({
+        where: { role: { notIn: ['NETWORK', 'ADMIN', 'PRESIDENT'] } },
+        orderBy: { createdAt: 'desc' },
+        take: regularLimit,
+        select: userListSelect,
+      }),
+    ]);
+
+    const users = [...privilegedUsers, ...recentRegularUsers].sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+
+    res.json({
+      success: true,
+      data: {
+        users,
+        meta: {
+          totalUsers,
+          privilegedUsers: privilegedUsersCount,
+          regularUsersTotal,
+          regularUsersReturned: recentRegularUsers.length,
+          regularLimit,
+          includeAll: false,
+          hasMoreRegular: regularLimit < regularUsersTotal,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to fetch users' } });
+  }
+});
+
+// Get user by ID (admin)
+usersRouter.get('/:id', authMiddleware, requireRole('ADMIN'), async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+    const targetUser = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        avatar: true,
+        bio: true,
+        phone: true,
+        course: true,
+        branch: true,
+        year: true,
+        profileCompleted: true,
+        oauthProvider: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        twitterUrl: true,
+        websiteUrl: true,
+        createdAt: true,
+        _count: { select: { registrations: true, qotdSubmissions: true } },
+        registrations: {
+          select: {
+            id: true,
+            userId: true,
+            eventId: true,
+            timestamp: true,
+            customFieldResponses: true,
+            event: {
+              select: {
+                id: true,
+                title: true,
+                startDate: true,
+                status: true,
+                imageUrl: true,
+              },
+            },
+          },
+          orderBy: { timestamp: 'desc' },
+        },
+      },
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ success: false, error: { message: 'User not found' } });
+    }
+
+    if (targetUser.role === 'NETWORK') {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Network profiles are managed in Network Management' },
+      });
+    }
+
+    // Check permissions: Super admin can see everyone, other admins cannot see other admins
+    const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+    const isSuperAdmin = authUser.email === superAdminEmail;
+    
+    if ((targetUser.role === 'ADMIN' || targetUser.role === 'PRESIDENT') && !isSuperAdmin) {
+      return res.status(403).json({ success: false, error: { message: 'You cannot view other admin/president profiles' } });
+    }
+
+    res.json({ success: true, data: targetUser });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to fetch user' } });
+  }
+});
+
+// Update user profile (admin)
+usersRouter.put('/:id', authMiddleware, requireRole('ADMIN'), async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+    const parsed = adminProfileUpdateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        error: { message: parsed.error.errors[0]?.message || 'Invalid user update payload' },
+      });
+    }
+
+    const {
+      name,
+      bio,
+      phone,
+      course,
+      branch,
+      year,
+      level,
+      avatarUrl,
+      githubUrl,
+      linkedinUrl,
+      twitterUrl,
+      websiteUrl,
+    } = parsed.data;
+
+    const targetUser = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, role: true, email: true, phone: true, course: true, branch: true, year: true, level: true },
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ success: false, error: { message: 'User not found' } });
+    }
+
+    if (targetUser.role === 'NETWORK') {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Network profiles are managed in Network Management' },
+      });
+    }
+
+    // Check permissions: Super admin can edit everyone, other admins cannot edit other admins
+    const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+    const isSuperAdmin = authUser.email === superAdminEmail;
+    
+    if ((targetUser.role === 'ADMIN' || targetUser.role === 'PRESIDENT') && !isSuperAdmin) {
+      return res.status(403).json({ success: false, error: { message: 'You cannot edit other admin/president profiles' } });
+    }
+
+    // Prevent editing super admin unless you are super admin
+    if (targetUser.email === superAdminEmail && !isSuperAdmin) {
+      return res.status(403).json({ success: false, error: { message: 'Cannot modify super admin' } });
+    }
+
+    const nextPhone = normalizeOptionalText(phone === undefined ? targetUser.phone : phone);
+    const nextYear = normalizeOptionalText(year === undefined ? targetUser.year : year);
+    const nextLevel = level === undefined ? targetUser.level : level;
+    const domainBranch = getBranchFromEmail(targetUser.email);
+    const nextBranch = domainBranch ?? normalizeOptionalText(branch === undefined ? targetUser.branch : branch);
+    const nextCourse = deriveCourseFromLevel(nextLevel) ?? normalizeOptionalText(course === undefined ? targetUser.course : course);
+    const isProfileCompletion = Boolean(nextPhone && nextBranch && nextLevel);
+
+    const user = await prisma.user.update({
+      where: { id: req.params.id },
+      data: {
+        ...(name !== undefined && { name: name.trim() }),
+        ...(bio !== undefined && { bio: normalizeOptionalText(bio) }),
+        ...(avatarUrl !== undefined && { avatar: normalizeOptionalText(avatarUrl) }),
+        ...(githubUrl !== undefined && { githubUrl: normalizeOptionalText(githubUrl) }),
+        ...(linkedinUrl !== undefined && { linkedinUrl: normalizeOptionalText(linkedinUrl) }),
+        ...(twitterUrl !== undefined && { twitterUrl: normalizeOptionalText(twitterUrl) }),
+        ...(websiteUrl !== undefined && { websiteUrl: normalizeOptionalText(websiteUrl) }),
+        ...(phone !== undefined && { phone: nextPhone }),
+        course: nextCourse,
+        branch: nextBranch,
+        ...(year !== undefined && { year: nextYear }),
+        ...(level !== undefined && { level: level ?? null }),
+        profileCompleted: isProfileCompletion,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        avatar: true,
+        bio: true,
+        phone: true,
+        course: true,
+        branch: true,
+        year: true,
+        level: true,
+        profileCompleted: true,
+        githubUrl: true,
+        linkedinUrl: true,
+        twitterUrl: true,
+        websiteUrl: true,
+      },
+    });
+
+    await auditLog(authUser.id, 'UPDATE', 'user', user.id, { updatedBy: 'admin' });
+    
+    // Emit socket event for real-time updates
+    socketEvents.userUpdated(user.id);
+    
+    res.json({ success: true, data: user, message: 'User profile updated successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to update user profile' } });
+  }
+});
+
+// Update user role (admin or core member for MEMBER role)
+usersRouter.put('/:id/role', authMiddleware, requireRole('CORE_MEMBER'), async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+    const parsed = roleUpdateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ success: false, error: { message: parsed.error.errors[0]?.message || 'Invalid role' } });
+    }
+    const { role } = parsed.data;
+
+    // Get target user to check their current role
+    const targetUser = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, role: true, email: true }
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ success: false, error: { message: 'User not found' } });
+    }
+
+    if (targetUser.role === 'NETWORK') {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Network profiles are managed in Network Management' },
+      });
+    }
+
+    // Super admin protection: only super admin can modify admin roles
+    const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+    const isSuperAdmin = authUser.email === superAdminEmail;
+    const isAdmin = authUser.role === 'ADMIN' || authUser.role === 'PRESIDENT';
+    const isCoreMember = authUser.role === 'CORE_MEMBER';
+
+    // CORE_MEMBER can only assign/remove MEMBER role
+    if (isCoreMember && !isAdmin) {
+      // Core members can only change between USER and MEMBER
+      if (!['USER', 'MEMBER'].includes(role) || !['USER', 'MEMBER'].includes(targetUser.role)) {
+        return res.status(403).json({ 
+          success: false, 
+          error: { message: 'Core members can only assign or remove MEMBER role for regular users' } 
+        });
+      }
+    }
+
+    // Check if this action involves admin/president role changes
+    const involvesAdminRole = ['ADMIN', 'PRESIDENT'].includes(role) || ['ADMIN', 'PRESIDENT'].includes(targetUser.role);
+
+    if (involvesAdminRole && !isSuperAdmin) {
+      return res.status(403).json({ 
+        success: false, 
+        error: { message: 'Only super admin can promote to or demote from admin/president role' } 
+      });
+    }
+
+    // Only ADMIN can assign CORE_MEMBER
+    const involvesCoreMemberRole = role === 'CORE_MEMBER' || targetUser.role === 'CORE_MEMBER';
+    if (involvesCoreMemberRole && !isAdmin) {
+      return res.status(403).json({ 
+        success: false, 
+        error: { message: 'Only admins can promote to or demote from core member role' } 
+      });
+    }
+
+    // Prevent changing super admin's role
+    if (targetUser.email === superAdminEmail && !isSuperAdmin) {
+      return res.status(403).json({ 
+        success: false, 
+        error: { message: 'Cannot modify super admin role' } 
+      });
+    }
+
+    const user = await prisma.user.update({
+      where: { id: req.params.id },
+      data: { role },
+      select: { id: true, name: true, email: true, role: true },
+    });
+
+    await auditLog(authUser.id, 'UPDATE_ROLE', 'user', user.id, { newRole: role });
+    
+    // Emit socket event for real-time updates
+    socketEvents.userUpdated(user.id);
+    
+    res.json({ success: true, data: user, message: 'User role updated successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: 'Failed to update user role' } });
+  }
+});
+
+// Delete user (admin)
+usersRouter.delete('/:id', authMiddleware, requireRole('ADMIN'), async (req: Request, res: Response) => {
+  try {
+    const authUser = getAuthUser(req)!;
+    
+    if (req.params.id === authUser.id) {
+      return res.status(400).json({ success: false, error: { message: 'Cannot delete your own account' } });
+    }
+
+    // Get target user to check their role
+    const targetUser = await prisma.user.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, role: true, email: true }
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ success: false, error: { message: 'User not found' } });
+    }
+
+    if (targetUser.role === 'NETWORK') {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Network profiles are managed in Network Management' },
+      });
+    }
+
+    // Super admin protection
+    const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+    const isSuperAdmin = authUser.email === superAdminEmail;
+
+    // Prevent deleting super admin
+    if (targetUser.email === superAdminEmail) {
+      return res.status(403).json({ 
+        success: false, 
+        error: { message: 'Cannot delete super admin account' } 
+      });
+    }
+
+    // Only super admin can delete other admins or presidents
+    if ((targetUser.role === 'ADMIN' || targetUser.role === 'PRESIDENT') && !isSuperAdmin) {
+      return res.status(403).json({ 
+        success: false, 
+        error: { message: 'Only super admin can delete admin or president accounts' } 
+      });
+    }
+
+    await prisma.user.delete({ where: { id: req.params.id } });
+    await auditLog(authUser.id, 'DELETE', 'user', req.params.id);
+    
+    // Emit socket event for real-time updates
+    socketEvents.userDeleted(req.params.id);
+    
+    res.json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    // P2003: Foreign key constraint violation (user leads a team)
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
+      // Check if user leads any teams to give a helpful message
+      const ledTeams = await prisma.eventTeam.findMany({
+        where: { leaderId: req.params.id },
+        select: { teamName: true, event: { select: { title: true } } },
+        take: 3,
+      });
+      if (ledTeams.length > 0) {
+        const teamNames = ledTeams.map(t => `"${t.teamName}" (${t.event.title})`).join(', ');
+        return res.status(409).json({
+          success: false,
+          error: { message: `Cannot delete user: they lead team(s) ${teamNames}. Dissolve or transfer leadership first.` },
+        });
+      }
+      return res.status(409).json({
+        success: false,
+        error: { message: 'Cannot delete user due to existing relationships. Please remove their team memberships first.' },
+      });
+    }
+    res.status(500).json({ success: false, error: { message: 'Failed to delete user' } });
+  }
+});
