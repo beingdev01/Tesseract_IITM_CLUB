@@ -4,7 +4,7 @@ services:
   - type: web
     name: tesseract-api
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm install --include=dev && npx prisma generate --schema=./prisma/schema.prisma && npm run build --workspace=apps/api
     startCommand: npx prisma migrate deploy --schema=./prisma/schema.prisma && npm run start --workspace=apps/api
     healthCheckPath: /ping
@@ -50,7 +50,6 @@ services:
   - type: web
     name: tesseract-web
     runtime: static
-    plan: starter
     buildCommand: npm install && npm run build --workspace=apps/web
     staticPublishPath: ./apps/web/dist
     routes:
