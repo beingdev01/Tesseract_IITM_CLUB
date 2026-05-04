@@ -14,6 +14,7 @@ export interface AuthUser {
   course?: string | null;
   branch?: string | null;
   year?: string | null;
+  level?: string | null;
   profileCompleted?: boolean | null;
 }
 
@@ -91,6 +92,7 @@ const authMiddlewareImpl = async (
         course: true,
         branch: true,
         year: true,
+        level: true,
         profileCompleted: true,
       },
     });
@@ -149,6 +151,7 @@ const optionalAuthMiddlewareImpl = async (
         course: true,
         branch: true,
         year: true,
+        level: true,
         profileCompleted: true,
       },
     });

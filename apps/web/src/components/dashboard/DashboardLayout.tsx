@@ -1,10 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
-import { api } from '@/lib/api';
 import { Menu, X, ChevronRight, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,22 +19,16 @@ const breadcrumbNames: Record<string, string> = {
   '/dashboard/announcements': 'Announcements',
   '/dashboard/profile': 'Profile',
   '/dashboard/certificates': 'Certificates',
-  '/dashboard/invitations': 'Invitations',
   '/dashboard/leaderboard': 'Leaderboard',
   '/dashboard/events/new': 'Create Event',
   '/dashboard/announcements/new': 'Create Announcement',
-  '/dashboard/qotd': 'Manage QOTD',
   '/dashboard/upload': 'Upload Image',
   '/dashboard/attendance': 'Take Attendance',
   '/admin/users': 'User Management',
   '/admin/team': 'Team Management',
   '/admin/achievements': 'Achievements',
-  '/admin/credits': 'Credits',
-  '/admin/hiring': 'Hiring Applications',
-  '/admin/network': 'Network Management',
   '/admin/audit-log': 'Audit Log',
   '/admin/event-registrations': 'Event Registrations',
-  '/admin/competition': 'Competition',
   '/admin/certificates': 'Certificates',
   '/admin/mail': 'Send Mail',
   '/admin/public-view': 'Public View',
@@ -53,17 +45,13 @@ const buildCoreMemberNavItems = (attendanceEnabled: boolean): NavItem[] => {
   items.push(
     { id: 'core-create-event', name: 'create event', href: '/dashboard/events/new' },
     { id: 'core-create-announcement', name: 'create announcement', href: '/dashboard/announcements/new' },
-    { id: 'core-qotd', name: 'manage qotd', href: '/dashboard/qotd' },
     { id: 'core-upload', name: 'upload image', href: '/dashboard/upload' },
   );
   return items;
 };
 
 const getAdminNavItems = (
-  hiringEnabled: boolean,
-  showNetwork: boolean,
   certificatesEnabled: boolean,
-  competitionEnabled: boolean,
   isSuperAdmin?: boolean,
   isPresident?: boolean,
 ) => {
@@ -71,15 +59,11 @@ const getAdminNavItems = (
     { id: 'admin-users', name: 'users', href: '/admin/users' },
     { id: 'admin-team', name: 'team', href: '/admin/team' },
     { id: 'admin-achievements', name: 'achievements', href: '/admin/achievements' },
-    { id: 'admin-credits', name: 'credits', href: '/admin/credits' },
     { id: 'admin-public-view', name: 'public view', href: '/admin/public-view' },
   ];
 
-  if (hiringEnabled !== false) items.push({ id: 'admin-hiring', name: 'hiring', href: '/admin/hiring' });
-  if (showNetwork !== false) items.push({ id: 'admin-network', name: 'network', href: '/admin/network' });
   if (isSuperAdmin || isPresident) items.push({ id: 'admin-audit', name: 'audit log', href: '/admin/audit-log' });
   items.push({ id: 'admin-registrations', name: 'event registrations', href: '/admin/event-registrations' });
-  if (competitionEnabled) items.push({ id: 'admin-competition', name: 'competition', href: '/admin/competition' });
   if (certificatesEnabled !== false) items.push({ id: 'admin-certificates', name: 'certificates', href: '/admin/certificates' });
   items.push({ id: 'admin-mail', name: 'send mail', href: '/admin/mail' });
   if (isSuperAdmin || isPresident) items.push({ id: 'admin-settings', name: 'settings', href: '/admin/settings' });
@@ -127,19 +111,6 @@ export default function DashboardLayout() {
   const isCoreMember = user?.role === 'CORE_MEMBER' || user?.role === 'ADMIN' || user?.role === 'PRESIDENT';
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'PRESIDENT';
 
-  const invitationsQuery = useQuery({
-    queryKey: ['invitations', 'my', 'layout-badge'],
-    queryFn: () => api.getMyInvitations(token!),
-    enabled: Boolean(token),
-    staleTime: 60_000,
-    refetchOnWindowFocus: true,
-  });
-
-  const pendingInvitationCount = useMemo(
-    () => (invitationsQuery.data ?? []).filter((invitation) => invitation.status === 'PENDING').length,
-    [invitationsQuery.data],
-  );
-
   const userNavItems = useMemo<NavItem[]>(() => {
     if (isNetworkUser) {
       return [
@@ -147,7 +118,6 @@ export default function DashboardLayout() {
         ...(settings?.certificatesEnabled !== false
           ? [{ id: 'user-certificates', name: 'certificates', href: '/dashboard/certificates' }]
           : []),
-        { id: 'user-invitations', name: 'invitations', href: '/dashboard/invitations', badge: pendingInvitationCount },
       ];
     }
     return [
@@ -161,21 +131,17 @@ export default function DashboardLayout() {
       ...(settings?.certificatesEnabled !== false
         ? [{ id: 'user-certificates', name: 'certificates', href: '/dashboard/certificates' }]
         : []),
-      { id: 'user-invitations', name: 'invitations', href: '/dashboard/invitations', badge: pendingInvitationCount },
     ];
-  }, [isNetworkUser, pendingInvitationCount, settings?.showLeaderboard, settings?.certificatesEnabled]);
+  }, [isNetworkUser, settings?.showLeaderboard, settings?.certificatesEnabled]);
 
   const adminNavItems = useMemo<NavItem[]>(() => {
     if (!isAdmin) return [];
     return getAdminNavItems(
-      !settingsLoading && settings?.hiringEnabled === true,
-      !settingsLoading && settings?.showNetwork !== false,
       !settingsLoading && settings?.certificatesEnabled !== false,
-      settings?.competitionEnabled === true,
       user?.isSuperAdmin,
       user?.role === 'PRESIDENT',
     );
-  }, [isAdmin, settingsLoading, settings?.hiringEnabled, settings?.showNetwork, settings?.certificatesEnabled, settings?.competitionEnabled, user?.isSuperAdmin, user?.role]);
+  }, [isAdmin, settingsLoading, settings?.certificatesEnabled, user?.isSuperAdmin, user?.role]);
 
   const coreMemberNavItems = useMemo<NavItem[]>(
     () => buildCoreMemberNavItems(settings?.attendanceEnabled !== false),
