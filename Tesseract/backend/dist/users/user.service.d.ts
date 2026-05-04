@@ -1,0 +1,102 @@
+import { FeatureService } from "../features/feature.service";
+import { PrismaService } from "../prisma/prisma.service";
+import type { Role } from "../common/types";
+type User = {
+    id: string;
+    email: string;
+    name: string;
+    role: Role;
+    rollNumber: string | null;
+    avatarUrl: string | null;
+    bio: string | null;
+    xp: number;
+    level: string;
+    streak: number;
+    joinedAt: Date;
+    verifiedAt: Date | null;
+    lastSeenAt: Date | null;
+    lastLoginAt: Date | null;
+    deletedAt: Date | null;
+    phone: string | null;
+    course: string | null;
+    branch: string | null;
+    year: string | null;
+    profileCompleted: boolean;
+};
+export declare function levelForXp(xp: number): string;
+export declare class UserService {
+    private readonly prisma;
+    private readonly features;
+    constructor(prisma: PrismaService, features: FeatureService);
+    getById(id: string): Promise<User | null>;
+    mustGetById(id: string): Promise<User>;
+    publicUser(user: User, viewer?: {
+        id: string;
+        role: Role;
+    } | null): Promise<{
+        id: string;
+        name: string;
+        email: string;
+        avatar: string | null;
+        role: Role;
+        rollNumber: string | null | undefined;
+        level: string;
+        joinedAt: Date;
+        xp: number;
+        rank: number;
+        streak: number;
+        bio: string | null;
+        phone: string | null | undefined;
+        course: string | null;
+        branch: string | null;
+        year: string | null;
+        profileCompleted: boolean;
+        badges: never[];
+        membershipStatus: string;
+        membershipRequestedAt: Date | null;
+    }>;
+    rankForUser(user: Pick<User, "id" | "xp" | "joinedAt">): Promise<number>;
+    updateMe(userId: string, patch: {
+        name?: string;
+        bio?: string | null;
+        avatarUrl?: string | null;
+        rollNumber?: string | null;
+        phone?: string | null;
+        course?: string | null;
+        branch?: string | null;
+        year?: string | null;
+    }): Promise<{
+        updated: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            email: string;
+            role: import(".prisma/client").$Enums.Role;
+            rollNumber: string | null;
+            avatarUrl: string | null;
+            bio: string | null;
+            passwordHash: string | null;
+            googleSub: string | null;
+            xp: number;
+            level: string;
+            streak: number;
+            joinedAt: Date;
+            verifiedAt: Date | null;
+            lastSeenAt: Date | null;
+            lastLoginAt: Date | null;
+            deletedAt: Date | null;
+            phone: string | null;
+            course: string | null;
+            branch: string | null;
+            year: string | null;
+            profileCompleted: boolean;
+        };
+        changed: boolean;
+    }>;
+    canViewProfile(target: User, viewer: {
+        id: string;
+        role: Role;
+    }): Promise<boolean>;
+}
+export {};

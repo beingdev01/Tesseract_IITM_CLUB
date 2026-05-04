@@ -1,0 +1,45 @@
+# robots.txt for codescriet.dev
+# https://www.robotstxt.org/robotstxt.html
+
+# Allow all major search engines
+User-agent: *
+Allow: /
+Allow: /events
+Allow: /events/
+Allow: /achievements
+Allow: /achievements/
+Allow: /announcements
+Allow: /announcements/
+Allow: /team
+Allow: /about
+Allow: /network
+Allow: /network/
+Allow: /join-us\nAllow: /contact\nAllow: /privacy-policy
+
+# Disallow admin and dashboard areas from indexing
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /auth/
+Disallow: /profile
+Disallow: /signin
+Disallow: /signup
+Disallow: /network/status
+Disallow: /network/onboarding
+
+# Specific rules for Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Specific rules for Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://codescriet.dev/sitemap.xml
+
+# IndexNow key file
+# https://www.indexnow.org/

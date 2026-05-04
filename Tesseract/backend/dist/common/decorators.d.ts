@@ -1,0 +1,9 @@
+export declare const PUBLIC_ROUTE = "publicRoute";
+export declare const ROLES = "roles";
+export declare const FEATURE_FLAG = "featureFlag";
+export declare const ALLOW_SUSPENDED = "allowSuspended";
+export type RoleName = "guest" | "member" | "core" | "admin";
+export declare const Public: () => import("@nestjs/common").CustomDecorator<string>;
+export declare const Roles: (...roles: RoleName[]) => import("@nestjs/common").CustomDecorator<string>;
+export declare const RequireFlag: (key: string) => import("@nestjs/common").CustomDecorator<string>;
+export declare const AllowSuspended: () => import("@nestjs/common").CustomDecorator<string>;
