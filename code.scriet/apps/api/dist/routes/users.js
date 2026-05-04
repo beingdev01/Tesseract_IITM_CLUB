@@ -351,7 +351,7 @@ usersRouter.get('/export', authMiddleware, requireRole('ADMIN'), async (_req, re
         summarySheet.getColumn(2).width = 30;
         // Send Excel file
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', `attachment; filename="code_scriet_users_${new Date().toISOString().split('T')[0]}.xlsx"`);
+        res.setHeader('Content-Disposition', `attachment; filename="tesseract_iitm_club_users_${new Date().toISOString().split('T')[0]}.xlsx"`);
         await workbook.xlsx.write(res);
         res.end();
     }
