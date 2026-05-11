@@ -37,7 +37,6 @@ export default function AdminSettings() {
     maxEventsPerUser: 5,
     announcementsEnabled: true,
     showLeaderboard: false,
-    showQOTD: true,
     showAchievements: true,
     show_tech_blogs: true,
     hiringEnabled: false,

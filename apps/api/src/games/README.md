@@ -1,6 +1,7 @@
 # Games
 
-Lightweight registry that mounts each game's REST router under `/api/games/<id>`. There is intentionally no DI container, no plugin loader, and no per-game schema abstraction — three games of churn before reaching for one of those.
+Lightweight registry that mounts each game's REST router under `/api/games/<id>`. A shared catalog router also serves `GET /api/games` and `GET /api/games/:id`.
+There is intentionally no DI container, no plugin loader, and no per-game schema abstraction — three games of churn before reaching for one of those.
 
 ## Adding a new game
 

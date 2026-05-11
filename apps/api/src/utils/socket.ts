@@ -1,7 +1,6 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { logger } from './logger.js';
-import { authenticateSocketConnection } from './socketAuth.js';
 
 let io: SocketIOServer | null = null;
 
@@ -94,6 +93,9 @@ export function initializeSocket(httpServer: HTTPServer) {
     upgradeTimeout: 10000,
   });
 
+  // Global middleware enforces rate-limiting only. Authentication and role
+  // checks live on individual namespaces (/attendance, /games/<id>) so player
+  // sockets can connect without admin privileges.
   io.use((socket, next) => {
     const ip = getSocketClientIp(socket);
     if (!isConnectionAllowed(ip)) {
@@ -101,23 +103,13 @@ export function initializeSocket(httpServer: HTTPServer) {
       next(new Error('RATE_LIMITED'));
       return;
     }
-
-    void authenticateSocketConnection(socket, { requireAdmin: true })
-      .then(() => next())
-      .catch((error) => {
-        next(new Error(error instanceof Error ? error.message : 'AUTH_INVALID'));
-      });
+    next();
   });
 
-  io.on('connection', (socket) => {
-    const authUser = socket.data.authUser as { id: string; role: string } | undefined;
-    logger.debug('Client connected', { socketId: socket.id, userId: authUser?.id, role: authUser?.role });
-
-    socket.emit('ping', { message: 'Hello from server', time: new Date().toISOString() });
-
-    socket.on('disconnect', () => {
-      logger.debug('Client disconnected', { socketId: socket.id, userId: authUser?.id });
-    });
+  // Default namespace is closed — no product feature uses it. Reject anything
+  // that lands here so stray connections don't sit open consuming resources.
+  io.of('/').use((_socket, next) => {
+    next(new Error('NAMESPACE_NOT_FOUND'));
   });
 
   return io;

@@ -348,16 +348,14 @@ statsRouter.get('/dashboard', authMiddleware, requireRole('ADMIN'), async (_req:
       totalRegistrations,
       recentRegistrations,
       totalAnnouncements,
-      totalQOTDs,
-      qotdSubmissionsThisWeek,
+      totalGameSessions,
+      gameSessionsThisWeek,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
       prisma.event.count(),
       prisma.event.count({ where: { status: 'UPCOMING' } }),
-      // Dashboard registration totals track participant signups, not guest invitations.
       prisma.eventRegistration.count({ where: { registrationType: RegistrationType.PARTICIPANT } }),
-      // Dashboard registration totals track participant signups, not guest invitations.
       prisma.eventRegistration.count({
         where: {
           registrationType: RegistrationType.PARTICIPANT,
@@ -365,8 +363,8 @@ statsRouter.get('/dashboard', authMiddleware, requireRole('ADMIN'), async (_req:
         },
       }),
       prisma.announcement.count(),
-      prisma.qOTD.count(),
-      prisma.qOTDSubmission.count({ where: { timestamp: { gte: sevenDaysAgo } } }),
+      prisma.gameSession.count(),
+      prisma.gameSession.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
     ]);
 
     // Public-facing popularity should rank by participant registrations, not guest invitations.
@@ -428,7 +426,7 @@ statsRouter.get('/dashboard', authMiddleware, requireRole('ADMIN'), async (_req:
     res.json({
       success: true,
       data: {
-        overview: { totalUsers, newUsersThisMonth, totalEvents, upcomingEvents, totalRegistrations, recentRegistrations, totalAnnouncements, totalQOTDs, qotdSubmissionsThisWeek },
+        overview: { totalUsers, newUsersThisMonth, totalEvents, upcomingEvents, totalRegistrations, recentRegistrations, totalAnnouncements, totalGameSessions, gameSessionsThisWeek },
         popularEvents,
         recentUsers,
       },
@@ -443,9 +441,9 @@ statsRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
   try {
     const authUser = getAuthUser(req)!;
 
-    const [registrationCount, qotdSubmissionCount, registrations, submissions] = await Promise.all([
+    const [registrationCount, gameSessionCount, registrations, gameSessions] = await Promise.all([
       prisma.eventRegistration.count({ where: { userId: authUser.id } }),
-      prisma.qOTDSubmission.count({ where: { userId: authUser.id } }),
+      prisma.gameSession.count({ where: { userId: authUser.id } }),
       prisma.eventRegistration.findMany({
         where: { userId: authUser.id },
         take: 5,
@@ -456,14 +454,14 @@ statsRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
           event: { select: { title: true, startDate: true } },
         },
       }),
-      prisma.qOTDSubmission.findMany({
+      prisma.gameSession.findMany({
         where: { userId: authUser.id },
-        select: { qotd: { select: { date: true } } },
+        select: { createdAt: true },
       }),
     ]);
 
     const streak = calculateConsecutiveDailyStreak(
-      submissions.map((submission) => submission.qotd.date),
+      gameSessions.map((session) => session.createdAt),
       new Date()
     );
 
@@ -471,8 +469,8 @@ statsRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
       success: true,
       data: {
         eventsRegistered: registrationCount,
-        qotdSubmissions: qotdSubmissionCount,
-        qotdStreak: streak,
+        gameSessions: gameSessionCount,
+        gameStreak: streak,
         recentRegistrations: registrations.map((registration) => ({
           id: registration.id,
           eventTitle: registration.event.title,
@@ -506,22 +504,22 @@ statsRouter.get('/events/trends', authMiddleware, requireRole('ADMIN'), async (_
   }
 });
 
-// Get QOTD participation trends (admin)
-statsRouter.get('/qotd/trends', authMiddleware, requireRole('ADMIN'), async (_req: Request, res: Response) => {
+// Get game session trends (admin)
+statsRouter.get('/games/trends', authMiddleware, requireRole('ADMIN'), async (_req: Request, res: Response) => {
   try {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const submissions = await prisma.$queryRaw<DailyAggregateRow[]>`
-      SELECT date_trunc('day', "timestamp") AS day, COUNT(*)::bigint AS total_count
-      FROM "qotd_submissions"
-      WHERE "timestamp" >= ${thirtyDaysAgo}
+    const sessions = await prisma.$queryRaw<DailyAggregateRow[]>`
+      SELECT date_trunc('day', "created_at") AS day, COUNT(*)::bigint AS total_count
+      FROM "game_sessions"
+      WHERE "created_at" >= ${thirtyDaysAgo}
       GROUP BY 1
       ORDER BY 1 ASC
     `;
 
-    res.json({ success: true, data: mapDailyAggregateRows(submissions) });
+    res.json({ success: true, data: mapDailyAggregateRows(sessions) });
   } catch (error) {
-    res.status(500).json({ success: false, error: { message: 'Failed to fetch QOTD trends' } });
+    res.status(500).json({ success: false, error: { message: 'Failed to fetch game trends' } });
   }
 });

@@ -23,12 +23,6 @@ CREATE INDEX IF NOT EXISTS "event_registrations_timestamp_idx"
 CREATE INDEX IF NOT EXISTS "announcements_expires_at_idx"
   ON "announcements"("expires_at");
 
--- QOTD submission history/trends
-CREATE INDEX IF NOT EXISTS "qotd_submissions_user_id_timestamp_idx"
-  ON "qotd_submissions"("user_id", "timestamp");
-CREATE INDEX IF NOT EXISTS "qotd_submissions_timestamp_idx"
-  ON "qotd_submissions"("timestamp");
-
 -- Hiring admin list filters with createdAt sorting
 CREATE INDEX IF NOT EXISTS "hiring_applications_status_created_at_idx"
   ON "hiring_applications"("status", "created_at");

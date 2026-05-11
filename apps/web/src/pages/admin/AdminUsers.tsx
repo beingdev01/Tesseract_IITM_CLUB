@@ -95,7 +95,7 @@ export default function AdminUsers() {
     twitterUrl?: string;
     websiteUrl?: string;
     createdAt?: string;
-    _count?: { registrations: number; qotdSubmissions: number };
+    _count?: { registrations: number; gameSessions: number };
     registrations?: Array<{
       id: string;
       timestamp: string;
@@ -952,8 +952,8 @@ export default function AdminUsers() {
                     <p className="text-sm text-gray-600">Events Registered</p>
                   </div>
                   <div className="bg-blue-50 p-4 rounded-lg text-center">
-                    <p className="text-3xl font-bold text-blue-600">{viewingUser._count?.qotdSubmissions || 0}</p>
-                    <p className="text-sm text-gray-600">QOTD Submissions</p>
+                    <p className="text-3xl font-bold text-blue-600">{viewingUser._count?.gameSessions || 0}</p>
+                    <p className="text-sm text-gray-600">Game Sessions</p>
                   </div>
                 </div>
 

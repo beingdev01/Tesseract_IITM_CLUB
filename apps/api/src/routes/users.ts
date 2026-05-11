@@ -77,7 +77,7 @@ usersRouter.get('/me', authMiddleware, async (req: Request, res: Response) => {
         twitterUrl: true,
         websiteUrl: true,
         createdAt: true,
-        _count: { select: { registrations: true, qotdSubmissions: true } },
+        _count: { select: { registrations: true, gameSessions: true } },
       },
     });
 
@@ -191,54 +191,49 @@ usersRouter.get('/me/registrations', authMiddleware, async (req: Request, res: R
   }
 });
 
-// Get user's QOTD stats
-usersRouter.get('/me/qotd-stats', authMiddleware, async (req: Request, res: Response) => {
+usersRouter.get('/me/game-stats', authMiddleware, async (req: Request, res: Response) => {
   try {
     const authUser = getAuthUser(req)!;
 
-    const [totalSubmissions, streakSubmissions, recentSubmissions] = await Promise.all([
-      prisma.qOTDSubmission.count({
+    const [totalSessions, allSessionDates, recentSessions] = await Promise.all([
+      prisma.gameSession.count({ where: { userId: authUser.id } }),
+      prisma.gameSession.findMany({
         where: { userId: authUser.id },
+        select: { createdAt: true },
       }),
-      prisma.qOTDSubmission.findMany({
+      prisma.gameSession.findMany({
         where: { userId: authUser.id },
-        select: { qotd: { select: { date: true } } },
-      }),
-      prisma.qOTDSubmission.findMany({
-        where: { userId: authUser.id },
-        orderBy: { timestamp: 'desc' },
+        orderBy: { createdAt: 'desc' },
         take: 10,
         select: {
-          timestamp: true,
-          qotd: {
-            select: {
-              date: true,
-              difficulty: true,
-            },
-          },
+          gameId: true,
+          score: true,
+          durationSeconds: true,
+          createdAt: true,
         },
       }),
     ]);
 
     const streak = calculateConsecutiveDailyStreak(
-      streakSubmissions.map((submission) => submission.qotd.date),
+      allSessionDates.map((session) => session.createdAt),
       new Date()
     );
 
     res.json({
       success: true,
       data: {
-        totalSubmissions,
+        totalSessions,
         currentStreak: streak,
-        recentSubmissions: recentSubmissions.map((submission) => ({
-          date: submission.qotd.date,
-          difficulty: submission.qotd.difficulty,
-          timestamp: submission.timestamp,
+        recentSessions: recentSessions.map((session) => ({
+          gameId: session.gameId,
+          score: session.score,
+          durationSeconds: session.durationSeconds,
+          playedAt: session.createdAt,
         })),
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: { message: 'Failed to fetch QOTD stats' } });
+    res.status(500).json({ success: false, error: { message: 'Failed to fetch game stats' } });
   }
 });
 
@@ -295,7 +290,7 @@ usersRouter.get('/export', authMiddleware, requireRole('ADMIN'), async (_req: Re
         twitterUrl: true,
         websiteUrl: true,
         createdAt: true,
-        _count: { select: { registrations: true, qotdSubmissions: true } },
+        _count: { select: { registrations: true, gameSessions: true } },
       },
     });
 
@@ -319,7 +314,7 @@ usersRouter.get('/export', authMiddleware, requireRole('ADMIN'), async (_req: Re
       { header: 'Profile Complete', key: 'profileCompleted', width: 16 },
       { header: 'Auth Method', key: 'authMethod', width: 14 },
       { header: 'Events Registered', key: 'eventsRegistered', width: 18 },
-      { header: 'QOTD Submissions', key: 'qotdSubmissions', width: 18 },
+      { header: 'Game Sessions', key: 'gameSessions', width: 18 },
       { header: 'GitHub', key: 'github', width: 30 },
       { header: 'LinkedIn', key: 'linkedin', width: 30 },
       { header: 'Joined', key: 'joined', width: 22 },
@@ -349,7 +344,7 @@ usersRouter.get('/export', authMiddleware, requireRole('ADMIN'), async (_req: Re
         profileCompleted: user.profileCompleted ? 'Yes' : 'No',
         authMethod: user.oauthProvider || 'Email/Password',
         eventsRegistered: user._count.registrations,
-        qotdSubmissions: user._count.qotdSubmissions,
+        gameSessions: user._count.gameSessions,
         github: user.githubUrl || '',
         linkedin: user.linkedinUrl || '',
         joined: user.createdAt.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
@@ -514,7 +509,7 @@ usersRouter.get('/:id', authMiddleware, requireRole('ADMIN'), async (req: Reques
         twitterUrl: true,
         websiteUrl: true,
         createdAt: true,
-        _count: { select: { registrations: true, qotdSubmissions: true } },
+        _count: { select: { registrations: true, gameSessions: true } },
         registrations: {
           select: {
             id: true,

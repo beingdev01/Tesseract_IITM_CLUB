@@ -1,30 +1,29 @@
 import { Server } from 'socket.io';
-import { verifyToken } from '../utils/jwt.js';
+import { authenticateSocketConnection } from '../utils/socketAuth.js';
 import { logger } from '../utils/logger.js';
+
+const ATTENDANCE_ROOM_ROLES = ['ADMIN', 'PRESIDENT', 'CORE_MEMBER'];
 
 export function initializeAttendanceSocket(io: Server): void {
   const ns = io.of('/attendance');
 
   ns.use((socket, next) => {
-    try {
-      const token = socket.handshake.auth.token as string;
-      if (!token) {
-        return next(new Error('Authentication required'));
-      }
-      const decoded = verifyToken(token);
-      socket.data.userId = decoded.userId;
-      socket.data.role = decoded.role;
-      next();
-    } catch {
-      next(new Error('Invalid authentication token'));
-    }
+    authenticateSocketConnection(socket)
+      .then((authUser) => {
+        socket.data.userId = authUser.id;
+        socket.data.role = authUser.role;
+        next();
+      })
+      .catch((error) => {
+        next(error instanceof Error ? error : new Error('AUTH_INVALID'));
+      });
   });
 
   ns.on('connection', (socket) => {
     logger.debug('Attendance socket connected', { userId: socket.data.userId });
 
     socket.on('join:event', (eventId: string) => {
-      if (!['ADMIN', 'PRESIDENT', 'CORE_MEMBER'].includes(socket.data.role)) {
+      if (!ATTENDANCE_ROOM_ROLES.includes(socket.data.role)) {
         socket.emit('error', { message: 'Core member or admin role required' });
         return;
       }

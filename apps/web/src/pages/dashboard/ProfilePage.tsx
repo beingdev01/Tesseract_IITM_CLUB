@@ -43,7 +43,7 @@ interface ProfileData {
   websiteUrl?: string;
   createdAt: string;
   oauthProvider?: string;
-  _count: { registrations: number; qotdSubmissions: number };
+  _count: { registrations: number; gameSessions: number };
 }
 
 const getPendingEventRedirectPath = (eventId: string, pendingType: 'solo' | 'team') =>
@@ -177,7 +177,7 @@ export default function ProfilePage() {
       <div className="flex flex-wrap gap-3">
         <MetaChip label="ROLE" value={profile?.role?.replace(/_/g, ' ').toLowerCase() ?? 'user'} accent="yellow" />
         <MetaChip label="EVENTS" value={String(profile?._count?.registrations ?? 0).padStart(2, '0')} accent="blue" />
-        <MetaChip label="QOTD" value={String(profile?._count?.qotdSubmissions ?? 0).padStart(2, '0')} accent="purple" />
+        <MetaChip label="GAMES" value={String(profile?._count?.gameSessions ?? 0).padStart(2, '0')} accent="purple" />
         <MetaChip label="JOINED" value={profile ? formatDate(profile.createdAt).split(',')[0] : '—'} accent="green" />
       </div>
 

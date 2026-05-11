@@ -4,6 +4,9 @@
 import { prisma } from '../lib/prisma.js';
 import { emailService } from './email.js';
 import { logger } from './logger.js';
+import { ensurePuzzleRunDay } from '../games/puzzle-run/day.js';
+import { ensureBrainTeaserDay } from '../games/brain-teasers/day.js';
+import { rotateCipherChallenge } from '../games/cipher-lab/rotation.js';
 
 let reminderColumnAvailable = true;
 
@@ -201,6 +204,66 @@ async function sendEventReminders(): Promise<void> {
 
 let reminderInterval: NodeJS.Timeout | null = null;
 let reminderStartupTimeout: NodeJS.Timeout | null = null;
+let gameContentInterval: NodeJS.Timeout | null = null;
+let cipherRotationInterval: NodeJS.Timeout | null = null;
+
+async function ensureDailyGameContent(): Promise<void> {
+  try {
+    await Promise.all([
+      ensurePuzzleRunDay(),
+      ensureBrainTeaserDay(),
+    ]);
+    logger.info('Daily game content ensured');
+  } catch (error) {
+    logger.error('Failed to ensure daily game content', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+async function rotateCipherContent(): Promise<void> {
+  try {
+    await rotateCipherChallenge();
+    logger.info('Cipher Lab rotation checked');
+  } catch (error) {
+    logger.error('Failed to rotate Cipher Lab content', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+}
+
+export function startGameContentScheduler(): void {
+  if (gameContentInterval || cipherRotationInterval) return;
+  void ensureDailyGameContent();
+  void rotateCipherContent();
+  gameContentInterval = setInterval(() => {
+    const istHour = Number(new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      hour12: false,
+    }).format(new Date()));
+    if (istHour === 0) void ensureDailyGameContent();
+  }, 60 * 60 * 1000);
+  gameContentInterval.unref?.();
+
+  cipherRotationInterval = setInterval(() => {
+    void rotateCipherContent();
+  }, 60 * 60 * 1000);
+  cipherRotationInterval.unref?.();
+  logger.info('Game content scheduler started');
+}
+
+export function stopGameContentScheduler(): void {
+  if (gameContentInterval) {
+    clearInterval(gameContentInterval);
+    gameContentInterval = null;
+  }
+  if (cipherRotationInterval) {
+    clearInterval(cipherRotationInterval);
+    cipherRotationInterval = null;
+  }
+  logger.info('Game content scheduler stopped');
+}
 
 /**
  * Start the reminder scheduler

@@ -62,6 +62,7 @@ const VerifyCertificatePage  = lazy(() => import('@/pages/VerifyCertificatePage'
 // ── Games (new) ───────────────────────────────────────────────────────────────
 const GamesPage      = lazy(() => import('@/pages/GamesPage'));
 const GameDetailPage = lazy(() => import('@/pages/GameDetailPage'));
+const GamePlayRouter = lazy(() => import('@/pages/games/GamePlayRouter'));
 
 // ── Leaderboard (public) ──────────────────────────────────────────────────────
 const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage'));
@@ -92,6 +93,7 @@ const AdminCertificates      = lazy(() => import('@/pages/admin/AdminCertificate
 const AdminAuditLog          = lazy(() => import('@/pages/admin/AdminAuditLog'));
 const AdminMail              = lazy(() => import('@/pages/admin/AdminMail'));
 const AdminPublicView        = lazy(() => import('@/pages/admin/AdminPublicView'));
+const AdminGameContent       = lazy(() => import('@/pages/admin/AdminGameContent'));
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { SuperAdminOrPresidentRoute } from '@/components/auth/SuperAdminOrPresidentRoute';
@@ -146,6 +148,7 @@ function App() {
 
                 {/* ── Protected user ────────────────────────────────────── */}
                 <Route element={<ProtectedRoute minRole="USER" />}>
+                  <Route path="/games/:id/play" element={wrap(<GamePlayRouter />)} />
                   <Route path="/dashboard" element={wrap(<DashboardLayout />)}>
                     <Route index           element={wrap(<DashboardOverview />)} />
                     <Route path="events"   element={wrap(<DashboardEvents />)} />
@@ -176,6 +179,7 @@ function App() {
                     <Route path="audit-log"          element={wrap(<AdminAuditLog />)} />
                     <Route path="mail"               element={wrap(<AdminMail />)} />
                     <Route path="public-view"        element={wrap(<AdminPublicView />)} />
+                    <Route path="game-content"       element={wrap(<AdminGameContent />)} />
                     <Route path="events/:eventId/attendance" element={wrap(<EventAdminHub />)} />
                     <Route element={<SuperAdminOrPresidentRoute />}>
                       <Route path="settings" element={wrap(<AdminSettings />)} />

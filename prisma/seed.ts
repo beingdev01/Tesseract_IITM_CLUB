@@ -1,6 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import * as dotenv from 'dotenv';
+import { seedTypeWarsContent } from '../apps/api/src/games/type-wars/seed.js';
+import { seedTriviaTowerContent } from '../apps/api/src/games/trivia-tower/seed.js';
+import { seedPuzzleRunContent } from '../apps/api/src/games/puzzle-run/seed.js';
+import { seedBrainTeasersContent } from '../apps/api/src/games/brain-teasers/seed.js';
+import { seedCipherLabContent } from '../apps/api/src/games/cipher-lab/seed.js';
+import { seedRiddleRoomContent } from '../apps/api/src/games/riddle-room/seed.js';
+import { seedScribblContent } from '../apps/api/src/games/scribbl/seed.js';
 
 dotenv.config();
 
@@ -57,6 +64,14 @@ async function main() {
       clubDescription: 'The IIT Madras BS Degree coding community — building, learning, and shipping together.',
     },
   });
+
+  await seedTypeWarsContent(prisma);
+  await seedTriviaTowerContent(prisma);
+  await seedPuzzleRunContent(prisma);
+  await seedBrainTeasersContent(prisma);
+  await seedCipherLabContent(prisma);
+  await seedRiddleRoomContent(prisma);
+  await seedScribblContent(prisma);
 
   console.log('✅ Database seeded successfully!');
   console.log('📧 Super Admin pre-created:', superAdminEmail);

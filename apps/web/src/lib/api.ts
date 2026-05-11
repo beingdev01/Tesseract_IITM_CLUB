@@ -1,5 +1,7 @@
 import { extractApiErrorMessage } from '@/lib/error';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+export const SOCKET_URL = API_BASE_URL.replace(/\/api$/, '');
+const API_URL = API_BASE_URL;
 
 // ISSUE-013: Custom error class for 401 responses to trigger auto-logout
 export class UnauthorizedError extends Error {
@@ -101,6 +103,10 @@ async function executeJsonRequest(endpoint: string, options: RequestOptions = {}
     throw new Error(message);
   }
 
+  if (response.status === 204) {
+    return {};
+  }
+
   return response.json();
 }
 
@@ -170,21 +176,209 @@ export interface AuthProviders {
   emailPassword: boolean;
 }
 
-export interface QOTDHistoryEntry {
+export type GameCategory = 'multiplayer' | 'party' | 'solo' | 'esports';
+export type GameAccent = 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'orange';
+
+export interface CatalogGame {
   id: string;
-  date: string;
-  question: string;
-  problemLink: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
+  title: string;
+  description: string;
+  category: GameCategory;
+  accent: GameAccent;
+  players: string;
+  hot: boolean;
+  backendReady: boolean;
+  rules: string[];
+  plays: number;
+  live: number;
 }
 
-export interface QOTDLeaderboardEntry {
+export interface GameLeaderboardEntry {
+  rank: number;
   user: {
     id: string;
     name: string;
-    avatar?: string | null;
+    avatar: string | null;
   };
-  submissions: number;
+  totalScore: number;
+  bestScore: number;
+  sessions: number;
+  lastPlayedAt: string | null;
+  breakdown?: Record<string, number>;
+}
+
+export type GamesLeaderboardRange = 'all' | 'week' | 'month';
+
+export interface GamesLeaderboardResponse {
+  leaderboard: GameLeaderboardEntry[];
+  game: string | null;
+  range: GamesLeaderboardRange;
+}
+
+export type GameDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
+export type TriviaDifficulty = GameDifficulty | 'EXPERT';
+export type BrainTeaserDifficulty = 'EASY' | 'NORMAL' | 'HARD' | 'DEVIOUS' | 'BONUS';
+export type CipherType = 'CAESAR' | 'VIGENERE' | 'ATBASH' | 'RAILFENCE' | 'SUBSTITUTION' | 'BASE64' | 'MORSE' | 'CUSTOM';
+export type CipherDifficulty = GameDifficulty | 'INSANE';
+export type GameRoomStatus = 'LOBBY' | 'COUNTDOWN' | 'RACING' | 'ACTIVE' | 'FINISHED' | 'ABORTED';
+
+export interface GameParticipant {
+  userId: string;
+  name: string;
+  avatar?: string | null;
+  score?: number;
+  pointsAwarded?: number;
+  active?: boolean;
+  ready?: boolean;
+  wpm?: number;
+  accuracy?: number;
+  rank?: number | null;
+  charsTyped?: number;
+}
+
+export interface TypeWarsPassage {
+  id: string;
+  text: string;
+  category?: string | null;
+  source?: string | null;
+  difficulty: GameDifficulty;
+  wordCount: number;
+  active: boolean;
+}
+
+export interface TypeWarsRoom {
+  code: string;
+  status: GameRoomStatus;
+  hostUserId: string;
+  startedAt?: number | null;
+  passage?: { id: string; text?: string; wordCount: number };
+  participants: GameParticipant[];
+}
+
+export interface TriviaQuestionAdmin {
+  id: string;
+  prompt: string;
+  options: string[];
+  correctIndex: number;
+  difficulty: TriviaDifficulty;
+  category?: string | null;
+  floor: number;
+  active: boolean;
+}
+
+export interface TriviaRoom {
+  code: string;
+  status: GameRoomStatus;
+  hostUserId: string;
+  totalFloors: number;
+  currentFloor: number;
+  participants: GameParticipant[];
+}
+
+export interface PuzzleRunPuzzle {
+  id: string;
+  order?: number;
+  prompt: string;
+  answer?: string;
+  hints?: string[];
+  basePoints: number;
+  hintPenalty: number;
+  difficulty: GameDifficulty;
+  active?: boolean;
+}
+
+export interface PuzzleRunAttempt {
+  puzzleId: string;
+  solved: boolean;
+  pointsAwarded: number;
+  hintsUsed: number;
+  attemptedAt?: string;
+}
+
+export interface BrainTeaser {
+  id: string;
+  prompt: string;
+  answer?: string;
+  explanation?: string | null;
+  difficulty: BrainTeaserDifficulty;
+  points?: number;
+  active?: boolean;
+}
+
+export interface BrainTeaserAttempt {
+  teaserId: string;
+  submission?: string;
+  correct: boolean;
+  pointsAwarded: number;
+  explanation?: string | null;
+  submittedAt?: string;
+}
+
+export interface CipherChallenge {
+  id: string;
+  title: string;
+  cipherType: CipherType;
+  plaintext?: string;
+  ciphertext: string;
+  hints?: string[];
+  hintCount?: number;
+  basePoints: number;
+  hintPenalty: number;
+  timeLimitSeconds: number;
+  difficulty: CipherDifficulty;
+  activeFrom?: string | null;
+  activeUntil?: string | null;
+  active?: boolean;
+}
+
+export interface RiddleClue {
+  id: string;
+  title: string;
+  prompt: string;
+  answer?: string;
+  hint?: string | null;
+  difficulty: GameDifficulty;
+  lockSeconds: number;
+  basePoints: number;
+  active: boolean;
+}
+
+export interface RiddleBundle {
+  id: string;
+  name: string;
+  description?: string | null;
+  active: boolean;
+  clues?: Array<{ order: number; clue: RiddleClue }>;
+}
+
+export interface RiddleRoom {
+  code: string;
+  status: GameRoomStatus;
+  hostUserId: string;
+  bundleName: string;
+  currentOrder: number;
+  totalClues: number;
+  members: GameParticipant[];
+}
+
+export interface ScribblPrompt {
+  id: string;
+  word: string;
+  category?: string | null;
+  difficulty: GameDifficulty;
+  active: boolean;
+}
+
+export interface ScribblRoom {
+  code: string;
+  status: GameRoomStatus;
+  hostUserId: string;
+  roundCount: number;
+  roundDurationSeconds: number;
+  currentRound: number;
+  drawerId?: string | null;
+  drawerName?: string | null;
+  members: GameParticipant[];
 }
 
 export type UserLevel = 'FOUNDATION' | 'DIPLOMA' | 'BSC' | 'BS';
@@ -235,7 +429,6 @@ export interface Settings {
   maxEventsPerUser: number;
   announcementsEnabled: boolean;
   showLeaderboard?: boolean;
-  showQOTD?: boolean;
   showAchievements?: boolean;
   show_tech_blogs?: boolean;
   hiringEnabled?: boolean;
@@ -1557,23 +1750,22 @@ export const api = {
   reorderCredits: (credits: { id: string; order: number }[], token: string) =>
     request('/credits/reorder', { method: 'PATCH', body: JSON.stringify({ credits }), token }),
 
-  // QOTD
-  getTodayQOTD: () => request('/qotd/today'),
-  getQOTDHistory: (limit?: number, offset?: number) => {
+  // Games leaderboard (cross-game + per-game)
+  getGamesLeaderboard: (options?: { game?: string; limit?: number; range?: GamesLeaderboardRange }) => {
     const params = new URLSearchParams();
-    if (limit) params.append('limit', limit.toString());
-    if (offset) params.append('offset', offset.toString());
+    if (options?.game) params.append('game', options.game);
+    if (options?.limit) params.append('limit', String(options.limit));
+    if (options?.range) params.append('range', options.range);
     const query = params.toString() ? `?${params.toString()}` : '';
-    return request<QOTDHistoryEntry[]>(`/qotd/history${query}`);
+    return request<GamesLeaderboardResponse>(`/games/leaderboard${query}`);
   },
-  getQOTDLeaderboard: (limit = 50) =>
-    request<QOTDLeaderboardEntry[]>(`/qotd/stats/leaderboard?limit=${limit}`),
-  createQOTD: (data: { date: string; question: string; problemLink: string; difficulty: string }, token: string) =>
-    request('/qotd', { method: 'POST', body: JSON.stringify(data), token }),
-  submitQOTD: (id: string, token: string) =>
-    request(`/qotd/${id}/submit`, { method: 'POST', token }),
-  getQOTDStats: (token: string) => request('/users/me/qotd-stats', { token }),
-  
+  getMyGameStats: (token: string) => request<{
+    totalSessions: number;
+    currentStreak: number;
+    recentSessions: Array<{ gameId: string; score: number; durationSeconds: number | null; playedAt: string }>;
+  }>('/users/me/game-stats', { token }),
+
+
   // Stats
   getPublicStats: () => request<{ members: number; events: number; achievements: number }>('/stats/public'),
   getHomePageData: () => request<HomePageData>('/stats/home'),
@@ -1642,7 +1834,7 @@ export const api = {
     twitterUrl?: string;
     websiteUrl?: string;
     createdAt: string;
-    _count: { registrations: number; qotdSubmissions: number };
+    _count: { registrations: number; gameSessions: number };
   }>('/users/me', { token }),
   
   updateProfile: (data: {
@@ -1978,6 +2170,192 @@ export const api = {
 
   getCompetitionRounds: (eventId: string, token?: string) =>
     request<{ rounds: CompetitionRoundPreview[] }>(`/games/competition/event/${eventId}`, { ...(token ? { token } : {}) }),
+
+  // Public games
+  getGames: () =>
+    request<{ games: CatalogGame[] }>('/games'),
+  getGame: (id: string) =>
+    request<CatalogGame>(`/games/${id}`),
+  createGameSession: (gameId: string, token: string, data?: { score?: number; durationSeconds?: number }) =>
+    request<{
+      session: {
+        id: string;
+        gameId: string;
+        score: number;
+        durationSeconds: number | null;
+        createdAt: string;
+      };
+    }>(`/games/${gameId}/session`, {
+      method: 'POST',
+      body: JSON.stringify(data ?? {}),
+      token,
+    }),
+  getGameLeaderboard: (gameId: string, limit = 10) =>
+    request<{ leaderboard: GameLeaderboardEntry[] }>(`/games/${gameId}/leaderboard?limit=${limit}`),
+
+  createTypeWarsRoom: (token: string, data?: { passageDifficulty?: GameDifficulty }) =>
+    request<{ code: string; passage: { id: string; text: string; wordCount: number }; room: TypeWarsRoom }>('/games/type-wars/rooms', { method: 'POST', body: JSON.stringify(data ?? {}), token }),
+  joinTypeWarsRoom: (code: string, token: string) =>
+    request<{ room: TypeWarsRoom }>(`/games/type-wars/rooms/${encodeURIComponent(code)}/join`, { method: 'POST', token }),
+  getTypeWarsRoom: (code: string, token: string) =>
+    request<{ room: TypeWarsRoom }>(`/games/type-wars/rooms/${encodeURIComponent(code)}`, { token }),
+  getAdminTypeWarsPassages: (token: string, filters?: { search?: string; difficulty?: GameDifficulty; active?: boolean }) => {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set('search', filters.search);
+    if (filters?.difficulty) params.set('difficulty', filters.difficulty);
+    if (filters?.active !== undefined) params.set('active', String(filters.active));
+    return request<{ passages: TypeWarsPassage[]; total: number }>(`/admin/games/type-wars/passages${params.toString() ? `?${params}` : ''}`, { token });
+  },
+  createTypeWarsPassage: (token: string, data: Partial<TypeWarsPassage>) =>
+    request<{ passage: TypeWarsPassage }>('/admin/games/type-wars/passages', { method: 'POST', body: JSON.stringify(data), token }),
+  updateTypeWarsPassage: (id: string, token: string, data: Partial<TypeWarsPassage>) =>
+    request<{ passage: TypeWarsPassage }>(`/admin/games/type-wars/passages/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteTypeWarsPassage: (id: string, token: string) =>
+    request<void>(`/admin/games/type-wars/passages/${id}`, { method: 'DELETE', token }),
+  bulkImportTypeWarsPassages: (token: string, passages: Array<Partial<TypeWarsPassage>>) =>
+    request<{ passages: TypeWarsPassage[] }>('/admin/games/type-wars/passages/bulk', { method: 'POST', body: JSON.stringify({ passages }), token }),
+
+  createTriviaRoom: (token: string, data?: { totalFloors?: number; difficulty?: TriviaDifficulty }) =>
+    request<{ room: TriviaRoom }>('/games/trivia-tower/rooms', { method: 'POST', body: JSON.stringify(data ?? {}), token }),
+  joinTriviaRoom: (code: string, token: string) =>
+    request<{ room: TriviaRoom }>(`/games/trivia-tower/rooms/${encodeURIComponent(code)}/join`, { method: 'POST', token }),
+  getTriviaRoom: (code: string, token: string) =>
+    request<{ room: TriviaRoom }>(`/games/trivia-tower/rooms/${encodeURIComponent(code)}`, { token }),
+  getAdminTriviaQuestions: (token: string, filters?: { search?: string; difficulty?: TriviaDifficulty; active?: boolean }) => {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set('search', filters.search);
+    if (filters?.difficulty) params.set('difficulty', filters.difficulty);
+    if (filters?.active !== undefined) params.set('active', String(filters.active));
+    return request<{ questions: TriviaQuestionAdmin[]; total: number }>(`/admin/games/trivia-tower/questions${params.toString() ? `?${params}` : ''}`, { token });
+  },
+  createTriviaQuestion: (token: string, data: Partial<TriviaQuestionAdmin>) =>
+    request<{ question: TriviaQuestionAdmin }>('/admin/games/trivia-tower/questions', { method: 'POST', body: JSON.stringify(data), token }),
+  updateTriviaQuestion: (id: string, token: string, data: Partial<TriviaQuestionAdmin>) =>
+    request<{ question: TriviaQuestionAdmin }>(`/admin/games/trivia-tower/questions/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteTriviaQuestion: (id: string, token: string) =>
+    request<void>(`/admin/games/trivia-tower/questions/${id}`, { method: 'DELETE', token }),
+  bulkImportTriviaQuestions: (token: string, questions: Array<Partial<TriviaQuestionAdmin>>) =>
+    request<{ questions: TriviaQuestionAdmin[] }>('/admin/games/trivia-tower/questions/bulk', { method: 'POST', body: JSON.stringify({ questions }), token }),
+
+  getPuzzleRunToday: (token: string) =>
+    request<{ day: { id: string; date: string; puzzles: PuzzleRunPuzzle[] }; attempts: PuzzleRunAttempt[] }>('/games/puzzle-run/today', { token }),
+  submitPuzzleRunAttempt: (puzzleId: string, token: string, data: { submission: string; hintsUsed: number }) =>
+    request<{ attempt: PuzzleRunAttempt }>(`/games/puzzle-run/puzzle/${puzzleId}/attempt`, { method: 'POST', body: JSON.stringify(data), token }),
+  completePuzzleRun: (token: string) =>
+    request<{ totalScore: number; streakDays: number }>('/games/puzzle-run/complete', { method: 'POST', token }),
+  getAdminPuzzleRunPuzzles: (token: string, filters?: { search?: string; difficulty?: GameDifficulty; active?: boolean }) => {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set('search', filters.search);
+    if (filters?.difficulty) params.set('difficulty', filters.difficulty);
+    if (filters?.active !== undefined) params.set('active', String(filters.active));
+    return request<{ puzzles: PuzzleRunPuzzle[]; total: number }>(`/admin/games/puzzle-run/puzzles${params.toString() ? `?${params}` : ''}`, { token });
+  },
+  getAdminPuzzleRunToday: (token: string) =>
+    request<{ day: { id: string; date: string; puzzles: PuzzleRunPuzzle[] } | null }>('/admin/games/puzzle-run/days/today', { token }),
+  createPuzzleRunPuzzle: (token: string, data: Partial<PuzzleRunPuzzle>) =>
+    request<{ puzzle: PuzzleRunPuzzle }>('/admin/games/puzzle-run/puzzles', { method: 'POST', body: JSON.stringify(data), token }),
+  updatePuzzleRunPuzzle: (id: string, token: string, data: Partial<PuzzleRunPuzzle>) =>
+    request<{ puzzle: PuzzleRunPuzzle }>(`/admin/games/puzzle-run/puzzles/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deletePuzzleRunPuzzle: (id: string, token: string) =>
+    request<void>(`/admin/games/puzzle-run/puzzles/${id}`, { method: 'DELETE', token }),
+  regeneratePuzzleRunToday: (token: string) =>
+    request<{ dayId: string }>('/admin/games/puzzle-run/days/today/regenerate', { method: 'POST', token }),
+
+  getBrainTeasersToday: (token: string) =>
+    request<{ day: { id: string; date: string; teasers: BrainTeaser[] }; attempts: BrainTeaserAttempt[] }>('/games/brain-teasers/today', { token }),
+  submitBrainTeaser: (teaserId: string, token: string, submission: string) =>
+    request<{ attempt: BrainTeaserAttempt }>(`/games/brain-teasers/${teaserId}/submit`, { method: 'POST', body: JSON.stringify({ submission }), token }),
+  getAdminBrainTeasers: (token: string, filters?: { search?: string; difficulty?: BrainTeaserDifficulty; active?: boolean }) => {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set('search', filters.search);
+    if (filters?.difficulty) params.set('difficulty', filters.difficulty);
+    if (filters?.active !== undefined) params.set('active', String(filters.active));
+    return request<{ teasers: BrainTeaser[]; total: number }>(`/admin/games/brain-teasers/teasers${params.toString() ? `?${params}` : ''}`, { token });
+  },
+  getAdminBrainTeasersToday: (token: string) =>
+    request<{ day: { id: string; date: string; entries: Array<{ difficulty: BrainTeaserDifficulty; teaser: BrainTeaser }> } | null }>('/admin/games/brain-teasers/days/today', { token }),
+  createBrainTeaser: (token: string, data: Partial<BrainTeaser>) =>
+    request<{ teaser: BrainTeaser }>('/admin/games/brain-teasers/teasers', { method: 'POST', body: JSON.stringify(data), token }),
+  updateBrainTeaser: (id: string, token: string, data: Partial<BrainTeaser>) =>
+    request<{ teaser: BrainTeaser }>(`/admin/games/brain-teasers/teasers/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteBrainTeaser: (id: string, token: string) =>
+    request<void>(`/admin/games/brain-teasers/teasers/${id}`, { method: 'DELETE', token }),
+  regenerateBrainTeasersToday: (token: string) =>
+    request<{ dayId: string }>('/admin/games/brain-teasers/days/today/regenerate', { method: 'POST', token }),
+
+  getActiveCipher: (token: string) =>
+    request<{ cipher: CipherChallenge; attempt: { startedAt: string; submittedAt: string | null; hintsUsed: number; solved: boolean; pointsAwarded: number; durationSeconds: number | null } | null }>('/games/cipher-lab/active', { token }),
+  startCipherAttempt: (token: string) =>
+    request<{ attempt: { startedAt: string; hintsUsed: number; submittedAt: string | null } }>('/games/cipher-lab/start', { method: 'POST', token }),
+  revealCipherHint: (token: string, index: number) =>
+    request<{ hint: string; hintsUsed: number }>('/games/cipher-lab/hint', { method: 'POST', body: JSON.stringify({ index }), token }),
+  submitCipherAnswer: (token: string, submission: string) =>
+    request<{ solved: boolean; pointsAwarded: number; durationSeconds: number; timedOut?: boolean }>('/games/cipher-lab/submit', { method: 'POST', body: JSON.stringify({ submission }), token }),
+  getAdminCipherChallenges: (token: string, filters?: { search?: string; cipherType?: CipherType; active?: boolean }) => {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set('search', filters.search);
+    if (filters?.cipherType) params.set('cipherType', filters.cipherType);
+    if (filters?.active !== undefined) params.set('active', String(filters.active));
+    return request<{ challenges: CipherChallenge[]; total: number }>(`/admin/games/cipher-lab/challenges${params.toString() ? `?${params}` : ''}`, { token });
+  },
+  previewCipher: (token: string, data: { cipherType: CipherType; plaintext: string; key?: string | null }) =>
+    request<{ ciphertext: string }>('/admin/games/cipher-lab/preview', { method: 'POST', body: JSON.stringify(data), token }),
+  createCipherChallenge: (token: string, data: Partial<CipherChallenge> & { key?: string | null }) =>
+    request<{ challenge: CipherChallenge }>('/admin/games/cipher-lab/challenges', { method: 'POST', body: JSON.stringify(data), token }),
+  updateCipherChallenge: (id: string, token: string, data: Partial<CipherChallenge> & { key?: string | null }) =>
+    request<{ challenge: CipherChallenge }>(`/admin/games/cipher-lab/challenges/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteCipherChallenge: (id: string, token: string) =>
+    request<void>(`/admin/games/cipher-lab/challenges/${id}`, { method: 'DELETE', token }),
+
+  createRiddleRoom: (token: string, data?: { bundleId?: string }) =>
+    request<{ room: RiddleRoom }>('/games/riddle-room/rooms', { method: 'POST', body: JSON.stringify(data ?? {}), token }),
+  joinRiddleRoom: (code: string, token: string) =>
+    request<{ room: RiddleRoom }>(`/games/riddle-room/rooms/${encodeURIComponent(code)}/join`, { method: 'POST', token }),
+  getRiddleRoom: (code: string, token: string) =>
+    request<{ room: RiddleRoom; currentClue: RiddleClue | null }>(`/games/riddle-room/rooms/${encodeURIComponent(code)}`, { token }),
+  getAdminRiddleClues: (token: string, filters?: { search?: string; difficulty?: GameDifficulty; active?: boolean }) => {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set('search', filters.search);
+    if (filters?.difficulty) params.set('difficulty', filters.difficulty);
+    if (filters?.active !== undefined) params.set('active', String(filters.active));
+    return request<{ clues: RiddleClue[]; total: number }>(`/admin/games/riddle-room/clues${params.toString() ? `?${params}` : ''}`, { token });
+  },
+  getAdminRiddleBundles: (token: string) =>
+    request<{ bundles: RiddleBundle[] }>('/admin/games/riddle-room/bundles', { token }),
+  createRiddleClue: (token: string, data: Partial<RiddleClue>) =>
+    request<{ clue: RiddleClue }>('/admin/games/riddle-room/clues', { method: 'POST', body: JSON.stringify(data), token }),
+  updateRiddleClue: (id: string, token: string, data: Partial<RiddleClue>) =>
+    request<{ clue: RiddleClue }>(`/admin/games/riddle-room/clues/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteRiddleClue: (id: string, token: string) =>
+    request<void>(`/admin/games/riddle-room/clues/${id}`, { method: 'DELETE', token }),
+  createRiddleBundle: (token: string, data: Partial<RiddleBundle> & { clueIds?: string[] }) =>
+    request<{ bundle: RiddleBundle }>('/admin/games/riddle-room/bundles', { method: 'POST', body: JSON.stringify(data), token }),
+  updateRiddleBundle: (id: string, token: string, data: Partial<RiddleBundle> & { clueIds?: string[] }) =>
+    request<{ bundle: RiddleBundle }>(`/admin/games/riddle-room/bundles/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteRiddleBundle: (id: string, token: string) =>
+    request<void>(`/admin/games/riddle-room/bundles/${id}`, { method: 'DELETE', token }),
+
+  createScribblRoom: (token: string, data?: { roundCount?: number; roundDurationSeconds?: number }) =>
+    request<{ room: ScribblRoom }>('/games/scribbl/rooms', { method: 'POST', body: JSON.stringify(data ?? {}), token }),
+  joinScribblRoom: (code: string, token: string) =>
+    request<{ room: ScribblRoom }>(`/games/scribbl/rooms/${encodeURIComponent(code)}/join`, { method: 'POST', token }),
+  getScribblRoom: (code: string, token: string) =>
+    request<{ room: ScribblRoom }>(`/games/scribbl/rooms/${encodeURIComponent(code)}`, { token }),
+  getAdminScribblPrompts: (token: string, filters?: { search?: string; difficulty?: GameDifficulty; active?: boolean }) => {
+    const params = new URLSearchParams();
+    if (filters?.search) params.set('search', filters.search);
+    if (filters?.difficulty) params.set('difficulty', filters.difficulty);
+    if (filters?.active !== undefined) params.set('active', String(filters.active));
+    return request<{ prompts: ScribblPrompt[]; total: number }>(`/admin/games/scribbl/prompts${params.toString() ? `?${params}` : ''}`, { token });
+  },
+  createScribblPrompt: (token: string, data: Partial<ScribblPrompt>) =>
+    request<{ prompt: ScribblPrompt }>('/admin/games/scribbl/prompts', { method: 'POST', body: JSON.stringify(data), token }),
+  updateScribblPrompt: (id: string, token: string, data: Partial<ScribblPrompt>) =>
+    request<{ prompt: ScribblPrompt }>(`/admin/games/scribbl/prompts/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteScribblPrompt: (id: string, token: string) =>
+    request<void>(`/admin/games/scribbl/prompts/${id}`, { method: 'DELETE', token }),
+  bulkImportScribblPrompts: (token: string, data: { words: string[]; category?: string; difficulty?: GameDifficulty }) =>
+    request<{ count: number }>('/admin/games/scribbl/prompts/bulk', { method: 'POST', body: JSON.stringify(data), token }),
 
   getMyTeam: async (eventId: string, token: string): Promise<EventTeam | null> => {
     try {

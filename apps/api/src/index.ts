@@ -15,7 +15,6 @@ import { announcementsRouter } from './routes/announcements.js';
 import { pollsRouter } from './routes/polls.js';
 import { teamRouter } from './routes/team.js';
 import { achievementsRouter } from './routes/achievements.js';
-import { qotdRouter } from './routes/qotd.js';
 import { usersRouter } from './routes/users.js';
 import { statsRouter } from './routes/stats.js';
 import { settingsRouter } from './routes/settings.js';
@@ -43,7 +42,7 @@ import { authMiddleware, getAuthUser } from './middleware/auth.js';
 import { requireRole } from './middleware/role.js';
 import { emailService } from './utils/email.js';
 import { prisma } from './lib/prisma.js';
-import { startReminderScheduler, stopReminderScheduler } from './utils/scheduler.js';
+import { startGameContentScheduler, startReminderScheduler, stopGameContentScheduler, stopReminderScheduler } from './utils/scheduler.js';
 import { getJwtSecret } from './utils/jwt.js';
 import { setRuntimeAttendanceJwtSecret } from './utils/attendanceToken.js';
 import { updateEventStatuses } from './utils/eventStatus.js';
@@ -387,7 +386,6 @@ app.use('/api/announcements', announcementsRouter);
 app.use('/api/polls', pollsRouter);
 app.use('/api/team', teamRouter);
 app.use('/api/achievements', achievementsRouter);
-app.use('/api/qotd', qotdRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/stats', statsRouter);
 app.use('/api/settings', settingsRouter);
@@ -499,6 +497,7 @@ const shutdown = async () => {
   logger.info('Shutting down gracefully...');
   stopEventStatusScheduler();
   stopReminderScheduler();
+  stopGameContentScheduler();
 
   // Close Socket.io server first — disconnects all clients (attendance namespace).
   io.close();
@@ -569,6 +568,7 @@ initializeDatabase()
     if (ENABLE_BACKGROUND_SCHEDULERS) {
       startEventStatusScheduler();
       startReminderScheduler();
+      startGameContentScheduler();
     } else {
       logger.info('Background schedulers disabled (set ENABLE_BACKGROUND_SCHEDULERS=true to enable).');
     }

@@ -62,9 +62,10 @@ export default function HomePage() {
   });
   const { data: leaderData } = useQuery({
     queryKey: ['leaderboard-peek'],
-    queryFn: () => api.getQOTDLeaderboard(5),
+    queryFn: () => api.getGamesLeaderboard({ limit: 5 }),
     staleTime: 1000 * 60,
   });
+  const leaderRows = leaderData?.leaderboard ?? [];
 
   const stats = homeData?.stats;
   const upcomingEvents = homeData?.upcomingEvents ?? [];
@@ -232,12 +233,12 @@ export default function HomePage() {
             <div className="lb-board-head">
               <span>RANK</span>
               <span>PLAYER</span>
-              <span>TRACK</span>
-              <span>SUBMISSIONS</span>
+              <span>PLAYS</span>
+              <span>POINTS</span>
               <span>STATUS</span>
             </div>
-            {leaderData && leaderData.length > 0 ? (
-              leaderData.slice(0, 5).map((entry, i) => {
+            {leaderRows.length > 0 ? (
+              leaderRows.slice(0, 5).map((entry, i) => {
                 const c = ROW_COLORS[i % ROW_COLORS.length];
                 return (
                   <div
@@ -249,8 +250,8 @@ export default function HomePage() {
                       <span className={`lb-avatar-chip lb-c-${c}`} />
                       {entry.user.name}
                     </span>
-                    <span className="lb-mono lb-dim">qotd</span>
-                    <span className="lb-mono lb-board-score">{entry.submissions.toLocaleString()}</span>
+                    <span className="lb-mono lb-dim">{entry.sessions}</span>
+                    <span className="lb-mono lb-board-score">{entry.totalScore.toLocaleString()}</span>
                     <span className="lb-mono lb-green">{i === 0 ? 'TOP' : 'LIVE'}</span>
                   </div>
                 );

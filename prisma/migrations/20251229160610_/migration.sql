@@ -94,28 +94,6 @@ CREATE TABLE "achievements" (
 );
 
 -- CreateTable
-CREATE TABLE "qotd" (
-    "id" TEXT NOT NULL,
-    "date" TIMESTAMP(3) NOT NULL,
-    "question" TEXT NOT NULL,
-    "problem_link" TEXT NOT NULL,
-    "difficulty" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "qotd_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "qotd_submissions" (
-    "id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "qotd_id" TEXT NOT NULL,
-    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "qotd_submissions_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "audit_logs" (
     "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
@@ -153,18 +131,6 @@ CREATE INDEX "team_members_team_order_idx" ON "team_members"("team", "order");
 CREATE INDEX "achievements_date_idx" ON "achievements"("date");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "qotd_date_key" ON "qotd"("date");
-
--- CreateIndex
-CREATE INDEX "qotd_date_idx" ON "qotd"("date");
-
--- CreateIndex
-CREATE INDEX "qotd_submissions_qotd_id_idx" ON "qotd_submissions"("qotd_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "qotd_submissions_user_id_qotd_id_key" ON "qotd_submissions"("user_id", "qotd_id");
-
--- CreateIndex
 CREATE INDEX "audit_logs_user_id_timestamp_idx" ON "audit_logs"("user_id", "timestamp");
 
 -- AddForeignKey
@@ -175,9 +141,3 @@ ALTER TABLE "event_registrations" ADD CONSTRAINT "event_registrations_event_id_f
 
 -- AddForeignKey
 ALTER TABLE "announcements" ADD CONSTRAINT "announcements_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "qotd_submissions" ADD CONSTRAINT "qotd_submissions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "qotd_submissions" ADD CONSTRAINT "qotd_submissions_qotd_id_fkey" FOREIGN KEY ("qotd_id") REFERENCES "qotd"("id") ON DELETE CASCADE ON UPDATE CASCADE;

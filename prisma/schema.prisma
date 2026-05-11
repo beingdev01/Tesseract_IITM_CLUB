@@ -36,7 +36,6 @@ model User {
   announcements          Announcement[]
   registrations          EventRegistration[]
   hiringApplications     HiringApplication[]
-  qotdSubmissions        QOTDSubmission[]
   networkProfile         NetworkProfile?
   teamMember             TeamMember?
   // Certificate relations
@@ -52,8 +51,30 @@ model User {
   eventsCreated          Event[]                 @relation("eventCreator")
   invitationsReceived    EventInvitation[]       @relation("InvitationInvitee")
   invitationsSent        EventInvitation[]       @relation("InvitationInviter")
-  qotdsCreated           QOTD[]                  @relation("qotdCreator")
   auditLogs              AuditLog[]
+  gameSessions           GameSession[]
+
+  // Games platform relations
+  scribblPromptsCreated   ScribblPrompt[]       @relation("scribblPromptCreator")
+  scribblRoomsHosted      ScribblRoom[]         @relation("scribblHost")
+  scribblRoundsDrawn      ScribblRound[]        @relation("scribblDrawer")
+  scribblGuesses          ScribblGuess[]        @relation("scribblGuesser")
+  typeWarsPassagesCreated TypeWarsPassage[]     @relation("typeWarsPassageCreator")
+  typeWarsRacesHosted     TypeWarsRace[]        @relation("typeWarsHost")
+  typeWarsParticipations  TypeWarsParticipant[] @relation("typeWarsParticipant")
+  triviaQuestionsCreated  TriviaQuestion[]      @relation("triviaQuestionCreator")
+  triviaTowerRunsHosted   TriviaTowerRun[]      @relation("triviaHost")
+  triviaAnswers           TriviaAnswer[]        @relation("triviaAnsweredBy")
+  puzzleRunPuzzlesCreated PuzzleRunPuzzle[]     @relation("puzzleCreator")
+  puzzleRunAttempts       PuzzleRunAttempt[]    @relation("puzzleAttempts")
+  brainTeasersCreated     BrainTeaser[]         @relation("brainTeaserCreator")
+  brainTeaserAttempts     BrainTeaserAttempt[]  @relation("brainTeaserAttempts")
+  cipherChallengesCreated CipherChallenge[]     @relation("cipherCreator")
+  cipherAttempts          CipherAttempt[]       @relation("cipherAttempts")
+  riddleCluesCreated      RiddleClue[]          @relation("riddleClueCreator")
+  riddleRoomsHosted       RiddleRoom[]          @relation("riddleRoomHost")
+  riddleRoomMemberships   RiddleRoomMember[]    @relation("riddleRoomMember")
+  riddleAttempts          RiddleAttempt[]       @relation("riddleAttempts")
 
   @@index([role, createdAt(sort: Desc)], map: "users_role_created_at_desc_idx")
   @@map("users")
@@ -70,7 +91,6 @@ model Settings {
   updatedAt                DateTime @updatedAt @map("updated_at")
   showAchievements         Boolean  @default(true) @map("show_achievements")
   showLeaderboard          Boolean  @default(false) @map("show_leaderboard")
-  showQOTD                 Boolean  @default(true) @map("show_qotd")
   discordUrl               String?  @map("discord_url")
   githubUrl                String?  @map("github_url")
   instagramUrl             String?  @map("instagram_url")
@@ -375,6 +395,22 @@ model CompetitionAutoSave {
   @@map("competition_auto_saves")
 }
 
+model GameSession {
+  id              String   @id @default(uuid())
+  gameId          String   @map("game_id")
+  userId          String   @map("user_id")
+  score           Int      @default(0)
+  durationSeconds Int?     @map("duration_seconds")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([gameId, createdAt(sort: Desc)], map: "game_sessions_game_created_at_desc_idx")
+  @@index([gameId, score(sort: Desc), createdAt(sort: Desc)], map: "game_sessions_game_score_created_desc_idx")
+  @@index([userId, createdAt(sort: Desc)], map: "game_sessions_user_created_at_desc_idx")
+  @@map("game_sessions")
+}
+
 model Announcement {
   id               String               @id @default(uuid())
   title            String
@@ -542,36 +578,6 @@ model Achievement {
   @@index([featured])
   @@index([featured, date(sort: Desc)], map: "achievements_featured_date_desc_idx")
   @@map("achievements")
-}
-
-model QOTD {
-  id          String           @id @default(uuid())
-  date        DateTime         @unique
-  question    String
-  problemLink String           @map("problem_link")
-  difficulty  String
-  createdById String?          @map("created_by_id")
-  createdAt   DateTime         @default(now()) @map("created_at")
-  creator     User?            @relation("qotdCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  submissions QOTDSubmission[]
-
-  @@index([createdById])
-  @@map("qotd")
-}
-
-model QOTDSubmission {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  qotdId    String   @map("qotd_id")
-  timestamp DateTime @default(now())
-  qotd      QOTD     @relation(fields: [qotdId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, qotdId])
-  @@index([qotdId])
-  @@index([userId, timestamp])
-  @@index([timestamp])
-  @@map("qotd_submissions")
 }
 
 model AuditLog {
@@ -876,4 +882,561 @@ model Credit {
   @@index([category, order])
   @@index([teamMemberId])
   @@map("credits")
+}
+
+// =============================================================================
+// Games platform — content libraries, room/run records, attempt logs
+// =============================================================================
+
+// -------- Scribbl --------
+
+enum ScribblDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ScribblRoomStatus {
+  LOBBY
+  ACTIVE
+  FINISHED
+  ABORTED
+}
+
+model ScribblPrompt {
+  id          String            @id @default(uuid())
+  word        String            @unique
+  category    String?
+  difficulty  ScribblDifficulty @default(EASY)
+  active      Boolean           @default(true)
+  createdById String?           @map("created_by_id")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  creator User? @relation("scribblPromptCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([active, difficulty])
+  @@map("scribbl_prompts")
+}
+
+model ScribblRoom {
+  id                   String            @id @default(uuid())
+  code                 String            @unique
+  hostId               String            @map("host_id")
+  status               ScribblRoomStatus @default(LOBBY)
+  roundCount           Int               @default(3) @map("round_count")
+  roundDurationSeconds Int               @default(80) @map("round_duration_seconds")
+  startedAt            DateTime?         @map("started_at")
+  endedAt              DateTime?         @map("ended_at")
+  createdAt            DateTime          @default(now()) @map("created_at")
+
+  host   User           @relation("scribblHost", fields: [hostId], references: [id], onDelete: Cascade)
+  rounds ScribblRound[]
+
+  @@index([status, createdAt])
+  @@map("scribbl_rooms")
+}
+
+model ScribblRound {
+  id              String    @id @default(uuid())
+  roomId          String    @map("room_id")
+  drawerId        String    @map("drawer_id")
+  promptWord      String    @map("prompt_word")
+  durationSeconds Int       @map("duration_seconds")
+  startedAt       DateTime  @map("started_at")
+  endedAt         DateTime? @map("ended_at")
+
+  room    ScribblRoom    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  drawer  User           @relation("scribblDrawer", fields: [drawerId], references: [id], onDelete: Cascade)
+  guesses ScribblGuess[]
+
+  @@index([roomId])
+  @@map("scribbl_rounds")
+}
+
+model ScribblGuess {
+  id            String   @id @default(uuid())
+  roundId       String   @map("round_id")
+  guesserId     String   @map("guesser_id")
+  guess         String
+  correct       Boolean  @default(false)
+  pointsAwarded Int      @default(0) @map("points_awarded")
+  guessedAt     DateTime @default(now()) @map("guessed_at")
+
+  round   ScribblRound @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  guesser User         @relation("scribblGuesser", fields: [guesserId], references: [id], onDelete: Cascade)
+
+  @@index([roundId])
+  @@map("scribbl_guesses")
+}
+
+// -------- Type Wars --------
+
+enum TypeWarsDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum TypeWarsRaceStatus {
+  LOBBY
+  COUNTDOWN
+  RACING
+  FINISHED
+  ABORTED
+}
+
+model TypeWarsPassage {
+  id          String             @id @default(uuid())
+  text        String             @db.Text
+  category    String?
+  source      String?
+  difficulty  TypeWarsDifficulty @default(MEDIUM)
+  wordCount   Int                @map("word_count")
+  active      Boolean            @default(true)
+  createdById String?            @map("created_by_id")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+
+  creator User?          @relation("typeWarsPassageCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  races   TypeWarsRace[]
+
+  @@index([active, difficulty])
+  @@map("type_wars_passages")
+}
+
+model TypeWarsRace {
+  id        String             @id @default(uuid())
+  code      String             @unique
+  hostId    String             @map("host_id")
+  passageId String             @map("passage_id")
+  status    TypeWarsRaceStatus @default(LOBBY)
+  startedAt DateTime?          @map("started_at")
+  endedAt   DateTime?          @map("ended_at")
+  createdAt DateTime           @default(now()) @map("created_at")
+
+  host         User                  @relation("typeWarsHost", fields: [hostId], references: [id], onDelete: Cascade)
+  passage      TypeWarsPassage       @relation(fields: [passageId], references: [id])
+  participants TypeWarsParticipant[]
+
+  @@index([status, createdAt])
+  @@map("type_wars_races")
+}
+
+model TypeWarsParticipant {
+  id         String    @id @default(uuid())
+  raceId     String    @map("race_id")
+  userId     String    @map("user_id")
+  wpm        Int       @default(0)
+  accuracy   Int       @default(0)
+  rank       Int?
+  finishedAt DateTime? @map("finished_at")
+
+  race TypeWarsRace @relation(fields: [raceId], references: [id], onDelete: Cascade)
+  user User         @relation("typeWarsParticipant", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([raceId, userId])
+  @@index([raceId])
+  @@map("type_wars_participants")
+}
+
+// -------- Trivia Tower --------
+
+enum TriviaDifficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXPERT
+}
+
+enum TriviaRunStatus {
+  LOBBY
+  ACTIVE
+  FINISHED
+  ABORTED
+}
+
+model TriviaQuestion {
+  id           String           @id @default(uuid())
+  prompt       String
+  options      Json
+  correctIndex Int              @map("correct_index")
+  difficulty   TriviaDifficulty @default(EASY)
+  category     String?
+  floor        Int              @default(1)
+  active       Boolean          @default(true)
+  createdById  String?          @map("created_by_id")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+
+  creator User?          @relation("triviaQuestionCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  answers TriviaAnswer[]
+
+  @@index([active, difficulty, floor])
+  @@map("trivia_questions")
+}
+
+model TriviaTowerRun {
+  id          String          @id @default(uuid())
+  code        String          @unique
+  hostId      String          @map("host_id")
+  status      TriviaRunStatus @default(LOBBY)
+  totalFloors Int             @default(10) @map("total_floors")
+  startedAt   DateTime?       @map("started_at")
+  endedAt     DateTime?       @map("ended_at")
+  createdAt   DateTime        @default(now()) @map("created_at")
+
+  host    User           @relation("triviaHost", fields: [hostId], references: [id], onDelete: Cascade)
+  answers TriviaAnswer[]
+
+  @@index([status, createdAt])
+  @@map("trivia_runs")
+}
+
+model TriviaAnswer {
+  id            String   @id @default(uuid())
+  runId         String   @map("run_id")
+  userId        String   @map("user_id")
+  questionId    String   @map("question_id")
+  floor         Int
+  selectedIndex Int      @map("selected_index")
+  correct       Boolean
+  responseMs    Int      @map("response_ms")
+  pointsAwarded Int      @default(0) @map("points_awarded")
+  answeredAt    DateTime @default(now()) @map("answered_at")
+
+  run      TriviaTowerRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  user     User           @relation("triviaAnsweredBy", fields: [userId], references: [id], onDelete: Cascade)
+  question TriviaQuestion @relation(fields: [questionId], references: [id])
+
+  @@unique([runId, userId, floor])
+  @@index([runId, userId])
+  @@index([questionId])
+  @@map("trivia_answers")
+}
+
+// -------- Puzzle Run --------
+
+enum PuzzleDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model PuzzleRunPuzzle {
+  id          String           @id @default(uuid())
+  prompt      String           @db.Text
+  answer      String
+  hintsJson   Json?            @map("hints_json")
+  hintPenalty Int              @default(20) @map("hint_penalty")
+  basePoints  Int              @default(100) @map("base_points")
+  difficulty  PuzzleDifficulty @default(EASY)
+  active      Boolean          @default(true)
+  createdById String?          @map("created_by_id")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  creator    User?                @relation("puzzleCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  dayEntries PuzzleRunDayPuzzle[]
+  attempts   PuzzleRunAttempt[]
+
+  @@index([active, difficulty])
+  @@map("puzzle_run_puzzles")
+}
+
+model PuzzleRunDay {
+  id        String   @id @default(uuid())
+  date      DateTime @unique @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+
+  puzzles  PuzzleRunDayPuzzle[]
+  attempts PuzzleRunAttempt[]
+
+  @@map("puzzle_run_days")
+}
+
+model PuzzleRunDayPuzzle {
+  dayId    String @map("day_id")
+  puzzleId String @map("puzzle_id")
+  order    Int
+
+  day    PuzzleRunDay    @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  puzzle PuzzleRunPuzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
+
+  @@id([dayId, order])
+  @@unique([dayId, puzzleId])
+  @@index([puzzleId])
+  @@map("puzzle_run_day_puzzles")
+}
+
+model PuzzleRunAttempt {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  dayId         String?  @map("day_id")
+  puzzleId      String   @map("puzzle_id")
+  hintsUsed     Int      @default(0) @map("hints_used")
+  solved        Boolean  @default(false)
+  pointsAwarded Int      @default(0) @map("points_awarded")
+  attemptedAt   DateTime @default(now()) @map("attempted_at")
+
+  user   User            @relation("puzzleAttempts", fields: [userId], references: [id], onDelete: Cascade)
+  puzzle PuzzleRunPuzzle @relation(fields: [puzzleId], references: [id], onDelete: Cascade)
+  day    PuzzleRunDay?   @relation(fields: [dayId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, dayId, puzzleId])
+  @@index([userId, attemptedAt(sort: Desc)])
+  @@index([dayId])
+  @@map("puzzle_run_attempts")
+}
+
+// -------- Brain Teasers --------
+
+enum BrainTeaserDifficulty {
+  EASY
+  NORMAL
+  HARD
+  DEVIOUS
+  BONUS
+}
+
+model BrainTeaser {
+  id          String                @id @default(uuid())
+  prompt      String                @db.Text
+  answer      String
+  explanation String?               @db.Text
+  difficulty  BrainTeaserDifficulty
+  active      Boolean               @default(true)
+  createdById String?               @map("created_by_id")
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+
+  creator    User?                 @relation("brainTeaserCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  dayEntries BrainTeaserDayEntry[]
+  attempts   BrainTeaserAttempt[]
+
+  @@index([active, difficulty])
+  @@map("brain_teasers")
+}
+
+model BrainTeaserDay {
+  id        String   @id @default(uuid())
+  date      DateTime @unique @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+
+  entries BrainTeaserDayEntry[]
+
+  @@map("brain_teaser_days")
+}
+
+model BrainTeaserDayEntry {
+  dayId      String                @map("day_id")
+  teaserId   String                @map("teaser_id")
+  difficulty BrainTeaserDifficulty
+
+  day    BrainTeaserDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  teaser BrainTeaser    @relation(fields: [teaserId], references: [id], onDelete: Cascade)
+
+  @@id([dayId, difficulty])
+  @@index([teaserId])
+  @@map("brain_teaser_day_entries")
+}
+
+model BrainTeaserAttempt {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  teaserId      String   @map("teaser_id")
+  dayId         String?  @map("day_id")
+  submission    String   @db.Text
+  correct       Boolean  @default(false)
+  pointsAwarded Int      @default(0) @map("points_awarded")
+  submittedAt   DateTime @default(now()) @map("submitted_at")
+
+  user   User        @relation("brainTeaserAttempts", fields: [userId], references: [id], onDelete: Cascade)
+  teaser BrainTeaser @relation(fields: [teaserId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teaserId])
+  @@index([userId, submittedAt(sort: Desc)])
+  @@map("brain_teaser_attempts")
+}
+
+// -------- Cipher Lab --------
+
+enum CipherType {
+  CAESAR
+  VIGENERE
+  ATBASH
+  RAILFENCE
+  SUBSTITUTION
+  BASE64
+  MORSE
+  CUSTOM
+}
+
+enum CipherDifficulty {
+  EASY
+  MEDIUM
+  HARD
+  INSANE
+}
+
+model CipherChallenge {
+  id               String           @id @default(uuid())
+  title            String
+  cipherType       CipherType       @map("cipher_type")
+  plaintext        String           @db.Text
+  ciphertext       String           @db.Text
+  hintsJson        Json?            @map("hints_json")
+  hintPenalty      Int              @default(100) @map("hint_penalty")
+  basePoints       Int              @default(1000) @map("base_points")
+  timeLimitSeconds Int              @default(600) @map("time_limit_seconds")
+  difficulty       CipherDifficulty
+  activeFrom       DateTime?        @map("active_from")
+  activeUntil      DateTime?        @map("active_until")
+  active           Boolean          @default(true)
+  createdById      String?          @map("created_by_id")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  creator  User?           @relation("cipherCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  attempts CipherAttempt[]
+
+  @@index([active, activeFrom, activeUntil])
+  @@map("cipher_challenges")
+}
+
+model CipherAttempt {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  challengeId     String    @map("challenge_id")
+  startedAt       DateTime  @default(now()) @map("started_at")
+  submittedAt     DateTime? @map("submitted_at")
+  submission      String?   @db.Text
+  hintsUsed       Int       @default(0) @map("hints_used")
+  solved          Boolean   @default(false)
+  pointsAwarded   Int       @default(0) @map("points_awarded")
+  durationSeconds Int?      @map("duration_seconds")
+
+  user      User            @relation("cipherAttempts", fields: [userId], references: [id], onDelete: Cascade)
+  challenge CipherChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, challengeId])
+  @@index([userId, startedAt(sort: Desc)])
+  @@index([challengeId])
+  @@map("cipher_attempts")
+}
+
+// -------- Riddle Room --------
+
+enum RiddleDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum RiddleRoomStatus {
+  LOBBY
+  ACTIVE
+  FINISHED
+  ABORTED
+}
+
+model RiddleClue {
+  id          String           @id @default(uuid())
+  title       String
+  prompt      String           @db.Text
+  answer      String
+  hint        String?
+  difficulty  RiddleDifficulty
+  active      Boolean          @default(true)
+  lockSeconds Int              @default(15) @map("lock_seconds")
+  basePoints  Int              @default(100) @map("base_points")
+  createdById String?          @map("created_by_id")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  creator       User?              @relation("riddleClueCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  bundleEntries RiddleBundleClue[]
+  attempts      RiddleAttempt[]
+
+  @@index([active, difficulty])
+  @@map("riddle_clues")
+}
+
+model RiddleBundle {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  clues RiddleBundleClue[]
+  rooms RiddleRoom[]
+
+  @@map("riddle_bundles")
+}
+
+model RiddleBundleClue {
+  bundleId String @map("bundle_id")
+  clueId   String @map("clue_id")
+  order    Int
+
+  bundle RiddleBundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  clue   RiddleClue   @relation(fields: [clueId], references: [id], onDelete: Cascade)
+
+  @@id([bundleId, order])
+  @@unique([bundleId, clueId])
+  @@index([clueId])
+  @@map("riddle_bundle_clues")
+}
+
+model RiddleRoom {
+  id           String           @id @default(uuid())
+  code         String           @unique
+  hostId       String           @map("host_id")
+  bundleId     String?          @map("bundle_id")
+  status       RiddleRoomStatus @default(LOBBY)
+  currentOrder Int              @default(0) @map("current_order")
+  startedAt    DateTime?        @map("started_at")
+  endedAt      DateTime?        @map("ended_at")
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  host     User               @relation("riddleRoomHost", fields: [hostId], references: [id], onDelete: Cascade)
+  bundle   RiddleBundle?      @relation(fields: [bundleId], references: [id], onDelete: SetNull)
+  members  RiddleRoomMember[]
+  attempts RiddleAttempt[]
+
+  @@index([status, createdAt])
+  @@map("riddle_rooms")
+}
+
+model RiddleRoomMember {
+  roomId        String   @map("room_id")
+  userId        String   @map("user_id")
+  joinedAt      DateTime @default(now()) @map("joined_at")
+  pointsAwarded Int      @default(0) @map("points_awarded")
+
+  room RiddleRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User       @relation("riddleRoomMember", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([roomId, userId])
+  @@index([userId])
+  @@map("riddle_room_members")
+}
+
+model RiddleAttempt {
+  id          String   @id @default(uuid())
+  roomId      String   @map("room_id")
+  clueId      String   @map("clue_id")
+  userId      String   @map("user_id")
+  submission  String
+  correct     Boolean  @default(false)
+  submittedAt DateTime @default(now()) @map("submitted_at")
+
+  room RiddleRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  clue RiddleClue @relation(fields: [clueId], references: [id], onDelete: Cascade)
+  user User       @relation("riddleAttempts", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, submittedAt])
+  @@map("riddle_attempts")
 }
