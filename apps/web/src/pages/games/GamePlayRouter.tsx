@@ -9,6 +9,7 @@ const BrainTeasersPlay = lazy(() => import('@/pages/games/BrainTeasersPlay'));
 const CipherLabPlay = lazy(() => import('@/pages/games/CipherLabPlay'));
 const RiddleRoomPlay = lazy(() => import('@/pages/games/RiddleRoomPlay'));
 const ScribblPlay = lazy(() => import('@/pages/games/ScribblPlay'));
+const SmashKartPlay = lazy(() => import('@/pages/games/SmashKartPlay'));
 
 export default function GamePlayRouter() {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +29,8 @@ export default function GamePlayRouter() {
       return <RiddleRoomPlay />;
     case 'scribbl':
       return <ScribblPlay />;
+    case 'smash-kart':
+      return <SmashKartPlay />;
     default:
       return (
         <PlayShell title="GAME NOT FOUND" accent="red">

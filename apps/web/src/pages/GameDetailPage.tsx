@@ -17,8 +17,6 @@ export default function GameDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { token } = useAuth();
-  const [playing, setPlaying] = useState(false);
-  const [playMessage, setPlayMessage] = useState<string | null>(null);
   const [playError, setPlayError] = useState<string | null>(null);
 
   const gameQuery = useQuery({
@@ -37,9 +35,8 @@ export default function GameDetailPage() {
     staleTime: 1000 * 30,
   });
 
-  const handlePlay = async () => {
+  const handlePlay = () => {
     if (!game) return;
-    setPlayMessage(null);
     setPlayError(null);
 
     if (!game.backendReady) {
@@ -51,27 +48,13 @@ export default function GameDetailPage() {
       navigate('/signin', {
         state: {
           from: `/games/${game.id}`,
-          message: 'Sign in to create a game session.',
+          message: 'Sign in to play.',
         },
       });
       return;
     }
 
-    if (game.id !== 'smash-kart') {
-      navigate(`/games/${game.id}/play`);
-      return;
-    }
-
-    try {
-      setPlaying(true);
-      await api.createGameSession(game.id, token);
-      await Promise.all([gameQuery.refetch(), leaderboardQuery.refetch()]);
-      setPlayMessage('Session created. Leaderboard updated.');
-    } catch (error) {
-      setPlayError(error instanceof Error ? error.message : 'Failed to create game session');
-    } finally {
-      setPlaying(false);
-    }
+    navigate(`/games/${game.id}/play`);
   };
 
   if (gameQuery.isLoading) {
@@ -118,7 +101,7 @@ export default function GameDetailPage() {
 
       <section
         style={{
-          padding: '64px 56px 48px',
+          padding: 'clamp(28px, 5vw, 64px) clamp(18px, 4vw, 56px) clamp(28px, 4vw, 48px)',
           position: 'relative',
           zIndex: 2,
           borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -141,13 +124,13 @@ export default function GameDetailPage() {
           ← BACK TO GAMES
         </Link>
 
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 48 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'clamp(20px, 4vw, 48px)', flexWrap: 'wrap' }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             style={{
-              width: 180,
-              height: 180,
+              width: 'clamp(120px, 22vw, 180px)',
+              height: 'clamp(120px, 22vw, 180px)',
               flexShrink: 0,
               position: 'relative',
               border: '1px solid rgba(255,255,255,0.1)',
@@ -181,17 +164,17 @@ export default function GameDetailPage() {
             </span>
           </motion.div>
 
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div className="lb-mono" style={{ fontSize: '10px', color: `var(--c-${game.accent})`, letterSpacing: '0.15em', marginBottom: 12 }}>
               #{game.category}
             </div>
-            <h1 style={{ fontFamily: '"Audiowide", sans-serif', fontSize: '40px', letterSpacing: '0.04em', marginBottom: 16 }}>
+            <h1 style={{ fontFamily: '"Audiowide", sans-serif', fontSize: 'clamp(26px, 5vw, 40px)', letterSpacing: '0.04em', marginBottom: 16 }}>
               {game.title}
             </h1>
             <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, marginBottom: 24, maxWidth: 560 }}>
               {game.description}
             </p>
-            <div className="lb-mono" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: 32, display: 'flex', gap: 24 }}>
+            <div className="lb-mono" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginBottom: 32, display: 'flex', gap: 24, flexWrap: 'wrap' }}>
               <span>
                 <strong style={{ color: 'rgba(255,255,255,0.7)' }}>{game.players}</strong> players
               </span>
@@ -220,19 +203,19 @@ export default function GameDetailPage() {
                 BACKEND PENDING
               </div>
             )}
-            {playMessage && (
-              <div className="lb-mono" style={{ fontSize: '11px', color: 'var(--c-green)', marginBottom: 12 }}>
-                {playMessage}
-              </div>
-            )}
             {playError && (
               <div className="lb-mono" style={{ fontSize: '11px', color: 'var(--c-red)', marginBottom: 12 }}>
                 {playError}
               </div>
             )}
             <div style={{ display: 'flex', gap: 12 }}>
-              <motion.button className="lb-btn-primary lb-btn-lg" onClick={() => void handlePlay()} whileTap={{ scale: 0.97, x: 1, y: 1 }} disabled={playing}>
-                {playing ? 'STARTING…' : 'PLAY ▶'}
+              <motion.button
+                className="lb-btn-primary lb-btn-lg"
+                onClick={handlePlay}
+                whileTap={{ scale: 0.97, x: 1, y: 1 }}
+                disabled={!game.backendReady}
+              >
+                PLAY ▶
               </motion.button>
               <Link to="/leaderboard" className="lb-btn-ghost lb-btn-lg" style={{ textDecoration: 'none' }}>
                 VIEW RANKS
@@ -242,7 +225,7 @@ export default function GameDetailPage() {
         </div>
       </section>
 
-      <section style={{ padding: '48px 56px 80px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, position: 'relative', zIndex: 2 }}>
+      <section style={{ padding: 'clamp(28px, 4vw, 48px) clamp(18px, 4vw, 56px) clamp(48px, 7vw, 80px)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24, position: 'relative', zIndex: 2 }}>
         <Brackets tag="rules" accent={game.accent}>
           <div style={{ padding: 8 }}>
             <h2 className="lb-mono" style={{ fontSize: '12px', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.5)', marginBottom: 20 }}>
@@ -270,8 +253,7 @@ export default function GameDetailPage() {
             {!game.backendReady ? (
               <div style={{ padding: '26px 20px', textAlign: 'center' }}>
                 <p className="lb-mono" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.8 }}>
-                  backend for this game is pending<br />
-                  <span style={{ color: 'var(--c-yellow)', opacity: 0.75 }}>Smash Kart is currently supported end-to-end.</span>
+                  backend for this game is pending
                 </p>
               </div>
             ) : leaderboardQuery.isLoading ? (

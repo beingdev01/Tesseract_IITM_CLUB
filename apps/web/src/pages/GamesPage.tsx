@@ -150,9 +150,10 @@ function GameCard({ game }: { game: CatalogGame }) {
         )}
         <div style={{ display: 'flex', gap: 8 }}>
           <Link
-            to={`/games/${game.id}`}
+            to={game.backendReady ? `/games/${game.id}/play` : `/games/${game.id}`}
             className="lb-btn-primary"
             style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: '11px', padding: '9px 12px' }}
+            aria-disabled={!game.backendReady}
           >
             PLAY ▶
           </Link>
@@ -161,7 +162,7 @@ function GameCard({ game }: { game: CatalogGame }) {
             className="lb-btn-ghost"
             style={{ flex: 1, textAlign: 'center', textDecoration: 'none', fontSize: '11px', padding: '9px 12px' }}
           >
-            RANKS
+            DETAILS
           </Link>
         </div>
       </div>
@@ -196,11 +197,11 @@ export default function GamesPage() {
     <PageShell>
       <Header />
 
-      <section style={{ padding: '64px 56px 40px', position: 'relative', zIndex: 2 }}>
+      <section style={{ padding: 'clamp(36px, 5vw, 64px) clamp(18px, 4vw, 56px) clamp(28px, 4vw, 40px)', position: 'relative', zIndex: 2 }}>
         <p className="lb-kicker" style={{ marginBottom: 12 }}>
           // catalog.v1
         </p>
-        <h1 style={{ fontFamily: '"Audiowide", sans-serif', fontSize: '52px', letterSpacing: '0.02em', marginBottom: 12 }}>
+        <h1 style={{ fontFamily: '"Audiowide", sans-serif', fontSize: 'clamp(32px, 6vw, 52px)', letterSpacing: '0.02em', marginBottom: 12 }}>
           PICK YOUR <span className="lb-h-accent">POISON.</span>
         </h1>
         <p className="lb-sub" style={{ marginBottom: 32, maxWidth: 480 }}>
@@ -224,7 +225,7 @@ export default function GamesPage() {
         </div>
       </section>
 
-      <section style={{ padding: '0 56px 80px' }}>
+      <section style={{ padding: '0 clamp(18px, 4vw, 56px) 80px' }}>
         {error && (
           <Brackets tag="error" accent="red" style={{ padding: 28, marginBottom: 24 }}>
             <p className="lb-mono" style={{ fontSize: '11px', color: 'var(--c-red)' }}>
@@ -234,11 +235,31 @@ export default function GamesPage() {
         )}
 
         {isLoading ? (
-          <Brackets tag="loading" accent="green" style={{ padding: 28 }}>
-            <p className="lb-mono ts-blink" style={{ fontSize: '11px', color: 'var(--c-green)' }}>
-              {'>'} loading catalog...
-            </p>
-          </Brackets>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'var(--bg-1)',
+                  height: 270,
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background:
+                      'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)',
+                    backgroundSize: '200% 100%',
+                    animation: 'ts-shimmer 1.8s infinite',
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         ) : (
           <AnimatePresence mode="popLayout">
             <motion.div
