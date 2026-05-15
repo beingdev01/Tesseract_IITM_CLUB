@@ -35,11 +35,18 @@ export interface TypeWarsRoomState extends BaseRoomState {
   startedAt: number | null;
   finishTimer: ReturnType<typeof setTimeout> | null;
   sessionsRecorded: boolean;
+  finalizingPromise?: Promise<void>;
 }
 
 export const typeWarsRooms = new RoomStore<TypeWarsRoomState>({
   gameId: TYPE_WARS_GAME_ID,
   maxPlayersPerRoom: MAX_PLAYERS,
+  onEvict: (room) => {
+    if (room.finishTimer) {
+      clearTimeout(room.finishTimer);
+      room.finishTimer = null;
+    }
+  },
 });
 
 function participantView(participant: TypeWarsParticipantState): TypeWarsParticipantView {
@@ -58,13 +65,14 @@ function participantView(participant: TypeWarsParticipantState): TypeWarsPartici
   };
 }
 
-export function serializeTypeWarsRoom(room: TypeWarsRoomState, includePassage = false) {
+export function serializeTypeWarsRoom(room: TypeWarsRoomState) {
+  const racing = room.status === 'RACING' || room.status === 'FINISHED';
   return {
     code: room.code,
     status: room.status,
     hostUserId: room.hostUserId,
     startedAt: room.startedAt,
-    passage: includePassage || room.status === 'RACING' || room.status === 'FINISHED'
+    passage: racing
       ? room.passage
       : { id: room.passage.id, wordCount: room.passage.wordCount },
     participants: Array.from(room.participants.values()).map(participantView),
@@ -244,8 +252,14 @@ export async function joinTypeWarsRoom(input: {
   return room;
 }
 
-export async function finalizeTypeWarsRoom(room: TypeWarsRoomState): Promise<void> {
-  if (room.status === 'FINISHED') return;
+export function finalizeTypeWarsRoom(room: TypeWarsRoomState): Promise<void> {
+  if (room.status === 'FINISHED') return Promise.resolve();
+  if (room.finalizingPromise) return room.finalizingPromise;
+  room.finalizingPromise = doFinalizeTypeWarsRoom(room);
+  return room.finalizingPromise;
+}
+
+async function doFinalizeTypeWarsRoom(room: TypeWarsRoomState): Promise<void> {
   room.status = 'FINISHED';
   room.lastActivityAt = Date.now();
   if (room.finishTimer) {

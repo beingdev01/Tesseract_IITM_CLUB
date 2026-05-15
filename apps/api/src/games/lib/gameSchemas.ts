@@ -11,6 +11,13 @@ export const roomCodeSchema = z
 export const scoreSchema = z.number().int().min(0).max(1_000_000);
 export const durationSecondsSchema = z.number().int().min(0).max(86_400);
 
+// Above the verified world record (~220 WPM, Sean Wrona). Anything higher is
+// almost certainly a tampered client. We clamp leaderboard entries to this.
+export const wpmSanityCap = 250;
+export function clampWpm(value: number): number {
+  return Math.max(0, Math.min(value, wpmSanityCap));
+}
+
 export const cuidIshIdSchema = z.string().min(8).max(64);
 
 export const paginationQuerySchema = z.object({

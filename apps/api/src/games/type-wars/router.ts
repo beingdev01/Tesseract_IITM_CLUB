@@ -39,10 +39,9 @@ router.post('/rooms', gameAuth, async (req: Request, res: Response) => {
       code: room.code,
       passage: {
         id: room.passage.id,
-        text: room.passage.text,
         wordCount: room.passage.wordCount,
       },
-      room: serializeTypeWarsRoom(room, true),
+      room: serializeTypeWarsRoom(room),
     }, 'Type Wars room created');
   } catch (error) {
     if (error instanceof Error && error.message === 'NO_PASSAGES') {
@@ -68,7 +67,7 @@ router.post('/rooms/:code/join', gameAuth, async (req: Request, res: Response) =
       user: { id: user.id, name: user.name, avatar: user.avatar },
     });
 
-    return ApiResponse.success(res, { room: serializeTypeWarsRoom(room, true) }, 'Joined Type Wars room');
+    return ApiResponse.success(res, { room: serializeTypeWarsRoom(room) }, 'Joined Type Wars room');
   } catch (error) {
     if (error instanceof Error && error.message === 'ROOM_NOT_FOUND') return ApiResponse.notFound(res, 'Room not found');
     if (error instanceof Error && error.message === 'ROOM_FULL') {

@@ -19,10 +19,11 @@ const progressSchema = z.object({
   charsTyped: z.number().int().min(0).max(10000),
 });
 
+// durationMs is intentionally NOT in the client payload — it's derived server-side
+// from room.startedAt so a tampered client can't game the WPM.
 const finishSchema = z.object({
   charsTyped: z.number().int().min(0).max(10000),
   correctChars: z.number().int().min(0).max(10000),
-  durationMs: z.number().int().min(1).max(10 * 60 * 1000),
 });
 
 function roomChannel(code: string): string {
@@ -30,7 +31,7 @@ function roomChannel(code: string): string {
 }
 
 function emitState(ns: Namespace, room: TypeWarsRoomState): void {
-  ns.to(roomChannel(room.code)).emit('room:state', serializeTypeWarsRoom(room, room.status !== 'LOBBY'));
+  ns.to(roomChannel(room.code)).emit('room:state', serializeTypeWarsRoom(room));
 }
 
 async function startRace(ns: Namespace, room: TypeWarsRoomState): Promise<void> {
@@ -69,7 +70,7 @@ async function startRace(ns: Namespace, room: TypeWarsRoomState): Promise<void> 
     room.finishTimer = setTimeout(() => {
       void finalizeTypeWarsRoom(room).then(() => {
         ns.to(roomChannel(room.code)).emit('race:results', {
-          participants: serializeTypeWarsRoom(room, true).participants,
+          participants: serializeTypeWarsRoom(room).participants,
         });
         emitState(ns, room);
       });
@@ -102,7 +103,7 @@ function register(ns: Namespace): void {
         markTypeWarsParticipantActive(room, authUser.id, true);
         await socket.join(roomChannel(room.code));
         emitState(ns, room);
-        ack?.({ ok: true, room: serializeTypeWarsRoom(room, true) });
+        ack?.({ ok: true, room: serializeTypeWarsRoom(room) });
       } catch (error) {
         ack?.({ ok: false, error: error instanceof Error ? error.message : 'ROOM_JOIN_FAILED' });
       }
@@ -116,9 +117,18 @@ function register(ns: Namespace): void {
       emitState(ns, room);
     });
 
-    socket.on('room:start', async () => {
+    socket.on('room:start', async (_payload: unknown, ack?: (response: unknown) => void) => {
       const room = gameSocket.data.roomCode ? await getOrLoadTypeWarsRoom(gameSocket.data.roomCode) : null;
-      if (!room || room.hostUserId !== authUser.id) return;
+      if (!room || room.hostUserId !== authUser.id) {
+        ack?.({ ok: false, error: 'NOT_HOST' });
+        return;
+      }
+      const activeCount = Array.from(room.participants.values()).filter((p) => p.active).length;
+      if (activeCount < 2) {
+        ack?.({ ok: false, error: 'NEED_MORE_PLAYERS', minPlayers: 2, currentPlayers: activeCount });
+        return;
+      }
+      ack?.({ ok: true });
       await startRace(ns, room);
     });
 
@@ -154,10 +164,13 @@ function register(ns: Namespace): void {
       }
       const charsTyped = Math.min(parsed.data.charsTyped, room.passage.text.length);
       const correctChars = Math.min(parsed.data.correctChars, charsTyped);
+      const startedAt = room.startedAt ?? Date.now();
+      const durationMs = Math.max(1, Date.now() - startedAt);
       const stats = computeTypingStats({
         charsTyped,
         correctChars,
-        durationMs: parsed.data.durationMs,
+        durationMs,
+        userId: authUser.id,
       });
       participant.finished = true;
       participant.finishedAt = Date.now();
@@ -171,7 +184,7 @@ function register(ns: Namespace): void {
       if (allDone) {
         await finalizeTypeWarsRoom(room);
         ns.to(roomChannel(room.code)).emit('race:results', {
-          participants: serializeTypeWarsRoom(room, true).participants,
+          participants: serializeTypeWarsRoom(room).participants,
         });
       }
       emitState(ns, room);

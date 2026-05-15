@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { sanitizeText } from '../../utils/sanitize.js';
+import { clampWpm, wpmSanityCap } from '../lib/gameSchemas.js';
+import { logger } from '../../utils/logger.js';
 
 export const typeWarsDifficultySchema = z.enum(['EASY', 'MEDIUM', 'HARD']);
 
@@ -44,9 +46,20 @@ export function computeTypingStats(input: {
   charsTyped: number;
   correctChars: number;
   durationMs: number;
+  userId?: string;
 }): { wpm: number; accuracy: number; durationSeconds: number } {
   const durationMinutes = Math.max(input.durationMs / 60000, 1 / 60);
-  const wpm = Math.max(0, Math.round((input.correctChars / 5) / durationMinutes));
+  const rawWpm = Math.max(0, Math.round((input.correctChars / 5) / durationMinutes));
+  const wpm = clampWpm(rawWpm);
+  if (rawWpm > wpmSanityCap) {
+    logger.warn('typewars.wpm.clamped', {
+      userId: input.userId,
+      rawWpm,
+      clampedTo: wpm,
+      correctChars: input.correctChars,
+      durationMs: input.durationMs,
+    });
+  }
   const accuracy = input.charsTyped > 0
     ? Math.max(0, Math.min(100, Math.round((input.correctChars / input.charsTyped) * 100)))
     : 0;

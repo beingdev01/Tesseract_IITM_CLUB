@@ -83,10 +83,10 @@ export default function TypeWarsPlay() {
   const finish = () => {
     if (!room || !startedAtRef.current) return;
     const correctChars = Array.from(typed).filter((char, index) => char === passage[index]).length;
+    // durationMs is derived server-side from room.startedAt — not sent here.
     socketRef.current?.emit('progress:finish', {
       charsTyped: typed.length,
       correctChars,
-      durationMs: Date.now() - startedAtRef.current,
     });
   };
 

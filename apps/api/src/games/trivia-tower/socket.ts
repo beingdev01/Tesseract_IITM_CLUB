@@ -98,9 +98,18 @@ function register(ns: Namespace): void {
       }
     });
 
-    socket.on('room:start', async () => {
+    socket.on('room:start', async (_payload: unknown, ack?: (response: unknown) => void) => {
       const room = gameSocket.data.roomCode ? await getTriviaRoom(gameSocket.data.roomCode) : null;
-      if (!room || room.hostUserId !== authUser.id || room.status !== 'LOBBY') return;
+      if (!room || room.hostUserId !== authUser.id || room.status !== 'LOBBY') {
+        ack?.({ ok: false, error: 'NOT_HOST_OR_NOT_LOBBY' });
+        return;
+      }
+      const activeCount = Array.from(room.participants.values()).filter((p) => p.active).length;
+      if (activeCount < 2) {
+        ack?.({ ok: false, error: 'NEED_MORE_PLAYERS', minPlayers: 2, currentPlayers: activeCount });
+        return;
+      }
+      ack?.({ ok: true });
       room.status = 'ACTIVE';
       await withRetry(() => prisma.triviaTowerRun.update({
         where: { id: room.runId },
