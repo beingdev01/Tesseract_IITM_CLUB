@@ -170,7 +170,7 @@ export default function AchievementDetailPage() {
             <Trophy className="h-16 w-16 text-amber-500 relative" />
           </motion.div>
           <Loader2 className="h-8 w-8 animate-spin text-amber-600 mb-4" />
-          <p className="text-gray-600 font-medium text-lg">Loading achievement...</p>
+          <p className="text-gray-600 dark:text-zinc-400 font-medium text-lg">Loading achievement...</p>
         </div>
       </Layout>
     );
@@ -188,8 +188,8 @@ export default function AchievementDetailPage() {
           >
             <Trophy className="h-14 w-14 text-amber-400" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">Achievement Not Found</h1>
-          <p className="text-gray-600 mb-8 text-center max-w-md">{error || 'The achievement you are looking for does not exist or has been removed.'}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-zinc-100 mb-3">Achievement Not Found</h1>
+          <p className="text-gray-600 dark:text-zinc-400 mb-8 text-center max-w-md">{error || 'The achievement you are looking for does not exist or has been removed.'}</p>
           <Button 
             onClick={() => navigate('/achievements')}
             className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg"
@@ -266,8 +266,8 @@ export default function AchievementDetailPage() {
               }}
               className="absolute inset-0"
             >
-              <div className="absolute top-20 left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-              <div className="absolute bottom-20 right-20 w-64 h-64 sm:w-80 sm:h-80 md:w-[500px] md:h-[500px] bg-white/10 rounded-full blur-3xl" />{/* responsive: scale decorative blob */}
+              <div className="absolute top-20 left-20 w-96 h-96 bg-white dark:bg-surface-1/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-20 right-20 w-64 h-64 sm:w-80 sm:h-80 md:w-[500px] md:h-[500px] bg-white dark:bg-surface-1/10 rounded-full blur-3xl" />{/* responsive: scale decorative blob */}
             </motion.div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <Trophy className="h-56 w-56 text-white/10" />
@@ -287,7 +287,7 @@ export default function AchievementDetailPage() {
             variant="ghost"
             size="sm"
             onClick={() => navigate('/achievements')}
-            className="bg-white/90 hover:bg-white text-gray-900 backdrop-blur-md shadow-xl border border-white/20 rounded-xl px-3 sm:px-4"
+            className="bg-white dark:bg-surface-1/90 hover:bg-white dark:bg-surface-1 text-gray-900 dark:text-zinc-100 backdrop-blur-md shadow-xl border border-white/20 rounded-xl px-3 sm:px-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             <span className="hidden sm:inline">Back</span>
@@ -304,7 +304,7 @@ export default function AchievementDetailPage() {
             variant="ghost"
             size="sm"
             onClick={handleShare}
-            className="bg-white/90 hover:bg-white text-gray-900 backdrop-blur-md shadow-xl border border-white/20 rounded-xl px-3 sm:px-4"
+            className="bg-white dark:bg-surface-1/90 hover:bg-white dark:bg-surface-1 text-gray-900 dark:text-zinc-100 backdrop-blur-md shadow-xl border border-white/20 rounded-xl px-3 sm:px-4"
           >
             <Share2 className="h-4 w-4 mr-2" />
             <span className="hidden sm:inline">Share</span>
@@ -328,7 +328,7 @@ export default function AchievementDetailPage() {
                 </span>
               )}
               {achievement.eventName && (
-                <Badge className="rounded-full border-white/30 bg-white/20 px-3 py-1.5 text-xs text-white backdrop-blur-md sm:px-4 sm:py-2 sm:text-sm">
+                <Badge className="rounded-full border-white/30 bg-white dark:bg-surface-1/20 px-3 py-1.5 text-xs text-white backdrop-blur-md sm:px-4 sm:py-2 sm:text-sm">
                   <Award className="h-4 w-4 mr-2" />
                   {achievement.eventName}
                 </Badge>
@@ -352,7 +352,7 @@ export default function AchievementDetailPage() {
               transition={{ delay: 0.4 }}
               className="flex flex-wrap items-center gap-3 sm:gap-4"
             >
-              <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/15 px-3 py-2 backdrop-blur-md sm:rounded-2xl sm:px-4 sm:py-2.5">
+              <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white dark:bg-surface-1/15 px-3 py-2 backdrop-blur-md sm:rounded-2xl sm:px-4 sm:py-2.5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 text-base font-bold text-white shadow-lg sm:h-10 sm:w-10 sm:rounded-xl sm:text-lg">
                   {achievement.achievedBy?.charAt(0) || '?'}
                 </div>
@@ -362,13 +362,13 @@ export default function AchievementDetailPage() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-3 py-2 backdrop-blur-md sm:rounded-2xl sm:px-4 sm:py-2.5">
+              <div className="flex items-center gap-2 rounded-xl border border-white/20 bg-white dark:bg-surface-1/15 px-3 py-2 backdrop-blur-md sm:rounded-2xl sm:px-4 sm:py-2.5">
                 <Calendar className="h-5 w-5 text-amber-300" />
                 <span className="text-sm font-semibold text-white sm:text-base">{formatDate(achievement.date)}</span>
               </div>
               
               {hasGallery && (
-                <div className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/15 px-3 py-2 backdrop-blur-md sm:rounded-2xl sm:px-4 sm:py-2.5">
+                <div className="flex items-center gap-2 rounded-xl border border-white/20 bg-white dark:bg-surface-1/15 px-3 py-2 backdrop-blur-md sm:rounded-2xl sm:px-4 sm:py-2.5">
                   <ImageIcon className="h-5 w-5 text-amber-300" />
                   <span className="text-sm font-semibold text-white sm:text-base">{achievement.imageGallery!.length} Photos</span>
                 </div>
@@ -385,7 +385,7 @@ export default function AchievementDetailPage() {
           className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 hidden md:block"
         >
           <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
-            <div className="w-1.5 h-3 rounded-full bg-white/60" />
+            <div className="w-1.5 h-3 rounded-full bg-white dark:bg-surface-1/60" />
           </div>
         </motion.div>
       </section>
@@ -441,7 +441,7 @@ export default function AchievementDetailPage() {
                       </motion.div>
                       <div className="flex-1">
                         <h2 className="text-sm font-bold text-amber-700 mb-2 uppercase tracking-wider">Highlights</h2>
-                        <div className="text-base font-medium leading-relaxed text-gray-800 sm:text-lg">
+                        <div className="text-base font-medium leading-relaxed text-gray-800 dark:text-zinc-200 sm:text-lg">
                           <InlineMarkdown>{achievement.shortDescription}</InlineMarkdown>
                         </div>
                       </div>
@@ -473,7 +473,7 @@ export default function AchievementDetailPage() {
                       <p className="text-amber-700 text-sm">What we built, learned, and delivered for our community.</p>
                     </div>
                   </div>
-                  <div className="text-gray-700 text-base leading-relaxed prose prose-amber max-w-none">
+                  <div className="text-gray-700 dark:text-zinc-300 text-base leading-relaxed prose prose-amber max-w-none">
                     <Markdown>{achievement.description}</Markdown>
                   </div>
                 </CardContent>

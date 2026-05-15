@@ -74,7 +74,7 @@ export default function EventCard({
                 {event.status}
               </Badge>
               {event.eventType && (
-                <Badge variant="outline" className="bg-white/90">
+                <Badge variant="outline" className="bg-white dark:bg-surface-1/90">
                   {event.eventType}
                 </Badge>
               )}
@@ -92,9 +92,9 @@ export default function EventCard({
             <CardTitle className="line-clamp-1 group-hover:text-amber-600 transition-colors">{event.title}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-gray-600 line-clamp-2">{event.shortDescription || event.description}</p>
+            <p className="text-gray-600 dark:text-zinc-400 line-clamp-2">{event.shortDescription || event.description}</p>
             
-            <div className="space-y-2 text-sm text-gray-500">
+            <div className="space-y-2 text-sm text-gray-500 dark:text-zinc-400">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 <span>
@@ -122,10 +122,10 @@ export default function EventCard({
               <>
                 {/* Registration Status */}
                 <div className={`flex items-center gap-2 text-sm px-3 py-2 rounded-lg ${
-                  registrationStatus.status === 'open' ? 'bg-green-50 text-green-700' :
-                  registrationStatus.status === 'not_started' ? 'bg-blue-50 text-blue-700' :
-                  registrationStatus.status === 'closed' || registrationStatus.status === 'full' ? 'bg-gray-100 text-gray-600' :
-                  'bg-gray-100 text-gray-600'
+                  registrationStatus.status === 'open' ? 'bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300' :
+                  registrationStatus.status === 'not_started' ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300' :
+                  registrationStatus.status === 'closed' || registrationStatus.status === 'full' ? 'bg-gray-100 dark:bg-surface-2 text-gray-600 dark:text-zinc-400' :
+                  'bg-gray-100 dark:bg-surface-2 text-gray-600 dark:text-zinc-400'
                 }`}>
                   <Clock className="h-4 w-4" />
                   <span>{registrationStatus.message}</span>
@@ -135,7 +135,7 @@ export default function EventCard({
                   {isRegistered ? (
                     <Button 
                       variant="secondary" 
-                      className="w-full bg-green-50 text-green-700 border border-green-200" 
+                      className="w-full bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-900/40" 
                       disabled
                       onClick={(e) => e.preventDefault()}
                     >

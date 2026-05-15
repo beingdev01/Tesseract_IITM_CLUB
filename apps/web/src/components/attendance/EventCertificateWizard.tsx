@@ -837,7 +837,7 @@ export default function EventCertificateWizard({
                     ? 'bg-green-600 text-white'
                     : currentNumber === stepNumber
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+                      : 'bg-gray-200 dark:bg-surface-3 text-gray-500 dark:bg-gray-700 dark:text-gray-400 dark:text-zinc-500'
                 }`}
               >
                 {currentNumber > stepNumber ? <CheckCircle className="h-4 w-4" /> : stepNumber}
@@ -846,7 +846,7 @@ export default function EventCertificateWizard({
                 className={`hidden text-sm sm:inline ${
                   currentNumber === stepNumber
                     ? 'font-semibold text-gray-900 dark:text-white'
-                    : 'text-gray-500 dark:text-gray-400'
+                    : 'text-gray-500 dark:text-gray-400 dark:text-zinc-500'
                 }`}
               >
                 {label}
@@ -876,7 +876,7 @@ export default function EventCertificateWizard({
         transition={{ duration: 0.25 }}
         className="space-y-4"
       >
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-zinc-400">
           Choose whether you want to issue attendance certificates or competition-result certificates for {eventName}.
         </p>
 
@@ -888,9 +888,9 @@ export default function EventCertificateWizard({
           >
             <div className="mb-3 flex items-center gap-2">
               <UserCheck className="h-5 w-5 text-amber-600" />
-              <span className="font-semibold text-gray-900">Attendance Certificates</span>
+              <span className="font-semibold text-gray-900 dark:text-zinc-100">Attendance Certificates</span>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-zinc-400">
               Use the existing attendance-gated workflow to issue participation certificates to registered attendees.
             </p>
           </button>
@@ -898,14 +898,14 @@ export default function EventCertificateWizard({
           {hasCompetitionRounds && (
             <button
               type="button"
-              className="rounded-xl border border-blue-200 bg-blue-50 p-5 text-left transition hover:border-blue-300 hover:shadow-sm"
+              className="rounded-xl border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 p-5 text-left transition hover:border-blue-300 hover:shadow-sm"
               onClick={() => selectMode('competition')}
             >
               <div className="mb-3 flex items-center gap-2">
-                <Award className="h-5 w-5 text-blue-600" />
-                <span className="font-semibold text-gray-900">Competition Certificates</span>
+                <Award className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <span className="font-semibold text-gray-900 dark:text-zinc-100">Competition Certificates</span>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-zinc-400">
                 Generate rank-aware certificates from finished competition rounds, with attendance gating and per-tier customization.
               </p>
             </button>
@@ -918,7 +918,7 @@ export default function EventCertificateWizard({
   function renderAttendanceSelection() {
     if (loadingRecipients) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+        <div className="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-zinc-400">
           <Loader2 className="mb-3 h-8 w-8 animate-spin" />
           <p>Loading recipients...</p>
         </div>
@@ -953,16 +953,16 @@ export default function EventCertificateWizard({
               <Users className="h-5 w-5 shrink-0 text-blue-500" />
               <div>
                 <p className="text-2xl font-bold">{stats.totalRegistered}</p>
-                <p className="text-xs text-gray-500">Registered</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Registered</p>
               </div>
             </CardContent>
           </Card>
           <Card className="border-green-200 dark:border-green-800">
             <CardContent className="flex items-center gap-3 p-4">
-              <UserCheck className="h-5 w-5 shrink-0 text-green-500" />
+              <UserCheck className="h-5 w-5 shrink-0 text-green-500 dark:text-green-400" />
               <div>
                 <p className="text-2xl font-bold">{stats.totalAttended}</p>
-                <p className="text-xs text-gray-500">Attended</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Attended</p>
               </div>
             </CardContent>
           </Card>
@@ -971,7 +971,7 @@ export default function EventCertificateWizard({
               <Award className="h-5 w-5 shrink-0 text-amber-500" />
               <div>
                 <p className="text-2xl font-bold">{stats.alreadyCertified}</p>
-                <p className="text-xs text-gray-500">Attendance Certs Issued</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Attendance Certs Issued</p>
               </div>
             </CardContent>
           </Card>
@@ -980,14 +980,14 @@ export default function EventCertificateWizard({
               <Award className="h-5 w-5 shrink-0 text-purple-500" />
               <div>
                 <p className="text-2xl font-bold">{guestRecipients.length}</p>
-                <p className="text-xs text-gray-500">Guest Candidates</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Guest Candidates</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {attendanceEventDays > 1 && (
-          <div className="mb-4 flex flex-col gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-4 flex flex-col gap-2 rounded-lg border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-300 sm:flex-row sm:items-center sm:justify-between">
             <p>
               Multi-day event: {attendanceEventDays} day{attendanceEventDays === 1 ? '' : 's'} tracked.
             </p>
@@ -1002,7 +1002,7 @@ export default function EventCertificateWizard({
                   const value = event.target.value;
                   setMinAttendanceDays(value ? Number.parseInt(value, 10) : null);
                 }}
-                className="h-8 rounded-md border border-blue-300 bg-white px-2 text-xs text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="h-8 rounded-md border border-blue-300 bg-white dark:bg-surface-1 px-2 text-xs text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
               >
                 <option value="">Any</option>
                 {Array.from({ length: attendanceEventDays }, (_, index) => index + 1).map((dayCount) => (
@@ -1038,7 +1038,7 @@ export default function EventCertificateWizard({
             ))}
           </div>
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400 dark:text-zinc-500" />
             <Input
               placeholder="Search by name or email..."
               value={recipientSearch}
@@ -1072,7 +1072,7 @@ export default function EventCertificateWizard({
                         type="checkbox"
                         checked={filteredRecipients.length > 0 && filteredRecipients.every((recipient) => selectedIds.has(recipient.registrationId))}
                         onChange={toggleAllAttendanceRecipients}
-                        className="rounded border-gray-300"
+                        className="rounded border-gray-300 dark:border-zinc-700"
                       />
                     </th>
                     <th className="p-3 text-left">Recipient</th>
@@ -1084,7 +1084,7 @@ export default function EventCertificateWizard({
                 <tbody className="divide-y dark:divide-gray-700">
                   {filteredRecipients.length === 0 ? (
                     <tr>
-                      <td colSpan={attendanceEventDays > 1 ? 5 : 4} className="p-8 text-center text-gray-400">
+                      <td colSpan={attendanceEventDays > 1 ? 5 : 4} className="p-8 text-center text-gray-400 dark:text-zinc-500">
                         No recipients match the current filter.
                       </td>
                     </tr>
@@ -1094,7 +1094,7 @@ export default function EventCertificateWizard({
                         key={recipient.registrationId}
                         className={`transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 ${
                           selectedIds.has(recipient.registrationId)
-                            ? 'bg-blue-50/50 dark:bg-blue-900/10'
+                            ? 'bg-blue-50 dark:bg-blue-950/30/50 dark:bg-blue-900/10'
                             : ''
                         }`}
                       >
@@ -1103,7 +1103,7 @@ export default function EventCertificateWizard({
                             type="checkbox"
                             checked={selectedIds.has(recipient.registrationId)}
                             onChange={() => toggleAttendanceRecipient(recipient.registrationId)}
-                            className="rounded border-gray-300"
+                            className="rounded border-gray-300 dark:border-zinc-700"
                           />
                         </td>
                         <td className="p-3">
@@ -1111,13 +1111,13 @@ export default function EventCertificateWizard({
                             {recipient.userAvatar ? (
                               <img src={recipient.userAvatar} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
                             ) : (
-                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-medium dark:bg-gray-700">
+                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 dark:bg-surface-3 text-xs font-medium dark:bg-gray-700">
                                 {recipient.userName.charAt(0).toUpperCase()}
                               </div>
                             )}
                             <div className="min-w-0">
                               <p className="truncate font-medium">{recipient.userName}</p>
-                              <p className="truncate text-xs text-gray-500">{recipient.userEmail}</p>
+                              <p className="truncate text-xs text-gray-500 dark:text-zinc-400">{recipient.userEmail}</p>
                             </div>
                           </div>
                         </td>
@@ -1128,7 +1128,7 @@ export default function EventCertificateWizard({
                               Attended
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="border-gray-300 text-gray-500">
+                            <Badge variant="outline" className="border-gray-300 dark:border-zinc-700 text-gray-500 dark:text-zinc-400">
                               Not Attended
                             </Badge>
                           )}
@@ -1140,7 +1140,7 @@ export default function EventCertificateWizard({
                                 {recipient.daysAttended ?? 0}/{attendanceEventDays} day{attendanceEventDays === 1 ? '' : 's'}
                               </Badge>
                               {(recipient.dayAttendances?.length ?? 0) > 0 && (
-                                <p className="max-w-[220px] truncate text-xs text-gray-500">
+                                <p className="max-w-[220px] truncate text-xs text-gray-500 dark:text-zinc-400">
                                   {recipient.dayAttendances
                                     ?.filter((day) => day.attended)
                                     .map((day) => attendanceDayLabels[day.dayNumber - 1] || `Day ${day.dayNumber}`)
@@ -1157,7 +1157,7 @@ export default function EventCertificateWizard({
                               {recipient.certificateType || recipient.certificateId || 'Issued'}
                             </Badge>
                           ) : (
-                            <span className="text-xs text-gray-400">None</span>
+                            <span className="text-xs text-gray-400 dark:text-zinc-500">None</span>
                           )}
                         </td>
                       </tr>
@@ -1178,7 +1178,7 @@ export default function EventCertificateWizard({
                         type="checkbox"
                         checked={filteredGuestRecipients.length > 0 && filteredGuestRecipients.every((recipient) => selectedGuestIds.has(recipient.invitationId))}
                         onChange={toggleAllGuestRecipients}
-                        className="rounded border-gray-300"
+                        className="rounded border-gray-300 dark:border-zinc-700"
                       />
                     </th>
                     <th className="p-3 text-left">Guest</th>
@@ -1191,7 +1191,7 @@ export default function EventCertificateWizard({
                 <tbody className="divide-y dark:divide-gray-700">
                   {filteredGuestRecipients.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-gray-400">
+                      <td colSpan={6} className="p-8 text-center text-gray-400 dark:text-zinc-500">
                         No guest recipients match the current filter.
                       </td>
                     </tr>
@@ -1206,20 +1206,20 @@ export default function EventCertificateWizard({
                             type="checkbox"
                             checked={selectedGuestIds.has(recipient.invitationId)}
                             onChange={() => toggleGuestRecipient(recipient.invitationId)}
-                            className="rounded border-gray-300"
+                            className="rounded border-gray-300 dark:border-zinc-700"
                           />
                         </td>
                         <td className="p-3">
                           <div>
                             <p className="font-medium">{recipient.name}</p>
-                            <p className="text-xs text-gray-500">{recipient.email}</p>
+                            <p className="text-xs text-gray-500 dark:text-zinc-400">{recipient.email}</p>
                             {recipient.designation && (
-                              <p className="text-xs text-gray-400">{recipient.designation}</p>
+                              <p className="text-xs text-gray-400 dark:text-zinc-500">{recipient.designation}</p>
                             )}
                           </div>
                         </td>
                         <td className="p-3">
-                          <Badge variant="outline" className={recipient.attended ? 'border-green-300 text-green-700' : 'border-amber-300 text-amber-700'}>
+                          <Badge variant="outline" className={recipient.attended ? 'border-green-300 text-green-700 dark:text-green-300' : 'border-amber-300 text-amber-700'}>
                             {recipient.attended ? 'Attended' : 'Force include'}
                           </Badge>
                         </td>
@@ -1230,7 +1230,7 @@ export default function EventCertificateWizard({
                           <select
                             value={recipient.certificateType}
                             onChange={(event) => updateGuestRecipientType(recipient.invitationId, event.target.value as CertType)}
-                            className="h-9 rounded-md border border-gray-200 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                            className="h-9 rounded-md border border-gray-200 dark:border-zinc-800 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                           >
                             {CERT_TYPE_OPTIONS.map((option) => (
                               <option key={option.value} value={option.value}>{option.label}</option>
@@ -1244,9 +1244,9 @@ export default function EventCertificateWizard({
                               Issued
                             </Badge>
                           ) : recipient.certificateEnabled ? (
-                            <span className="text-xs text-gray-500">Eligible</span>
+                            <span className="text-xs text-gray-500 dark:text-zinc-400">Eligible</span>
                           ) : (
-                            <span className="text-xs text-gray-400">Disabled</span>
+                            <span className="text-xs text-gray-400 dark:text-zinc-500">Disabled</span>
                           )}
                         </td>
                       </tr>
@@ -1264,7 +1264,7 @@ export default function EventCertificateWizard({
             Back
           </Button>
           <div className="flex items-center gap-4">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-zinc-400">
               <span className="font-medium text-gray-900 dark:text-white">
                 {attendanceAudience === 'participants' ? selectedIds.size : selectedGuestIds.size}
               </span> of {activeRecipientCount} {attendanceAudience} selected
@@ -1282,7 +1282,7 @@ export default function EventCertificateWizard({
   function renderCompetitionSelection() {
     if (loadingCompetition) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+        <div className="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-zinc-400">
           <Loader2 className="mb-3 h-8 w-8 animate-spin" />
           <p>Loading competition results...</p>
         </div>
@@ -1291,7 +1291,7 @@ export default function EventCertificateWizard({
 
     if (competitionError) {
       return (
-        <div className="space-y-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/10 dark:text-red-300">
+        <div className="space-y-4 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-900/10 dark:text-red-300">
           <p>{competitionError}</p>
           <div className="flex items-center justify-between">
             <Button variant="outline" onClick={() => setStep('mode')}>
@@ -1328,13 +1328,13 @@ export default function EventCertificateWizard({
                   type="button"
                   className={`rounded-lg border p-4 text-left transition ${
                     competitionStrategy === option.value
-                      ? 'border-blue-400 bg-blue-50 shadow-sm'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-blue-400 bg-blue-50 dark:bg-blue-950/30 shadow-sm'
+                      : 'border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:border-zinc-700'
                   }`}
                   onClick={() => setCompetitionStrategy(option.value)}
                 >
-                  <p className="font-medium text-gray-900">{option.label}</p>
-                  <p className="mt-1 text-sm text-gray-500">{option.helper}</p>
+                  <p className="font-medium text-gray-900 dark:text-zinc-100">{option.label}</p>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">{option.helper}</p>
                 </button>
               ))}
             </div>
@@ -1352,7 +1352,7 @@ export default function EventCertificateWizard({
           </CardHeader>
           <CardContent className="space-y-4">
             {competitionRounds.length === 0 ? (
-              <p className="text-sm text-gray-500">No finished competition rounds are available for this event.</p>
+              <p className="text-sm text-gray-500 dark:text-zinc-400">No finished competition rounds are available for this event.</p>
             ) : (
               competitionRounds.map((round) => {
                 const roundSelected = selectedRoundIds.includes(round.roundId);
@@ -1361,21 +1361,21 @@ export default function EventCertificateWizard({
                     key={round.roundId}
                     className={`rounded-lg border p-4 ${
                       roundSelected
-                        ? 'border-blue-300 bg-blue-50/60'
-                        : 'border-gray-200'
+                        ? 'border-blue-300 bg-blue-50 dark:bg-blue-950/30/60'
+                        : 'border-gray-200 dark:border-zinc-800'
                     }`}
                   >
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <div>
-                        <p className="font-semibold text-gray-900">{round.title}</p>
-                        <p className="text-sm text-gray-500">{round.submissions.length} ranked submission{round.submissions.length === 1 ? '' : 's'}</p>
+                        <p className="font-semibold text-gray-900 dark:text-zinc-100">{round.title}</p>
+                        <p className="text-sm text-gray-500 dark:text-zinc-400">{round.submissions.length} ranked submission{round.submissions.length === 1 ? '' : 's'}</p>
                       </div>
-                      <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-zinc-300">
                         <input
                           type="checkbox"
                           checked={roundSelected}
                           onChange={() => toggleRoundSelection(round.roundId)}
-                          className="rounded border-gray-300"
+                          className="rounded border-gray-300 dark:border-zinc-700"
                         />
                         Select
                       </label>
@@ -1383,23 +1383,23 @@ export default function EventCertificateWizard({
 
                     <div className="space-y-2">
                       {round.submissions.map((submission) => (
-                        <div key={submission.submissionId} className="rounded-md border border-gray-200 bg-white p-3">
+                        <div key={submission.submissionId} className="rounded-md border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-1 p-3">
                           <div className="flex flex-wrap items-center gap-2">
                             <Badge variant="outline">Rank {submission.rank ?? '-'}</Badge>
                             <Badge variant="outline">Score {submission.score ?? '-'}</Badge>
-                            <span className="font-medium text-gray-900">
+                            <span className="font-medium text-gray-900 dark:text-zinc-100">
                               {submission.teamName || submission.userName || submission.userEmail}
                             </span>
                           </div>
                           <div className="mt-2 flex flex-wrap gap-2">
                             {(submission.members ?? []).length > 0 ? (
                               submission.members?.map((member) => (
-                                <div key={member.userId} className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+                                <div key={member.userId} className="rounded-full bg-gray-100 dark:bg-surface-2 px-3 py-1 text-xs text-gray-700 dark:text-zinc-300">
                                   {member.name} · {member.attended ? 'Present' : 'Absent'}
                                 </div>
                               ))
                             ) : (
-                              <div className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+                              <div className="rounded-full bg-gray-100 dark:bg-surface-2 px-3 py-1 text-xs text-gray-700 dark:text-zinc-300">
                                 {submission.userName} · {submission.attended ? 'Present' : 'Absent'}
                               </div>
                             )}
@@ -1420,7 +1420,7 @@ export default function EventCertificateWizard({
           </CardHeader>
           <CardContent className="space-y-4">
             {!competitionSelectedRoundsValid ? (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-zinc-400">
                 {competitionStrategy === 'specific_round'
                   ? 'Select exactly one round to continue.'
                   : competitionStrategy === 'average_selected_rounds'
@@ -1428,39 +1428,39 @@ export default function EventCertificateWizard({
                     : 'Select at least one finished round to continue.'}
               </p>
             ) : competitionCandidates.length === 0 ? (
-              <p className="text-sm text-gray-500">No ranked competitors were found for the current selection.</p>
+              <p className="text-sm text-gray-500 dark:text-zinc-400">No ranked competitors were found for the current selection.</p>
             ) : (
               <>
-                <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+                <div className="rounded-lg border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 p-3 text-sm text-blue-800 dark:text-blue-300">
                   {competitionIncludedCount} certificate recipient{competitionIncludedCount === 1 ? '' : 's'} currently selected. Absent members start unchecked, but you can include them manually below.
                 </div>
 
                 <div className="space-y-3">
                   {competitionCandidates.map((candidate) => (
-                    <div key={candidate.competitorKey} className="rounded-lg border border-gray-200 p-4">
+                    <div key={candidate.competitorKey} className="rounded-lg border border-gray-200 dark:border-zinc-800 p-4">
                       <div className="mb-3 flex flex-wrap items-center gap-2">
                         <Badge variant="outline">Rank {candidate.rank}</Badge>
                         <Badge variant="outline">Score {candidate.score}</Badge>
-                        <span className="font-semibold text-gray-900">{candidate.displayName}</span>
-                        <span className="text-sm text-gray-500">{candidate.strategySourceLabel}</span>
+                        <span className="font-semibold text-gray-900 dark:text-zinc-100">{candidate.displayName}</span>
+                        <span className="text-sm text-gray-500 dark:text-zinc-400">{candidate.strategySourceLabel}</span>
                       </div>
 
                       <div className="space-y-2">
                         {candidate.members.map((member) => (
                           <label
                             key={member.userId}
-                            className="flex items-center justify-between rounded-md border border-gray-200 px-3 py-2"
+                            className="flex items-center justify-between rounded-md border border-gray-200 dark:border-zinc-800 px-3 py-2"
                           >
                             <div>
-                              <p className="font-medium text-gray-900">{member.name}</p>
-                              <p className="text-xs text-gray-500">{member.email}</p>
+                              <p className="font-medium text-gray-900 dark:text-zinc-100">{member.name}</p>
+                              <p className="text-xs text-gray-500 dark:text-zinc-400">{member.email}</p>
                             </div>
                             <div className="flex items-center gap-3">
                               <Badge
                                 variant="outline"
                                 className={member.attended
                                   ? 'border-green-300 text-green-700 dark:border-green-700 dark:text-green-400'
-                                  : 'border-gray-300 text-gray-500'}
+                                  : 'border-gray-300 dark:border-zinc-700 text-gray-500 dark:text-zinc-400'}
                               >
                                 {member.attended ? 'Present' : 'Absent'}
                               </Badge>
@@ -1468,7 +1468,7 @@ export default function EventCertificateWizard({
                                 type="checkbox"
                                 checked={competitionIncludedUserIds.has(member.userId)}
                                 onChange={() => toggleCompetitionUser(member.userId)}
-                                className="rounded border-gray-300"
+                                className="rounded border-gray-300 dark:border-zinc-700"
                               />
                             </div>
                           </label>
@@ -1540,9 +1540,9 @@ export default function EventCertificateWizard({
         transition={{ duration: 0.25 }}
         className="space-y-4"
       >
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+        <div className="rounded-lg border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 p-4 text-sm text-blue-800 dark:text-blue-300">
           Supported placeholders: <code>{'{name}'}</code>, <code>{'{teamName}'}</code>, <code>{'{position}'}</code>, <code>{'{eventName}'}</code>, <code>{'{roundTitle}'}</code>
-          <p className="mt-2 text-xs text-blue-700">
+          <p className="mt-2 text-xs text-blue-700 dark:text-blue-300">
             Description templates also support Markdown (<code>**bold**</code>, <code>*italic*</code>, <code>***bold italic***</code>, <code>~~strikethrough~~</code>).
           </p>
         </div>
@@ -1558,7 +1558,7 @@ export default function EventCertificateWizard({
                   <Label htmlFor={`${tierKey}-type`} className="text-xs">Certificate Type</Label>
                   <select
                     id={`${tierKey}-type`}
-                    className="mt-1 w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    className="mt-1 w-full rounded-md border border-gray-200 dark:border-zinc-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                     value={competitionTierConfigs[tierKey].type}
                     onChange={(event) => updateTierConfig(tierKey, { type: event.target.value as CertType })}
                   >
@@ -1583,7 +1583,7 @@ export default function EventCertificateWizard({
                   <Label htmlFor={`${tierKey}-template`} className="text-xs">Template</Label>
                   <select
                     id={`${tierKey}-template`}
-                    className="mt-1 w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    className="mt-1 w-full rounded-md border border-gray-200 dark:border-zinc-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                     value={competitionTierConfigs[tierKey].template}
                     onChange={(event) => updateTierConfig(tierKey, { template: event.target.value as (typeof TEMPLATE_OPTIONS)[number]['value'] })}
                   >
@@ -1604,9 +1604,9 @@ export default function EventCertificateWizard({
                 />
               </div>
 
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Preview</p>
-                <div className="mt-2 text-sm text-gray-700 leading-relaxed">
+              <div className="rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 p-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-zinc-400">Preview</p>
+                <div className="mt-2 text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">
                   <InlineMarkdown>{samplePreviewByTier[tierKey]}</InlineMarkdown>
                 </div>
               </div>
@@ -1631,7 +1631,7 @@ export default function EventCertificateWizard({
   function renderSignatoryStep() {
     if (loadingSignatories) {
       return (
-        <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+        <div className="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-zinc-400">
           <Loader2 className="mb-3 h-8 w-8 animate-spin" />
           <p>Loading signatories...</p>
         </div>
@@ -1681,7 +1681,7 @@ export default function EventCertificateWizard({
                   placeholder={eventName}
                   className="mt-1"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
                   Leave blank to use the event's actual name. Provide a custom name to override it on the generated certificates.
                 </p>
               </div>
@@ -1690,7 +1690,7 @@ export default function EventCertificateWizard({
                 <Label htmlFor="attendance-template" className="text-xs">Template</Label>
                 <select
                   id="attendance-template"
-                  className="mt-1 w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  className="mt-1 w-full rounded-md border border-gray-200 dark:border-zinc-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                   value={attendanceTemplate}
                   onChange={(event) => setAttendanceTemplate(event.target.value as CertificateTemplate)}
                 >
@@ -1732,13 +1732,13 @@ export default function EventCertificateWizard({
                   className="mt-1 min-h-[96px]"
                   placeholder="Custom recognition text. Markdown supported: **bold**, *italic*, ***bold italic***"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
                   Supports Markdown formatting like <code>**bold**</code>, <code>*italic*</code>, <code>***bold italic***</code>, and <code>~~strikethrough~~</code>.
                 </p>
                 {attendanceDescription.trim() && (
-                  <div className="mt-2 rounded-md border border-gray-200 bg-gray-50 p-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Preview</p>
-                    <div className="mt-1 text-sm text-gray-700 leading-relaxed">
+                  <div className="mt-2 rounded-md border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-zinc-400">Preview</p>
+                    <div className="mt-1 text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">
                       <InlineMarkdown>{attendanceDescription}</InlineMarkdown>
                     </div>
                   </div>
@@ -1748,7 +1748,7 @@ export default function EventCertificateWizard({
           </Card>
         ) : (
           <div className="space-y-3">
-            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+            <div className="rounded-lg border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 p-4 text-sm text-blue-800 dark:text-blue-300">
               <p className="font-medium">{getStrategyLabel(competitionStrategy)}</p>
               <p className="mt-1">{competitionPreview.previewRows.length} certificates ready with the current tier settings.</p>
             </div>
@@ -1790,7 +1790,7 @@ export default function EventCertificateWizard({
           {!useCustomPrimary ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {activeSignatories.length === 0 ? (
-                <p className="col-span-2 text-sm text-gray-400">No active signatories found. Use a custom signatory instead.</p>
+                <p className="col-span-2 text-sm text-gray-400 dark:text-zinc-500">No active signatories found. Use a custom signatory instead.</p>
               ) : (
                 activeSignatories.map((signatory) => (
                   <Card
@@ -1807,16 +1807,16 @@ export default function EventCertificateWizard({
                         <img
                           src={signatory.signatureUrl}
                           alt={`${signatory.name} signature`}
-                          className="h-10 w-16 rounded border bg-white object-contain dark:border-gray-600"
+                          className="h-10 w-16 rounded border bg-white dark:bg-surface-1 object-contain dark:border-gray-600"
                         />
                       ) : (
                         <div className="flex h-10 w-16 items-center justify-center rounded border bg-gray-100 dark:border-gray-600 dark:bg-gray-800">
-                          <span className="text-xs text-gray-400">No image</span>
+                          <span className="text-xs text-gray-400 dark:text-zinc-500">No image</span>
                         </div>
                       )}
                       <div className="min-w-0">
                         <p className="truncate font-medium">{signatory.name}</p>
-                        <p className="truncate text-xs text-gray-500">{signatory.title}</p>
+                        <p className="truncate text-xs text-gray-500 dark:text-zinc-400">{signatory.title}</p>
                       </div>
                       {primarySignatoryId === signatory.id && (
                         <CheckCircle className="ml-auto h-5 w-5 shrink-0 text-blue-500" />
@@ -1861,7 +1861,7 @@ export default function EventCertificateWizard({
 
         <div>
           <p className="mb-2 text-sm font-medium">
-            Faculty Signatory <span className="font-normal text-gray-400">(optional)</span>
+            Faculty Signatory <span className="font-normal text-gray-400 dark:text-zinc-500">(optional)</span>
           </p>
           <div className="mb-3 flex gap-2">
             <Button
@@ -1917,16 +1917,16 @@ export default function EventCertificateWizard({
                       <img
                         src={signatory.signatureUrl}
                         alt={`${signatory.name} signature`}
-                        className="h-10 w-16 rounded border bg-white object-contain dark:border-gray-600"
+                        className="h-10 w-16 rounded border bg-white dark:bg-surface-1 object-contain dark:border-gray-600"
                       />
                     ) : (
                       <div className="flex h-10 w-16 items-center justify-center rounded border bg-gray-100 dark:border-gray-600 dark:bg-gray-800">
-                        <span className="text-xs text-gray-400">No image</span>
+                        <span className="text-xs text-gray-400 dark:text-zinc-500">No image</span>
                       </div>
                     )}
                     <div className="min-w-0">
                       <p className="truncate font-medium">{signatory.name}</p>
-                      <p className="truncate text-xs text-gray-500">{signatory.title}</p>
+                      <p className="truncate text-xs text-gray-500 dark:text-zinc-400">{signatory.title}</p>
                     </div>
                     {facultySignatoryId === signatory.id && (
                       <CheckCircle className="ml-auto h-5 w-5 shrink-0 text-blue-500" />
@@ -2015,54 +2015,54 @@ export default function EventCertificateWizard({
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-              <span className="text-gray-500">Event</span>
+              <span className="text-gray-500 dark:text-zinc-400">Event</span>
               <span className="font-medium">
                 {mode === 'attendance' && attendanceEventName.trim()
                   ? attendanceEventName.trim()
                   : eventName}
                 {mode === 'attendance' && attendanceEventName.trim() && (
-                  <span className="ml-2 text-xs font-normal text-gray-500">
+                  <span className="ml-2 text-xs font-normal text-gray-500 dark:text-zinc-400">
                     (overrides “{eventName}”)
                   </span>
                 )}
               </span>
 
-              <span className="text-gray-500">Recipients</span>
+              <span className="text-gray-500 dark:text-zinc-400">Recipients</span>
               <span className="font-medium">{currentRecipientCount}</span>
 
               {mode === 'attendance' ? (
                 <>
-                  <span className="text-gray-500">Certificate Type</span>
+                  <span className="text-gray-500 dark:text-zinc-400">Certificate Type</span>
                   <Badge variant="outline" className="w-fit">{attendanceCertType}</Badge>
 
-                  <span className="text-gray-500">Audience Mix</span>
+                  <span className="text-gray-500 dark:text-zinc-400">Audience Mix</span>
                   <span className="font-medium">
                     {selectedIds.size} participant{selectedIds.size === 1 ? '' : 's'}
                     {' · '}
                     {selectedGuestIds.size} guest{selectedGuestIds.size === 1 ? '' : 's'}
                   </span>
 
-                  <span className="text-gray-500">Template</span>
+                  <span className="text-gray-500 dark:text-zinc-400">Template</span>
                   <span className="font-medium capitalize">{attendanceTemplate}</span>
 
                   {attendancePosition.trim() ? (
                     <>
-                      <span className="text-gray-500">Position</span>
+                      <span className="text-gray-500 dark:text-zinc-400">Position</span>
                       <span className="font-medium">{attendancePosition.trim()}</span>
                     </>
                   ) : null}
 
                   {attendanceDomain.trim() ? (
                     <>
-                      <span className="text-gray-500">Domain</span>
+                      <span className="text-gray-500 dark:text-zinc-400">Domain</span>
                       <span className="font-medium">{attendanceDomain.trim()}</span>
                     </>
                   ) : null}
 
                   {attendanceDescription.trim() ? (
                     <>
-                      <span className="text-gray-500">Description</span>
-                      <span className="font-medium text-gray-700">
+                      <span className="text-gray-500 dark:text-zinc-400">Description</span>
+                      <span className="font-medium text-gray-700 dark:text-zinc-300">
                         <InlineMarkdown>{attendanceDescription.trim()}</InlineMarkdown>
                       </span>
                     </>
@@ -2070,10 +2070,10 @@ export default function EventCertificateWizard({
                 </>
               ) : (
                 <>
-                  <span className="text-gray-500">Strategy</span>
+                  <span className="text-gray-500 dark:text-zinc-400">Strategy</span>
                   <span className="font-medium">{getStrategyLabel(competitionStrategy)}</span>
 
-                  <span className="text-gray-500">Rounds</span>
+                  <span className="text-gray-500 dark:text-zinc-400">Rounds</span>
                   <span className="font-medium">
                     {competitionRounds
                       .filter((round) => selectedRoundIds.includes(round.roundId))
@@ -2083,20 +2083,20 @@ export default function EventCertificateWizard({
 
                   {competitionDomain.trim() ? (
                     <>
-                      <span className="text-gray-500">Domain</span>
+                      <span className="text-gray-500 dark:text-zinc-400">Domain</span>
                       <span className="font-medium">{competitionDomain.trim()}</span>
                     </>
                   ) : null}
                 </>
               )}
 
-              <span className="text-gray-500">Primary Signatory</span>
+              <span className="text-gray-500 dark:text-zinc-400">Primary Signatory</span>
               <span className="font-medium">
                 {primaryLabel}
-                {primaryTitleLabel ? <span className="font-normal text-gray-400"> - {primaryTitleLabel}</span> : null}
+                {primaryTitleLabel ? <span className="font-normal text-gray-400 dark:text-zinc-500"> - {primaryTitleLabel}</span> : null}
               </span>
 
-              <span className="text-gray-500">Faculty Signatory</span>
+              <span className="text-gray-500 dark:text-zinc-400">Faculty Signatory</span>
               <span className="font-medium">{facultyLabel}</span>
             </div>
           </CardContent>
@@ -2104,10 +2104,10 @@ export default function EventCertificateWizard({
 
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
+            <div className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-zinc-800 px-4 py-3">
               <div>
-                <p className="font-medium text-gray-900">Send email notifications</p>
-                <p className="text-sm text-gray-500">Toggle whether generated certificates should be emailed immediately.</p>
+                <p className="font-medium text-gray-900 dark:text-zinc-100">Send email notifications</p>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">Toggle whether generated certificates should be emailed immediately.</p>
               </div>
               <Switch checked={sendEmail} onCheckedChange={setSendEmail} />
             </div>
@@ -2139,7 +2139,7 @@ export default function EventCertificateWizard({
                         <tr key={`${row.competitorKey}-${row.userId}`}>
                           <td className="p-3">
                             <p className="font-medium">{row.name}</p>
-                            <p className="text-xs text-gray-500">{row.email}</p>
+                            <p className="text-xs text-gray-500 dark:text-zinc-400">{row.email}</p>
                           </td>
                           <td className="p-3">{row.teamName || '-'}</td>
                           <td className="p-3">#{row.rank}</td>
@@ -2148,7 +2148,7 @@ export default function EventCertificateWizard({
                           </td>
                           <td className="p-3">{row.position || '-'}</td>
                           <td className="p-3">{row.strategySource}</td>
-                          <td className="p-3 text-xs text-gray-600 leading-relaxed">
+                          <td className="p-3 text-xs text-gray-600 dark:text-zinc-400 leading-relaxed">
                             <InlineMarkdown>{row.description}</InlineMarkdown>
                           </td>
                         </tr>
@@ -2162,7 +2162,7 @@ export default function EventCertificateWizard({
         )}
 
         {mode === 'attendance' && (
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-800 dark:bg-blue-900/10">
+          <div className="rounded-lg border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 p-4 text-sm dark:border-blue-800 dark:bg-blue-900/10">
             <div className="flex gap-2">
               <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
               <div className="space-y-1 text-blue-800 dark:text-blue-300">
@@ -2195,7 +2195,7 @@ export default function EventCertificateWizard({
         )}
 
         {generateError && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm dark:border-red-800 dark:bg-red-900/10">
+          <div className="rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 p-4 text-sm dark:border-red-800 dark:bg-red-900/10">
             <div className="flex gap-2">
               <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
               <p className="text-red-800 dark:text-red-300">{generateError}</p>
@@ -2241,17 +2241,17 @@ export default function EventCertificateWizard({
           <Card>
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-                  <p className="text-xs uppercase tracking-wide text-green-700">Generated</p>
-                  <p className="text-2xl font-bold text-green-800">{generationSummary.generated}</p>
+                <div className="rounded-lg border border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/30 p-3">
+                  <p className="text-xs uppercase tracking-wide text-green-700 dark:text-green-300">Generated</p>
+                  <p className="text-2xl font-bold text-green-800 dark:text-green-300">{generationSummary.generated}</p>
                 </div>
                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
                   <p className="text-xs uppercase tracking-wide text-amber-700">Skipped / Failed</p>
                   <p className="text-2xl font-bold text-amber-800">{generationSummary.failed}</p>
                 </div>
-                <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
-                  <p className="text-xs uppercase tracking-wide text-blue-700">Emails Sent</p>
-                  <p className="text-2xl font-bold text-blue-800">{generationSummary.emailsSent ?? 0}</p>
+                <div className="rounded-lg border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 p-3">
+                  <p className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300">Emails Sent</p>
+                  <p className="text-2xl font-bold text-blue-800 dark:text-blue-300">{generationSummary.emailsSent ?? 0}</p>
                 </div>
               </div>
               {generationSummary.errors.length > 0 && (
@@ -2274,7 +2274,7 @@ export default function EventCertificateWizard({
         <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
           <div>
             <h3 className="text-lg font-semibold">Generated Certificates ({generatedCerts.length})</h3>
-            <p className="text-sm text-gray-500">Manage the certificates generated for {eventName}</p>
+            <p className="text-sm text-gray-500 dark:text-zinc-400">Manage the certificates generated for {eventName}</p>
           </div>
           <div className="flex gap-2">
             {managementSelected.size > 0 && (
@@ -2290,7 +2290,7 @@ export default function EventCertificateWizard({
                     : `Resend Selected (${managementSelected.size})`}
                 </Button>
                 {bulkResending && (
-                  <p className="text-xs text-gray-500" aria-live="polite">
+                  <p className="text-xs text-gray-500 dark:text-zinc-400" aria-live="polite">
                     Processing {bulkResendProgress.completed} of {bulkResendProgress.total}
                     {bulkResendProgress.failed > 0 ? `, ${bulkResendProgress.failed} failed` : ''}
                   </p>
@@ -2311,7 +2311,7 @@ export default function EventCertificateWizard({
         </div>
 
         <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400 dark:text-zinc-500" />
           <Input
             placeholder="Search by name, email, or cert ID..."
             value={managementSearch}
@@ -2344,7 +2344,7 @@ export default function EventCertificateWizard({
                           return next;
                         });
                       }}
-                      className="rounded border-gray-300"
+                      className="rounded border-gray-300 dark:border-zinc-700"
                     />
                   </th>
                   <th className="p-3 text-left">Recipient</th>
@@ -2356,7 +2356,7 @@ export default function EventCertificateWizard({
               <tbody className="divide-y dark:divide-gray-700">
                 {filteredCerts.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-gray-400">
+                    <td colSpan={5} className="p-8 text-center text-gray-400 dark:text-zinc-500">
                       No certificates found.
                     </td>
                   </tr>
@@ -2368,15 +2368,15 @@ export default function EventCertificateWizard({
                           type="checkbox"
                           checked={managementSelected.has(certificate.certId)}
                           onChange={() => toggleManagementCert(certificate.certId)}
-                          className="rounded border-gray-300"
+                          className="rounded border-gray-300 dark:border-zinc-700"
                         />
                       </td>
                       <td className="p-3">
                         <p className="truncate font-medium">{certificate.recipientName}</p>
-                        <p className="truncate text-xs text-gray-500">{certificate.recipientEmail}</p>
+                        <p className="truncate text-xs text-gray-500 dark:text-zinc-400">{certificate.recipientEmail}</p>
                       </td>
                       <td className="hidden p-3 sm:table-cell">
-                        <code className="rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-gray-800">{certificate.certId}</code>
+                        <code className="rounded bg-gray-100 dark:bg-surface-2 px-1.5 py-0.5 text-xs dark:bg-gray-800">{certificate.certId}</code>
                       </td>
                       <td className="hidden p-3 md:table-cell">
                         {certificate.emailSent ? (
@@ -2385,7 +2385,7 @@ export default function EventCertificateWizard({
                             Sent
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="border-gray-300 text-gray-500">Not Sent</Badge>
+                          <Badge variant="outline" className="border-gray-300 dark:border-zinc-700 text-gray-500 dark:text-zinc-400">Not Sent</Badge>
                         )}
                       </td>
                       <td className="p-3">
@@ -2434,7 +2434,7 @@ export default function EventCertificateWizard({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                            className="h-8 w-8 p-0 text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                             onClick={() => setConfirmDialog({
                               open: true,
                               action: 'delete',
@@ -2479,7 +2479,7 @@ export default function EventCertificateWizard({
               {isRevoke ? (
                 <XCircle className="h-5 w-5 text-amber-500" />
               ) : (
-                <Trash2 className="h-5 w-5 text-red-500" />
+                <Trash2 className="h-5 w-5 text-red-500 dark:text-red-400" />
               )}
               {isRevoke ? 'Revoke Certificate' : 'Delete Certificate'}
             </ConfirmDialogTitle>
@@ -2512,7 +2512,7 @@ export default function EventCertificateWizard({
           <Award className="h-5 w-5 text-amber-500" />
           Certificate Wizard
         </CardTitle>
-        <p className="text-sm text-gray-500">{eventName}</p>
+        <p className="text-sm text-gray-500 dark:text-zinc-400">{eventName}</p>
       </CardHeader>
       <CardContent>
         {step !== 'manage' && <StepIndicator />}

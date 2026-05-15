@@ -86,7 +86,7 @@ export function TeamHighlight() {
                       }
                     } : undefined}
                     aria-label={hasProfile ? `View ${member.name}'s profile` : member.name}
-                    className={`group h-full rounded-2xl border border-gray-200/70 bg-white/70 p-3 text-center shadow-sm transition-all duration-300 dark:border-zinc-800/90 dark:bg-[#0f1117]/95 dark:shadow-black/45 ${hasProfile ? 'cursor-pointer hover:border-amber-300 hover:shadow-md dark:hover:border-zinc-700 dark:hover:shadow-red-950/35' : 'cursor-default'}`}
+                    className={`group h-full rounded-2xl border border-gray-200 dark:border-zinc-800/70 bg-white dark:bg-surface-1/70 p-3 text-center shadow-sm transition-all duration-300 dark:border-zinc-800/90 dark:bg-[#0f1117]/95 dark:shadow-black/45 ${hasProfile ? 'cursor-pointer hover:border-amber-300 hover:shadow-md dark:hover:border-zinc-700 dark:hover:shadow-red-950/35' : 'cursor-default'}`}
                   >
                     {/* Avatar */}
                     <div className="relative mb-4 mx-auto">
@@ -117,7 +117,7 @@ export function TeamHighlight() {
                     </div>
 
                     {/* Info */}
-                    <h3 className="mb-1 flex min-h-[2.5rem] items-center justify-center line-clamp-2 font-semibold text-gray-900 transition-colors group-hover:text-amber-600 dark:text-zinc-100 dark:group-hover:text-rose-300">
+                    <h3 className="mb-1 flex min-h-[2.5rem] items-center justify-center line-clamp-2 font-semibold text-gray-900 dark:text-zinc-100 transition-colors group-hover:text-amber-600 dark:text-zinc-100 dark:group-hover:text-rose-300">
                       {member.name}
                     </h3>
                     <p className="mb-3 min-h-[1.25rem] line-clamp-1 text-sm text-gray-500 dark:text-zinc-400">{member.role}</p>
@@ -135,7 +135,7 @@ export function TeamHighlight() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="rounded-lg bg-gray-100 p-2 text-gray-500 transition-all hover:bg-gray-900 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-700"
+                          className="rounded-lg bg-gray-100 dark:bg-surface-2 p-2 text-gray-500 dark:text-zinc-400 transition-all hover:bg-gray-900 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-700"
                           whileHover={!isMobile ? { scale: 1.1 } : undefined}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -148,7 +148,7 @@ export function TeamHighlight() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="rounded-lg bg-gray-100 p-2 text-gray-500 transition-all hover:bg-blue-600 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-blue-500/85"
+                          className="rounded-lg bg-gray-100 dark:bg-surface-2 p-2 text-gray-500 dark:text-zinc-400 transition-all hover:bg-blue-600 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-blue-500/85"
                           whileHover={!isMobile ? { scale: 1.1 } : undefined}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -161,7 +161,7 @@ export function TeamHighlight() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="rounded-lg bg-gray-100 p-2 text-gray-500 transition-all hover:bg-sky-500 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-sky-500/85"
+                          className="rounded-lg bg-gray-100 dark:bg-surface-2 p-2 text-gray-500 dark:text-zinc-400 transition-all hover:bg-sky-500 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-sky-500/85"
                           whileHover={!isMobile ? { scale: 1.1 } : undefined}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -174,7 +174,7 @@ export function TeamHighlight() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="rounded-lg bg-gray-100 p-2 text-gray-500 transition-all hover:bg-pink-500 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-pink-500/85"
+                          className="rounded-lg bg-gray-100 dark:bg-surface-2 p-2 text-gray-500 dark:text-zinc-400 transition-all hover:bg-pink-500 hover:text-white dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-pink-500/85"
                           whileHover={!isMobile ? { scale: 1.1 } : undefined}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -201,7 +201,7 @@ export function TeamHighlight() {
             <Button
               variant="outline"
               size="lg"
-              className="group border-gray-300 hover:border-blue-500 hover:bg-blue-50 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:border-blue-500/40 dark:hover:bg-zinc-900"
+              className="group border-gray-300 dark:border-zinc-700 hover:border-blue-500 hover:bg-blue-50 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:border-blue-500/40 dark:hover:bg-zinc-900"
             >
               Meet the Full Team
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />

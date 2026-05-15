@@ -324,7 +324,7 @@ export default function AdminEventRegistrations() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400 dark:text-zinc-500" />
       </div>
     );
   }
@@ -334,8 +334,8 @@ export default function AdminEventRegistrations() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Event Registrations</h1>
-          <p className="text-gray-600">View and manage event participants</p>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-zinc-100">Event Registrations</h1>
+          <p className="text-gray-600 dark:text-zinc-400">View and manage event participants</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -373,8 +373,8 @@ export default function AdminEventRegistrations() {
       </div>
 
       {eventSyncResult && !eventSyncResult.error && (
-        <Card className="border-green-200 bg-green-50">
-          <CardContent className="pt-6 text-sm text-green-700">
+        <Card className="border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/30">
+          <CardContent className="pt-6 text-sm text-green-700 dark:text-green-300">
             <p className="flex items-center gap-2 font-medium mb-1">
               <CheckCircle className="h-4 w-4" />
               Event status sync completed.
@@ -387,8 +387,8 @@ export default function AdminEventRegistrations() {
       )}
 
       {eventSyncResult?.error && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="pt-6 text-sm text-red-700">
+        <Card className="border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30">
+          <CardContent className="pt-6 text-sm text-red-700 dark:text-red-300">
             <p className="flex items-center gap-2 font-medium">
               <AlertCircle className="h-4 w-4" />
               {eventSyncResult.error}
@@ -401,7 +401,7 @@ export default function AdminEventRegistrations() {
       <Card>
         <CardContent className="pt-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-zinc-500" />
             <Input
               placeholder="Search by event name, participant name, or email..."
               value={searchQuery}
@@ -413,9 +413,9 @@ export default function AdminEventRegistrations() {
       </Card>
 
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30">
           <CardContent className="pt-6">
-            <p className="text-red-700">{error}</p>
+            <p className="text-red-700 dark:text-red-300">{error}</p>
           </CardContent>
         </Card>
       )}
@@ -424,7 +424,7 @@ export default function AdminEventRegistrations() {
       <div className="space-y-4">
         {filteredEvents.length === 0 ? (
           <Card>
-            <CardContent className="py-12 text-center text-gray-500">
+            <CardContent className="py-12 text-center text-gray-500 dark:text-zinc-400">
               {searchQuery ? 'No events match your search' : 'No events found'}
             </CardContent>
           </Card>
@@ -442,12 +442,12 @@ export default function AdminEventRegistrations() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <Card className="border-gray-200">
+                <Card className="border-gray-200 dark:border-zinc-800">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
                         <CardTitle className="flex items-center gap-3">
-                          <Calendar className="h-5 w-5 text-gray-400" />
+                          <Calendar className="h-5 w-5 text-gray-400 dark:text-zinc-500" />
                           {event.title}
                           {event.teamRegistration && (
                             <Badge variant="outline" className="ml-2 text-purple-600 border-purple-300">
@@ -456,7 +456,7 @@ export default function AdminEventRegistrations() {
                             </Badge>
                           )}
                         </CardTitle>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-zinc-400">
                           <span>{formatDate(event.startDate)}</span>
                           {event.location && <span>• {event.location}</span>}
                           <Badge variant={event.status === 'UPCOMING' ? 'default' : 'secondary'}>
@@ -465,7 +465,7 @@ export default function AdminEventRegistrations() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="text-gray-700">
+                        <Badge variant="secondary" className="text-gray-700 dark:text-zinc-300">
                           <Users className="h-3 w-3 mr-1" />
                           {participantRegistrations.length} participants
                           {event.capacity && ` / ${event.capacity}`}
@@ -535,7 +535,7 @@ export default function AdminEventRegistrations() {
                         variant="outline"
                         onClick={() => setConfirmDialog({ type: 'event', eventId: event.id, eventTitle: event.title })}
                         disabled={deletingId === event.id}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30"
                       >
                         {deletingId === event.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -560,7 +560,7 @@ export default function AdminEventRegistrations() {
                       </TabsList>
 
                       <TabsContent value="registrations" className="space-y-4">
-                        <Card className="border-slate-200 bg-slate-50/70">
+                        <Card className="border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-surface-1/70">
                           <CardContent className="space-y-3 pb-4 pt-4">
                             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                               <div>
@@ -635,7 +635,7 @@ export default function AdminEventRegistrations() {
                               </select>
 
                               <div className="relative">
-                                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-500" />
                                 <Input
                                   value={exportFilters.search}
                                   onChange={(e) => setExportFilterValue(event.id, 'search', e.target.value)}
@@ -648,7 +648,7 @@ export default function AdminEventRegistrations() {
                         </Card>
 
                         {event.registrations.length === 0 ? (
-                          <p className="py-8 text-center text-gray-500">No registrations yet</p>
+                          <p className="py-8 text-center text-gray-500 dark:text-zinc-400">No registrations yet</p>
                         ) : teamGroupView === event.id && teamData.has(event.id) ? (
                           <div className="space-y-4">
                             {teamData.get(event.id)!.map((team) => {
@@ -669,7 +669,7 @@ export default function AdminEventRegistrations() {
                                           </Badge>
                                         )}
                                         {team.members.length >= (event.teamMinSize || 1) ? (
-                                          <Badge className="bg-green-100 text-green-700 text-xs">Complete</Badge>
+                                          <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs">Complete</Badge>
                                         ) : (
                                           <Badge variant="outline" className="text-amber-600 border-amber-300 text-xs">Incomplete</Badge>
                                         )}
@@ -678,7 +678,7 @@ export default function AdminEventRegistrations() {
                                         <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => handleAdminToggleLock(team.id, event.id)}>
                                           {team.isLocked ? <Unlock className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
                                         </Button>
-                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => setConfirmDialog({ type: 'team', teamId: team.id, teamName: team.teamName, eventId: event.id })}>
+                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30" onClick={() => setConfirmDialog({ type: 'team', teamId: team.id, teamName: team.teamName, eventId: event.id })}>
                                           <Trash2 className="h-3.5 w-3.5" />
                                         </Button>
                                       </div>
@@ -699,10 +699,10 @@ export default function AdminEventRegistrations() {
                                                   <span className="text-sm font-medium">{registration.user.name}</span>
                                                   {isLeader && <Crown className="h-3.5 w-3.5 text-amber-500" />}
                                                 </div>
-                                                <span className="text-xs text-gray-500">{registration.user.email}</span>
+                                                <span className="text-xs text-gray-500 dark:text-zinc-400">{registration.user.email}</span>
                                               </div>
                                             </div>
-                                            <Button size="sm" variant="ghost" onClick={() => setConfirmDialog({ type: 'registration', eventId: event.id, registrationId: registration.id, userName: registration.user.name })} disabled={deletingRegId === registration.id} className="text-red-600 hover:text-red-700 hover:bg-red-50 h-7">
+                                            <Button size="sm" variant="ghost" onClick={() => setConfirmDialog({ type: 'registration', eventId: event.id, registrationId: registration.id, userName: registration.user.name })} disabled={deletingRegId === registration.id} className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30 h-7">
                                               {deletingRegId === registration.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                                             </Button>
                                           </div>
@@ -721,24 +721,24 @@ export default function AdminEventRegistrations() {
                               const unaffiliated = participantRegistrations.filter((registration) => !allTeamUserIds.has(registration.user.id));
                               if (unaffiliated.length === 0) return null;
                               return (
-                                <Card className="border-gray-200">
+                                <Card className="border-gray-200 dark:border-zinc-800">
                                   <CardHeader className="py-3 px-4">
-                                    <span className="font-semibold text-sm text-gray-500">Unaffiliated Participants ({unaffiliated.length})</span>
+                                    <span className="font-semibold text-sm text-gray-500 dark:text-zinc-400">Unaffiliated Participants ({unaffiliated.length})</span>
                                   </CardHeader>
                                   <CardContent className="pt-0 px-4 pb-3">
                                     <div className="divide-y divide-gray-100">
                                       {unaffiliated.map((registration) => (
                                         <div key={registration.id} className="py-2 flex items-center justify-between">
                                           <div className="flex items-center gap-2">
-                                            <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                                            <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-zinc-600 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
                                               {registration.user.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
                                               <span className="text-sm font-medium">{registration.user.name}</span>
-                                              <span className="text-xs text-gray-500 ml-2">{registration.user.email}</span>
+                                              <span className="text-xs text-gray-500 dark:text-zinc-400 ml-2">{registration.user.email}</span>
                                             </div>
                                           </div>
-                                          <Button size="sm" variant="ghost" onClick={() => setConfirmDialog({ type: 'registration', eventId: event.id, registrationId: registration.id, userName: registration.user.name })} disabled={deletingRegId === registration.id} className="text-red-600 hover:text-red-700 hover:bg-red-50 h-7">
+                                          <Button size="sm" variant="ghost" onClick={() => setConfirmDialog({ type: 'registration', eventId: event.id, registrationId: registration.id, userName: registration.user.name })} disabled={deletingRegId === registration.id} className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30 h-7">
                                             {deletingRegId === registration.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                                           </Button>
                                         </div>
@@ -759,10 +759,10 @@ export default function AdminEventRegistrations() {
                                     <div key={registration.id} className="flex items-center justify-between rounded-lg border border-amber-100 bg-amber-50 px-3 py-3">
                                       <div>
                                         <div className="flex items-center gap-2">
-                                          <span className="font-medium text-gray-900">{registration.user.name}</span>
+                                          <span className="font-medium text-gray-900 dark:text-zinc-100">{registration.user.name}</span>
                                           {registration.invitation?.role && <Badge variant="outline">{registration.invitation.role}</Badge>}
                                         </div>
-                                        <p className="mt-1 text-sm text-gray-500">{registration.user.email}</p>
+                                        <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">{registration.user.email}</p>
                                       </div>
                                       <Button size="sm" variant="outline" onClick={() => setActiveDetailTab('invitations')}>
                                         Manage Invitation
@@ -776,11 +776,11 @@ export default function AdminEventRegistrations() {
                         ) : (
                           <div className="space-y-6">
                             <div className="space-y-2">
-                              <h3 className="font-semibold text-sm text-gray-700">
+                              <h3 className="font-semibold text-sm text-gray-700 dark:text-zinc-300">
                                 Participants ({participantRegistrations.length})
                               </h3>
                               {participantRegistrations.length === 0 ? (
-                                <div className="rounded-lg border border-dashed border-slate-200 px-4 py-6 text-sm text-gray-500">
+                                <div className="rounded-lg border border-dashed border-slate-200 dark:border-zinc-800 px-4 py-6 text-sm text-gray-500 dark:text-zinc-400">
                                   No participant registrations yet.
                                 </div>
                               ) : (
@@ -788,7 +788,7 @@ export default function AdminEventRegistrations() {
                                   {participantRegistrations.map((registration) => (
                                     <div
                                       key={registration.id}
-                                      className="py-3 flex items-start justify-between hover:bg-gray-50 px-3 -mx-3 rounded-lg transition-colors"
+                                      className="py-3 flex items-start justify-between hover:bg-gray-50 dark:bg-surface-1 px-3 -mx-3 rounded-lg transition-colors"
                                     >
                                       <div className="flex items-start gap-3">
                                         <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-semibold flex-shrink-0">
@@ -796,20 +796,20 @@ export default function AdminEventRegistrations() {
                                         </div>
                                         <div>
                                           <div className="flex items-center gap-2 flex-wrap">
-                                            <span className="font-medium text-gray-900">
+                                            <span className="font-medium text-gray-900 dark:text-zinc-100">
                                               {registration.user.name}
                                             </span>
                                             <Badge variant="outline" className="text-xs">
                                               {registration.user.role}
                                             </Badge>
                                           </div>
-                                          <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                                          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-zinc-400 mt-1">
                                             <span className="flex items-center gap-1">
                                               <Mail className="h-3 w-3" />
                                               {registration.user.email}
                                             </span>
                                           </div>
-                                          <div className="flex items-center gap-4 text-sm text-gray-500 mt-1 flex-wrap">
+                                          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-zinc-400 mt-1 flex-wrap">
                                             {registration.user.phone && (
                                               <span className="flex items-center gap-1">
                                                 <Phone className="h-3 w-3" />
@@ -822,7 +822,7 @@ export default function AdminEventRegistrations() {
                                                 {registration.user.course} - {registration.user.branch} - {registration.user.year}
                                               </span>
                                             )}
-                                            <span className="text-xs text-gray-400">
+                                            <span className="text-xs text-gray-400 dark:text-zinc-500">
                                               Registered: {formatDate(registration.timestamp)}
                                             </span>
                                           </div>
@@ -833,7 +833,7 @@ export default function AdminEventRegistrations() {
                                         variant="ghost"
                                         onClick={() => setConfirmDialog({ type: 'registration', eventId: event.id, registrationId: registration.id, userName: registration.user.name })}
                                         disabled={deletingRegId === registration.id}
-                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                        className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30"
                                       >
                                         {deletingRegId === registration.id ? (
                                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -864,12 +864,12 @@ export default function AdminEventRegistrations() {
                                     >
                                       <div>
                                         <div className="flex items-center gap-2 flex-wrap">
-                                          <span className="font-medium text-gray-900">{registration.user.name}</span>
+                                          <span className="font-medium text-gray-900 dark:text-zinc-100">{registration.user.name}</span>
                                           {registration.invitation?.role && <Badge variant="outline">{registration.invitation.role}</Badge>}
                                           <Badge variant="outline" className="border-amber-300 text-amber-800">Guest</Badge>
                                         </div>
-                                        <p className="mt-1 text-sm text-gray-500">{registration.user.email}</p>
-                                        <p className="mt-1 text-xs text-gray-400">Accepted on {formatDate(registration.timestamp)}</p>
+                                        <p className="mt-1 text-sm text-gray-500 dark:text-zinc-400">{registration.user.email}</p>
+                                        <p className="mt-1 text-xs text-gray-400 dark:text-zinc-500">Accepted on {formatDate(registration.timestamp)}</p>
                                       </div>
                                       <Button size="sm" variant="outline" onClick={() => setActiveDetailTab('invitations')}>
                                         Manage Invitation

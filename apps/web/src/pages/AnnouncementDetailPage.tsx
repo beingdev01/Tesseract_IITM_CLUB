@@ -19,10 +19,10 @@ import { formatDate, formatDateTime } from '@/lib/dateUtils';
 import { processImageUrl } from '@/lib/imageUtils';
 
 const priorityConfig = {
-  LOW: { label: 'Low Priority', color: 'bg-gray-100 text-gray-700 border-gray-300', icon: Info, bgClass: 'from-gray-500 to-slate-600' },
-  MEDIUM: { label: 'Medium Priority', color: 'bg-blue-100 text-blue-700 border-blue-300', icon: Bell, bgClass: 'from-blue-500 to-indigo-600' },
-  HIGH: { label: 'High Priority', color: 'bg-orange-100 text-orange-700 border-orange-300', icon: AlertTriangle, bgClass: 'from-orange-500 to-amber-600' },
-  URGENT: { label: 'Urgent', color: 'bg-red-100 text-red-700 border-red-300', icon: AlertCircle, bgClass: 'from-red-500 to-rose-600' },
+  LOW: { label: 'Low Priority', color: 'bg-gray-100 dark:bg-surface-2 text-gray-700 dark:text-zinc-300 border-gray-300 dark:border-zinc-700', icon: Info, bgClass: 'from-gray-500 to-slate-600' },
+  MEDIUM: { label: 'Medium Priority', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300', icon: Bell, bgClass: 'from-blue-500 to-indigo-600' },
+  HIGH: { label: 'High Priority', color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-300', icon: AlertTriangle, bgClass: 'from-orange-500 to-amber-600' },
+  URGENT: { label: 'Urgent', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-300', icon: AlertCircle, bgClass: 'from-red-500 to-rose-600' },
 };
 
 // Image Gallery Component with Lightbox
@@ -97,7 +97,7 @@ export default function AnnouncementDetailPage() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="h-12 w-12 text-amber-600 animate-spin mb-4" />
-              <p className="text-gray-600">Loading announcement...</p>
+              <p className="text-gray-600 dark:text-zinc-400">Loading announcement...</p>
             </div>
           </div>
         </section>
@@ -113,10 +113,10 @@ export default function AnnouncementDetailPage() {
         <section className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 py-12 sm:py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-xl mx-auto text-center py-20">
-              <div className="bg-red-50 border border-red-200 rounded-xl p-8">
-                <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-                <h1 className="text-2xl font-bold text-red-700 mb-2">Announcement Not Found</h1>
-                <p className="text-red-600 mb-6">{error || 'The announcement you are looking for does not exist.'}</p>
+              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-xl p-8">
+                <AlertCircle className="h-16 w-16 text-red-500 dark:text-red-400 mx-auto mb-4" />
+                <h1 className="text-2xl font-bold text-red-700 dark:text-red-300 mb-2">Announcement Not Found</h1>
+                <p className="text-red-600 dark:text-red-400 mb-6">{error || 'The announcement you are looking for does not exist.'}</p>
                 <Button onClick={() => navigate('/announcements')} variant="outline">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back to Announcements
@@ -184,7 +184,7 @@ export default function AnnouncementDetailPage() {
               variant="secondary"
               size="sm"
               onClick={() => navigate('/announcements')}
-              className="bg-white/90 hover:bg-white shadow-lg"
+              className="bg-white dark:bg-surface-1/90 hover:bg-white dark:bg-surface-1 shadow-lg"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
@@ -197,7 +197,7 @@ export default function AnnouncementDetailPage() {
               variant="secondary"
               size="sm"
               onClick={handleShare}
-              className="bg-white/90 hover:bg-white shadow-lg"
+              className="bg-white dark:bg-surface-1/90 hover:bg-white dark:bg-surface-1 shadow-lg"
             >
               <Share2 className="mr-2 h-4 w-4" />
               Share
@@ -275,7 +275,7 @@ export default function AnnouncementDetailPage() {
                   >
                     <Card className="border-amber-200 bg-amber-50/50">
                       <CardContent className="pt-6">
-                        <p className="text-lg text-gray-700 italic">
+                        <p className="text-lg text-gray-700 dark:text-zinc-300 italic">
                           {announcement.shortDescription}
                         </p>
                       </CardContent>
@@ -376,10 +376,10 @@ export default function AnnouncementDetailPage() {
                               <div className="p-2 bg-amber-200 rounded-lg group-hover:bg-amber-300 transition-colors">
                                 {attachmentIcons[attachment.type || 'other']}
                               </div>
-                              <span className="font-medium text-gray-700 group-hover:text-amber-700 transition-colors flex-1 truncate">
+                              <span className="font-medium text-gray-700 dark:text-zinc-300 group-hover:text-amber-700 transition-colors flex-1 truncate">
                                 {attachment.title}
                               </span>
-                              <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-amber-600" />
+                              <ExternalLink className="h-4 w-4 text-gray-400 dark:text-zinc-500 group-hover:text-amber-600" />
                             </a>
                           ))}
                         </div>
@@ -415,10 +415,10 @@ export default function AnnouncementDetailPage() {
                               <div className="p-2 bg-amber-200 rounded-lg group-hover:bg-amber-300 transition-colors">
                                 <ExternalLink className="h-4 w-4" />
                               </div>
-                              <span className="font-medium text-gray-700 group-hover:text-amber-700 transition-colors flex-1 truncate">
+                              <span className="font-medium text-gray-700 dark:text-zinc-300 group-hover:text-amber-700 transition-colors flex-1 truncate">
                                 {link.title}
                               </span>
-                              <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-amber-600" />
+                              <ExternalLink className="h-4 w-4 text-gray-400 dark:text-zinc-500 group-hover:text-amber-600" />
                             </a>
                           ))}
                         </div>
@@ -452,8 +452,8 @@ export default function AnnouncementDetailPage() {
                             </div>
                           )}
                           <div>
-                            <p className="font-semibold text-gray-900">{announcement.creator.name}</p>
-                            <p className="text-sm text-gray-500">{formatDate(announcement.createdAt)}</p>
+                            <p className="font-semibold text-gray-900 dark:text-zinc-100">{announcement.creator.name}</p>
+                            <p className="text-sm text-gray-500 dark:text-zinc-400">{formatDate(announcement.createdAt)}</p>
                           </div>
                         </div>
                       </CardContent>

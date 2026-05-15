@@ -139,7 +139,7 @@ export default function EditTeamProfile() {
   if (error && !member) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <p className="text-red-600">{error}</p>
+        <p className="text-red-600 dark:text-red-400">{error}</p>
         <Button variant="outline" onClick={() => navigate('/dashboard')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Dashboard
@@ -155,16 +155,16 @@ export default function EditTeamProfile() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400 mb-2">
             <Link to="/dashboard" className="hover:text-amber-600 transition-colors">Dashboard</Link>
             <span>›</span>
             <span className="text-amber-600 font-medium">Edit Team Profile</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 flex items-center gap-3">
             Edit Profile
             <Badge variant="secondary" className="text-xs">{member.name}</Badge>
           </h1>
-          <p className="text-sm text-gray-500 mt-1">Update your personal page content visible to visitors</p>
+          <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">Update your personal page content visible to visitors</p>
         </div>
         <div className="flex items-center gap-2">
           {member.slug && (
@@ -199,12 +199,12 @@ export default function EditTeamProfile() {
 
       {/* Status Messages */}
       {success && (
-        <div className="p-3 rounded-lg bg-green-100 border border-green-200 text-green-700 text-sm">
+        <div className="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-900/40 text-green-700 dark:text-green-300 text-sm">
           {success}
         </div>
       )}
       {error && member && (
-        <div className="p-3 rounded-lg bg-red-100 border border-red-200 text-red-700 text-sm">
+        <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-900/40 text-red-700 dark:text-red-300 text-sm">
           {error}
         </div>
       )}
@@ -228,7 +228,7 @@ export default function EditTeamProfile() {
               rows={3}
               className="resize-y"
             />
-            <p className="text-xs text-gray-400 mt-2">Supports Markdown formatting</p>
+            <p className="text-xs text-gray-400 dark:text-zinc-500 mt-2">Supports Markdown formatting</p>
           </CardContent>
         </Card>
 
@@ -329,7 +329,7 @@ export default function EditTeamProfile() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="team-profile-github" className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <label htmlFor="team-profile-github" className="text-sm font-medium text-gray-600 dark:text-zinc-400 flex items-center gap-2">
                   <Github className="h-4 w-4" /> GitHub
                 </label>
                 <Input
@@ -340,7 +340,7 @@ export default function EditTeamProfile() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="team-profile-linkedin" className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <label htmlFor="team-profile-linkedin" className="text-sm font-medium text-gray-600 dark:text-zinc-400 flex items-center gap-2">
                   <Linkedin className="h-4 w-4" /> LinkedIn
                 </label>
                 <Input
@@ -351,7 +351,7 @@ export default function EditTeamProfile() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="team-profile-twitter" className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <label htmlFor="team-profile-twitter" className="text-sm font-medium text-gray-600 dark:text-zinc-400 flex items-center gap-2">
                   <Twitter className="h-4 w-4" /> Twitter
                 </label>
                 <Input
@@ -362,7 +362,7 @@ export default function EditTeamProfile() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="team-profile-instagram" className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <label htmlFor="team-profile-instagram" className="text-sm font-medium text-gray-600 dark:text-zinc-400 flex items-center gap-2">
                   <Instagram className="h-4 w-4" /> Instagram
                 </label>
                 <Input
@@ -374,7 +374,7 @@ export default function EditTeamProfile() {
               </div>
             </div>
             <div className="space-y-2">
-              <label htmlFor="team-profile-website" className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <label htmlFor="team-profile-website" className="text-sm font-medium text-gray-600 dark:text-zinc-400 flex items-center gap-2">
                 <Globe className="h-4 w-4" /> Website
               </label>
               <Input

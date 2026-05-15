@@ -28,9 +28,9 @@ const VALID_TABS = ['details', 'scanner', 'manage', 'certificates'] as const;
 type TabValue = (typeof VALID_TABS)[number];
 
 const STATUS_COLORS: Record<string, string> = {
-  UPCOMING: 'bg-blue-100 text-blue-800 border-blue-300',
-  ONGOING: 'bg-green-100 text-green-800 border-green-300',
-  PAST: 'bg-gray-100 text-gray-700 border-gray-300',
+  UPCOMING: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-300',
+  ONGOING: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-300',
+  PAST: 'bg-gray-100 dark:bg-surface-2 text-gray-700 dark:text-zinc-300 border-gray-300 dark:border-zinc-700',
 };
 
 export default function EventAdminHub() {
@@ -122,7 +122,7 @@ export default function EventAdminHub() {
   if (error || !event || !eventId) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <p className="text-lg text-gray-600">{error ?? 'Event not found.'}</p>
+        <p className="text-lg text-gray-600 dark:text-zinc-400">{error ?? 'Event not found.'}</p>
         <Link to={isAdminPath ? '/admin/event-registrations' : '/dashboard/events'}>
           <Button variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -154,7 +154,7 @@ export default function EventAdminHub() {
           </Link>
 
           <div className="min-w-0">
-            <h1 className="truncate text-xl sm:text-2xl font-bold text-gray-900">
+            <h1 className="truncate text-xl sm:text-2xl font-bold text-gray-900 dark:text-zinc-100">
               {event.title}
             </h1>
             <div className="mt-1 flex items-center gap-2">
@@ -209,7 +209,7 @@ export default function EventAdminHub() {
         <TabsContent value="details">
           <Card className="border-amber-200">
             <CardContent className="space-y-4 pt-6">
-              <h2 className="text-lg font-semibold text-gray-800">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-zinc-200">
                 Event Information
               </h2>
 
@@ -221,37 +221,37 @@ export default function EventAdminHub() {
 
               <dl className="grid gap-3 text-sm sm:grid-cols-2">
                 <div>
-                  <dt className="font-medium text-gray-500">Title</dt>
-                  <dd className="text-gray-900">{event.title}</dd>
+                  <dt className="font-medium text-gray-500 dark:text-zinc-400">Title</dt>
+                  <dd className="text-gray-900 dark:text-zinc-100">{event.title}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-500">Status</dt>
-                  <dd className="text-gray-900">{event.status}</dd>
+                  <dt className="font-medium text-gray-500 dark:text-zinc-400">Status</dt>
+                  <dd className="text-gray-900 dark:text-zinc-100">{event.status}</dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-gray-500">Start Date</dt>
-                  <dd className="text-gray-900">
+                  <dt className="font-medium text-gray-500 dark:text-zinc-400">Start Date</dt>
+                  <dd className="text-gray-900 dark:text-zinc-100">
                     {formatDateTime(event.startDate)}
                   </dd>
                 </div>
                 {event.endDate && (
                   <div>
-                    <dt className="font-medium text-gray-500">End Date</dt>
-                    <dd className="text-gray-900">
+                    <dt className="font-medium text-gray-500 dark:text-zinc-400">End Date</dt>
+                    <dd className="text-gray-900 dark:text-zinc-100">
                       {formatDateTime(event.endDate)}
                     </dd>
                   </div>
                 )}
                 {event.location && (
                   <div>
-                    <dt className="font-medium text-gray-500">Location</dt>
-                    <dd className="text-gray-900">{event.location}</dd>
+                    <dt className="font-medium text-gray-500 dark:text-zinc-400">Location</dt>
+                    <dd className="text-gray-900 dark:text-zinc-100">{event.location}</dd>
                   </div>
                 )}
                 {event.venue && (
                   <div>
-                    <dt className="font-medium text-gray-500">Venue</dt>
-                    <dd className="text-gray-900">{event.venue}</dd>
+                    <dt className="font-medium text-gray-500 dark:text-zinc-400">Venue</dt>
+                    <dd className="text-gray-900 dark:text-zinc-100">{event.venue}</dd>
                   </div>
                 )}
               </dl>
@@ -265,7 +265,7 @@ export default function EventAdminHub() {
                     </Button>
                   </Link>
                 ) : (
-                  <p className="text-sm text-gray-500">Contact an admin to edit event details.</p>
+                  <p className="text-sm text-gray-500 dark:text-zinc-400">Contact an admin to edit event details.</p>
                 )}
               </div>
             </CardContent>

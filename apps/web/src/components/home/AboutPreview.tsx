@@ -74,7 +74,7 @@ export function AboutPreview() {
           viewport={{ once: true, margin: '-50px' }}
           className="text-center mb-14 sm:mb-20"
         >
-          <h2 className="mb-5 px-2 text-3xl font-bold leading-[1.1] text-gray-900 sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl dark:text-zinc-100">
+          <h2 className="mb-5 px-2 text-3xl font-bold leading-[1.1] text-gray-900 dark:text-zinc-100 sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl dark:text-zinc-100">
             Grow Your{' '}
             <span className="relative">
               <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent dark:from-rose-400 dark:via-red-400 dark:to-orange-400">
@@ -90,7 +90,7 @@ export function AboutPreview() {
             </span>
           </h2>
           
-          <p className="mx-auto max-w-3xl px-2 text-base leading-relaxed text-gray-600 sm:text-lg md:text-xl dark:text-zinc-400">
+          <p className="mx-auto max-w-3xl px-2 text-base leading-relaxed text-gray-600 dark:text-zinc-400 sm:text-lg md:text-xl dark:text-zinc-400">
             {clubDescription}
           </p>
         </motion.div>
@@ -107,7 +107,7 @@ export function AboutPreview() {
               whileHover={!isMobile ? { y: -6, transition: { duration: 0.25 } } : undefined}
               className="group relative"
             >
-              <div className="relative h-full overflow-hidden rounded-2xl border border-gray-100/80 bg-white p-6 shadow-sm transition-all duration-400 hover:border-gray-200/80 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0f0f14] dark:hover:border-zinc-700 dark:hover:shadow-black/30 sm:p-7">
+              <div className="relative h-full overflow-hidden rounded-2xl border border-gray-100 dark:border-zinc-800/80 bg-white dark:bg-surface-1 p-6 shadow-sm transition-all duration-400 hover:border-gray-200 dark:border-zinc-800/80 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0f0f14] dark:hover:border-zinc-700 dark:hover:shadow-black/30 sm:p-7">
                 {/* Accent line at top */}
                 <div 
                   className="absolute top-0 left-0 right-0 h-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -129,7 +129,7 @@ export function AboutPreview() {
                 </div>
                 
                 {/* Content */}
-                <h3 className="relative mb-2.5 text-lg font-bold text-gray-900 group-hover:text-gray-900 dark:text-zinc-100 dark:group-hover:text-zinc-100 sm:text-xl">
+                <h3 className="relative mb-2.5 text-lg font-bold text-gray-900 dark:text-zinc-100 group-hover:text-gray-900 dark:text-zinc-100 dark:group-hover:text-zinc-100 sm:text-xl">
                   {feature.title}
                 </h3>
                 <p className="relative text-sm leading-relaxed text-gray-500 dark:text-zinc-400">
@@ -170,7 +170,7 @@ export function AboutPreview() {
                 >
                   {/* Divider between stats */}
                   {index > 0 && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-12 bg-white/20 hidden sm:block" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-12 bg-white dark:bg-surface-1/20 hidden sm:block" />
                   )}
                   <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-1 tracking-tight">{stat.value}</p>
                   <p className="text-xs font-medium uppercase tracking-wider text-amber-100/80 dark:text-zinc-200/80 sm:text-sm">{stat.label}</p>

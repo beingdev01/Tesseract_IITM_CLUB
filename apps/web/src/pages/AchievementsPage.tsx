@@ -56,7 +56,7 @@ function AchievementCard({
       className={`group h-full ${featured ? 'md:col-span-2 lg:col-span-1' : ''}`}
     >
       <Link to={`/achievements/${achievement.slug || achievement.id}`} className="block h-full">
-        <div className="relative h-full overflow-hidden rounded-3xl border border-amber-100/50 bg-white shadow-lg transition-all duration-500 hover:shadow-2xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
+        <div className="relative h-full overflow-hidden rounded-3xl border border-amber-100/50 bg-white dark:bg-surface-1 shadow-lg transition-all duration-500 hover:shadow-2xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
           {/* Animated gradient border on hover */}
           <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
             <div className="absolute inset-[-2px] rounded-3xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 blur-sm" />
@@ -93,7 +93,7 @@ function AchievementCard({
                         }
                   }
                   transition={{ duration: shouldReduceMotion ? 6 : 8, repeat: Infinity }}
-                  className={`absolute top-4 left-4 rounded-full bg-white/20 ${
+                  className={`absolute top-4 left-4 rounded-full bg-white dark:bg-surface-1/20 ${
                     isMobile ? 'h-16 w-16 blur-xl' : 'h-24 w-24 blur-2xl'
                   }`} 
                 />
@@ -108,7 +108,7 @@ function AchievementCard({
                         }
                   }
                   transition={{ duration: shouldReduceMotion ? 5 : 6, repeat: Infinity, delay: 1 }}
-                  className={`absolute bottom-4 right-4 rounded-full bg-white/20 ${
+                  className={`absolute bottom-4 right-4 rounded-full bg-white dark:bg-surface-1/20 ${
                     isMobile ? 'h-20 w-20 blur-xl' : 'h-32 w-32 blur-2xl'
                   }`} 
                 />
@@ -168,7 +168,7 @@ function AchievementCard({
             </div>
           </div>
           
-          <CardContent className="relative bg-white p-5 dark:bg-[#0f1015]">
+          <CardContent className="relative bg-white dark:bg-surface-1 p-5 dark:bg-[#0f1015]">
             {/* Subtle top accent line */}
             <div className="absolute top-0 left-5 right-5 h-px bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
             
@@ -216,7 +216,7 @@ function AchievementCard({
                   </span>
                 ))}
                 {achievement.tags.length > 3 && (
-                  <span className="inline-flex items-center rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500 dark:bg-zinc-900 dark:text-zinc-500">
+                  <span className="inline-flex items-center rounded-lg bg-gray-100 dark:bg-surface-2 px-2.5 py-1 text-xs font-medium text-gray-500 dark:bg-zinc-900 dark:text-zinc-500">
                     +{achievement.tags.length - 3}
                   </span>
                 )}
@@ -389,7 +389,7 @@ export default function AchievementsPage() {
                 whileHover={isMobile ? undefined : { y: -4, scale: 1.02 }}
                 className="col-span-2 relative group"
               >
-                <div className="relative rounded-2xl border border-amber-100 bg-white p-6 shadow-xl transition-all duration-300 hover:shadow-2xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
+                <div className="relative rounded-2xl border border-amber-100 bg-white dark:bg-surface-1 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
                   <div className="flex items-start justify-between mb-3">
                     <div className="rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-3 dark:border-zinc-700 dark:bg-zinc-900">
                       <Trophy className="h-7 w-7 text-amber-600 dark:text-rose-400" />
@@ -417,7 +417,7 @@ export default function AchievementsPage() {
                 whileHover={isMobile ? undefined : { y: -4, scale: 1.05 }}
                 className="relative group"
               >
-                <div className="h-full rounded-2xl border border-amber-100 bg-white p-5 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
+                <div className="h-full rounded-2xl border border-amber-100 bg-white dark:bg-surface-1 p-5 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
                   <div className="mb-3 w-fit rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-2.5 dark:border-zinc-700 dark:bg-zinc-900">
                     <Star className="h-5 w-5 text-amber-600 dark:text-rose-400" />
                   </div>
@@ -436,7 +436,7 @@ export default function AchievementsPage() {
                 whileHover={isMobile ? undefined : { y: -4, scale: 1.05 }}
                 className="relative group"
               >
-                <div className="h-full rounded-2xl border border-amber-100 bg-white p-5 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
+                <div className="h-full rounded-2xl border border-amber-100 bg-white dark:bg-surface-1 p-5 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0c0d12] dark:hover:shadow-black/30">
                   <div className="mb-3 w-fit rounded-xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 p-2.5 dark:border-zinc-700 dark:bg-zinc-900">
                     <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                   </div>
@@ -530,7 +530,7 @@ export default function AchievementsPage() {
               >
                 <Trophy className="h-12 w-12 text-red-400 dark:text-rose-400" />
               </motion.div>
-              <p className="text-red-500 mb-4 text-lg">{error}</p>
+              <p className="text-red-500 dark:text-red-400 mb-4 text-lg">{error}</p>
               <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">
                 Try Again
               </Button>
@@ -668,7 +668,7 @@ export default function AchievementsPage() {
                 Partner With Us
               </h2>
               
-              <p className="mx-auto mb-10 max-w-3xl text-base leading-relaxed text-gray-300 sm:text-lg">
+              <p className="mx-auto mb-10 max-w-3xl text-base leading-relaxed text-gray-300 dark:text-zinc-600 sm:text-lg">
                 Looking to sponsor events, collaborate on projects, or support our community? 
                 We're always open to partnerships that help students learn and grow. Let's build something meaningful together.
               </p>

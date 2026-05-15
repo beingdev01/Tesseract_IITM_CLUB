@@ -401,13 +401,13 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
   return (
     <div className="space-y-6">
       {loadError && (
-        <Card className="border-red-200 bg-red-50/80">
+        <Card className="border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30/80">
           <CardContent className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-400 mt-0.5" />
               <div>
-                <p className="font-medium text-red-700">Attendance data could not be loaded.</p>
-                <p className="text-sm text-red-600">{loadError}</p>
+                <p className="font-medium text-red-700 dark:text-red-300">Attendance data could not be loaded.</p>
+                <p className="text-sm text-red-600 dark:text-red-400">{loadError}</p>
               </div>
             </div>
             <Button variant="outline" onClick={() => void handleRefresh()}>
@@ -420,7 +420,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
       {eventDays > 1 && (
         <Card className="border-amber-200">
           <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-gray-700">Managing attendance for:</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">Managing attendance for:</p>
             <select
               value={selectedDay}
               onChange={(e) => setSelectedDay(Math.min(Math.max(parseInt(e.target.value, 10) || 1, 1), eventDays))}
@@ -461,7 +461,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-500" />
+              <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400" />
               <span className="text-2xl font-bold">{summary.present}</span>
               <span className="text-sm text-muted-foreground">
                 ({summary.percentage}%)
@@ -478,7 +478,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <XCircle className="h-5 w-5 text-red-500" />
+              <XCircle className="h-5 w-5 text-red-500 dark:text-red-400" />
               <span className="text-2xl font-bold">{summary.absent}</span>
             </div>
           </CardContent>
@@ -586,7 +586,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-950"
+          className="flex items-center gap-3 rounded-lg border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 dark:border-blue-800 dark:bg-blue-950"
         >
           <span className="text-sm font-medium">
             {selectedIds.size} selected
@@ -639,7 +639,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
                       type="checkbox"
                       checked={allFilteredSelected}
                       onChange={toggleSelectAll}
-                      className="h-4 w-4 rounded border-gray-300"
+                      className="h-4 w-4 rounded border-gray-300 dark:border-zinc-700"
                       aria-label="Select all visible attendance records"
                     />
                   </th>
@@ -680,7 +680,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
                       <tr
                         key={record.id}
                         className={`border-b transition-colors hover:bg-muted/30 ${
-                          selectedIds.has(record.id) ? 'bg-blue-50/50 dark:bg-blue-950/30' : ''
+                          selectedIds.has(record.id) ? 'bg-blue-50 dark:bg-blue-950/30/50 dark:bg-blue-950/30' : ''
                         }`}
                       >
                         {/* Checkbox */}
@@ -689,7 +689,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
                             type="checkbox"
                             checked={selectedIds.has(record.id)}
                             onChange={() => toggleSelect(record.id)}
-                            className="h-4 w-4 rounded border-gray-300"
+                            className="h-4 w-4 rounded border-gray-300 dark:border-zinc-700"
                             aria-label={`Select ${record.user.name}`}
                           />
                         </td>
@@ -733,11 +733,11 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5">
                             {dayState.attended ? (
-                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/40 dark:text-green-400">
+                              <Badge className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:bg-green-900/40 dark:text-green-400">
                                 Present
                               </Badge>
                             ) : (
-                              <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-900/40 dark:text-red-400">
+                              <Badge variant="destructive" className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-100 dark:bg-red-900/40 dark:text-red-400">
                                 Absent
                               </Badge>
                             )}
@@ -764,7 +764,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
                                 onClick={() => handleUnmark(record.id)}
                                 disabled={isLoading}
                                 title="Unmark attendance"
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                                className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950"
                                 aria-label={`Mark ${record.user.name} as absent`}
                               >
                                 {isLoading ? (
@@ -780,7 +780,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
                                 onClick={() => handleManualCheckin(record.id)}
                                 disabled={isLoading}
                                 title="Mark as present"
-                                className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950"
+                                className="text-green-600 dark:text-green-400 hover:text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950"
                                 aria-label={`Mark ${record.user.name} as present`}
                               >
                                 {isLoading ? (
@@ -888,7 +888,7 @@ export default function AttendanceManager({ eventId, token }: AttendanceManagerP
           </DialogHeader>
           <div className="space-y-4">
             {emailResult ? (
-              <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-center text-sm font-medium text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400">
+              <div className="rounded-lg border border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/30 p-4 text-center text-sm font-medium text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400">
                 {emailResult}
               </div>
             ) : (

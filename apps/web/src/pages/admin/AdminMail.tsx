@@ -239,7 +239,7 @@ export default function AdminMail() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-amber-900">Send Mail</h1>
-        <p className="text-gray-600">Compose and send themed emails to your community</p>
+        <p className="text-gray-600 dark:text-zinc-400">Compose and send themed emails to your community</p>
       </div>
 
       {/* Error */}
@@ -247,7 +247,7 @@ export default function AdminMail() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-lg text-red-700 dark:text-red-300"
         >
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
@@ -262,7 +262,7 @@ export default function AdminMail() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700"
+          className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900/40 rounded-lg text-green-700 dark:text-green-300"
         >
           <CheckCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <p className="text-sm">{success}</p>
@@ -290,16 +290,16 @@ export default function AdminMail() {
                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                   audience === opt.value
                     ? 'border-amber-500 bg-amber-50 shadow-sm'
-                    : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50/50'
+                    : 'border-gray-200 dark:border-zinc-800 hover:border-amber-300 hover:bg-amber-50/50'
                 }`}
               >
-                <div className={`mb-2 ${audience === opt.value ? 'text-amber-600' : 'text-gray-400'}`}>
+                <div className={`mb-2 ${audience === opt.value ? 'text-amber-600' : 'text-gray-400 dark:text-zinc-500'}`}>
                   {opt.icon}
                 </div>
-                <p className={`font-medium text-sm ${audience === opt.value ? 'text-amber-900' : 'text-gray-700'}`}>
+                <p className={`font-medium text-sm ${audience === opt.value ? 'text-amber-900' : 'text-gray-700 dark:text-zinc-300'}`}>
                   {opt.label}
                 </p>
-                <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">{opt.desc}</p>
               </button>
             ))}
           </div>
@@ -309,13 +309,13 @@ export default function AdminMail() {
             <div className="mt-4 space-y-4">
               {/* Manual email input */}
               <div className="space-y-2">
-                <label htmlFor="admin-mail-manual-email" className="text-xs font-medium text-gray-500 flex items-center gap-1">
+                <label htmlFor="admin-mail-manual-email" className="text-xs font-medium text-gray-500 dark:text-zinc-400 flex items-center gap-1">
                   <AtSign className="h-3 w-3" />
                   Add email manually
                 </label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-zinc-500" />
                     <Input
                       id="admin-mail-manual-email"
                       value={manualEmail}
@@ -340,19 +340,19 @@ export default function AdminMail() {
 
               {/* Divider */}
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-gray-200" />
-                <span className="text-xs text-gray-400 font-medium">or search registered members</span>
-                <div className="flex-1 h-px bg-gray-200" />
+                <div className="flex-1 h-px bg-gray-200 dark:bg-surface-3" />
+                <span className="text-xs text-gray-400 dark:text-zinc-500 font-medium">or search registered members</span>
+                <div className="flex-1 h-px bg-gray-200 dark:bg-surface-3" />
               </div>
 
               {/* Search type toggle */}
               <div className="flex items-center gap-2">
-                <p className="text-xs font-medium text-gray-500">Search in:</p>
-                <div className="flex rounded-md border border-gray-200 overflow-hidden text-xs">
+                <p className="text-xs font-medium text-gray-500 dark:text-zinc-400">Search in:</p>
+                <div className="flex rounded-md border border-gray-200 dark:border-zinc-800 overflow-hidden text-xs">
                   <button
                     onClick={() => { setSearchType('users'); setSearchResults([]); setHasSearched(false); }}
                     className={`px-3 py-1 transition-colors ${
-                      searchType === 'users' ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
+                      searchType === 'users' ? 'bg-amber-500 text-white' : 'bg-white dark:bg-surface-1 text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:bg-surface-1'
                     }`}
                   >
                     Users
@@ -360,7 +360,7 @@ export default function AdminMail() {
                   <button
                     onClick={() => { setSearchType('network'); setSearchResults([]); setHasSearched(false); }}
                     className={`px-3 py-1 transition-colors ${
-                      searchType === 'network' ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
+                      searchType === 'network' ? 'bg-amber-500 text-white' : 'bg-white dark:bg-surface-1 text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:bg-surface-1'
                     }`}
                   >
                     Network
@@ -370,7 +370,7 @@ export default function AdminMail() {
 
               {/* Search input */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-zinc-500" />
                 <Input
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
@@ -383,7 +383,7 @@ export default function AdminMail() {
                 {!searching && searchQuery && (
                   <button
                     onClick={() => { setSearchQuery(''); setSearchResults([]); setHasSearched(false); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:text-zinc-400"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -404,8 +404,8 @@ export default function AdminMail() {
                           {(r.name || r.email).charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <span className="font-medium text-gray-900 truncate block">{r.name}</span>
-                          <span className="text-gray-500 text-xs truncate block">{r.email}</span>
+                          <span className="font-medium text-gray-900 dark:text-zinc-100 truncate block">{r.name}</span>
+                          <span className="text-gray-500 dark:text-zinc-400 text-xs truncate block">{r.email}</span>
                         </div>
                       </div>
                       <span className="text-amber-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
@@ -418,7 +418,7 @@ export default function AdminMail() {
 
               {/* No results message */}
               {hasSearched && !searching && searchResults.length === 0 && searchQuery.length >= 2 && (
-                <p className="text-xs text-gray-500 text-center py-2">
+                <p className="text-xs text-gray-500 dark:text-zinc-400 text-center py-2">
                   No {searchType === 'network' ? 'network members' : 'users'} found for "{searchQuery}"
                 </p>
               )}
@@ -427,13 +427,13 @@ export default function AdminMail() {
               {selectedRecipients.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-500 flex items-center gap-1">
+                    <span className="text-xs font-medium text-gray-500 dark:text-zinc-400 flex items-center gap-1">
                       <Hash className="h-3 w-3" />
                       {selectedRecipients.length} recipient{selectedRecipients.length > 1 ? 's' : ''}
                     </span>
                     <button
                       onClick={clearRecipients}
-                      className="text-xs text-red-500 hover:text-red-700 transition-colors"
+                      className="text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300 transition-colors"
                     >
                       Clear all
                     </button>
@@ -448,7 +448,7 @@ export default function AdminMail() {
                         <span className="truncate">{r.name || r.email}</span>
                         <button
                           onClick={() => removeRecipient(r.email)}
-                          className="hover:text-red-600 transition-colors shrink-0"
+                          className="hover:text-red-600 dark:text-red-400 transition-colors shrink-0"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -474,7 +474,7 @@ export default function AdminMail() {
         <CardContent className="space-y-4">
           {/* Subject */}
           <div className="space-y-2">
-            <label htmlFor="admin-mail-subject" className="text-sm font-medium text-gray-700">Subject</label>
+            <label htmlFor="admin-mail-subject" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Subject</label>
             <Input
               id="admin-mail-subject"
               value={subject}
@@ -482,7 +482,7 @@ export default function AdminMail() {
               placeholder="Email subject line…"
               maxLength={200}
             />
-            <p className="text-xs text-gray-400 text-right">{subject.length}/200</p>
+            <p className="text-xs text-gray-400 dark:text-zinc-500 text-right">{subject.length}/200</p>
           </div>
 
           {/* CC / BCC toggle + inputs */}
@@ -494,17 +494,17 @@ export default function AdminMail() {
             >
               {showCcBcc ? 'Hide CC/BCC' : '+ Add CC/BCC'}
               {(ccEmails.length > 0 || bccEmails.length > 0) && !showCcBcc && (
-                <span className="ml-1 text-gray-500">
+                <span className="ml-1 text-gray-500 dark:text-zinc-400">
                   ({[ccEmails.length > 0 ? `${ccEmails.length} CC` : '', bccEmails.length > 0 ? `${bccEmails.length} BCC` : ''].filter(Boolean).join(', ')})
                 </span>
               )}
             </button>
 
             {showCcBcc && (
-              <div className="mt-3 space-y-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="mt-3 space-y-3 p-3 bg-gray-50 dark:bg-surface-1 rounded-lg border border-gray-200 dark:border-zinc-800">
                 {/* CC */}
                 <div className="space-y-1.5">
-                  <label htmlFor="admin-mail-cc" className="text-xs font-medium text-gray-500">CC</label>
+                  <label htmlFor="admin-mail-cc" className="text-xs font-medium text-gray-500 dark:text-zinc-400">CC</label>
                   <div className="flex gap-2">
                     <Input
                       id="admin-mail-cc"
@@ -529,9 +529,9 @@ export default function AdminMail() {
                   {ccEmails.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {ccEmails.map(email => (
-                        <span key={email} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                        <span key={email} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-xs font-medium">
                           <span className="truncate max-w-[160px]">{email}</span>
-                          <button onClick={() => setCcEmails(prev => prev.filter(e => e !== email))} className="hover:text-red-600 shrink-0">
+                          <button onClick={() => setCcEmails(prev => prev.filter(e => e !== email))} className="hover:text-red-600 dark:text-red-400 shrink-0">
                             <X className="h-3 w-3" />
                           </button>
                         </span>
@@ -542,7 +542,7 @@ export default function AdminMail() {
 
                 {/* BCC */}
                 <div className="space-y-1.5">
-                  <label htmlFor="admin-mail-bcc" className="text-xs font-medium text-gray-500">BCC</label>
+                  <label htmlFor="admin-mail-bcc" className="text-xs font-medium text-gray-500 dark:text-zinc-400">BCC</label>
                   <div className="flex gap-2">
                     <Input
                       id="admin-mail-bcc"
@@ -567,9 +567,9 @@ export default function AdminMail() {
                   {bccEmails.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {bccEmails.map(email => (
-                        <span key={email} className="inline-flex items-center gap-1 px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs font-medium">
+                        <span key={email} className="inline-flex items-center gap-1 px-2 py-1 bg-gray-200 dark:bg-surface-3 text-gray-700 dark:text-zinc-300 rounded-full text-xs font-medium">
                           <span className="truncate max-w-[160px]">{email}</span>
-                          <button onClick={() => setBccEmails(prev => prev.filter(e => e !== email))} className="hover:text-red-600 shrink-0">
+                          <button onClick={() => setBccEmails(prev => prev.filter(e => e !== email))} className="hover:text-red-600 dark:text-red-400 shrink-0">
                             <X className="h-3 w-3" />
                           </button>
                         </span>
@@ -585,12 +585,12 @@ export default function AdminMail() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <label htmlFor="admin-mail-body" className="text-sm font-medium text-gray-700">Body</label>
-                <div className="flex rounded-md border border-gray-200 overflow-hidden text-xs">
+                <label htmlFor="admin-mail-body" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Body</label>
+                <div className="flex rounded-md border border-gray-200 dark:border-zinc-800 overflow-hidden text-xs">
                   <button
                     onClick={() => { setBodyType('markdown'); setShowPreview(false); }}
                     className={`flex items-center gap-1 px-2.5 py-1 transition-colors ${
-                      bodyType === 'markdown' ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 hover:bg-amber-50'
+                      bodyType === 'markdown' ? 'bg-amber-500 text-white' : 'bg-white dark:bg-surface-1 text-gray-600 dark:text-zinc-400 hover:bg-amber-50'
                     }`}
                   >
                     <FileText className="h-3 w-3" /> MD
@@ -598,7 +598,7 @@ export default function AdminMail() {
                   <button
                     onClick={() => { setBodyType('html'); setShowPreview(false); }}
                     className={`flex items-center gap-1 px-2.5 py-1 transition-colors ${
-                      bodyType === 'html' ? 'bg-amber-500 text-white' : 'bg-white text-gray-600 hover:bg-amber-50'
+                      bodyType === 'html' ? 'bg-amber-500 text-white' : 'bg-white dark:bg-surface-1 text-gray-600 dark:text-zinc-400 hover:bg-amber-50'
                     }`}
                   >
                     <Code className="h-3 w-3" /> HTML
@@ -627,8 +627,8 @@ export default function AdminMail() {
                   />
                 </div>
               ) : (
-                <div className="min-h-[200px] p-4 border rounded-lg bg-gray-50 prose prose-sm max-w-none">
-                  {body ? <Markdown>{body}</Markdown> : <p className="text-gray-400 italic">Nothing to preview</p>}
+                <div className="min-h-[200px] p-4 border rounded-lg bg-gray-50 dark:bg-surface-1 prose prose-sm max-w-none">
+                  {body ? <Markdown>{body}</Markdown> : <p className="text-gray-400 dark:text-zinc-500 italic">Nothing to preview</p>}
                 </div>
               )
             ) : (
@@ -644,7 +644,7 @@ export default function AdminMail() {
                 }
               />
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-zinc-400">
               {bodyType === 'html'
                 ? 'HTML will be sanitized before sending — scripts, iframes, and dangerous attributes are stripped.'
                 : 'The email will be sent using the premium Tesseract dark theme template.'}

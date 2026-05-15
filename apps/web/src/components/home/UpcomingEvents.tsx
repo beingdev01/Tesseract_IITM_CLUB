@@ -94,7 +94,7 @@ export function UpcomingEvents() {
             className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6"
           >
           <div>
-            <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:mb-3 sm:text-4xl md:text-5xl dark:text-zinc-100">
+            <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-zinc-100 sm:mb-3 sm:text-4xl md:text-5xl dark:text-zinc-100">
               Upcoming{' '}
               <span className="bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent dark:from-rose-400 dark:to-orange-400">
                 Events
@@ -104,7 +104,7 @@ export function UpcomingEvents() {
           </div>
           
           <Link to="/events" className="hidden sm:block">
-            <Button variant="outline" size="lg" className="group border-gray-300 hover:border-amber-500 hover:bg-amber-50 dark:border-zinc-700 dark:text-zinc-100 dark:hover:border-rose-400 dark:hover:bg-zinc-900">
+            <Button variant="outline" size="lg" className="group border-gray-300 dark:border-zinc-700 hover:border-amber-500 hover:bg-amber-50 dark:border-zinc-700 dark:text-zinc-100 dark:hover:border-rose-400 dark:hover:bg-zinc-900">
               View All Events
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -150,7 +150,7 @@ export function UpcomingEvents() {
                   className="group"
                 >
                   <Link to={eventUrl} className="block h-full">
-                    <div className="h-full overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-500 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0f0f14] dark:hover:shadow-black/30">
+                    <div className="h-full overflow-hidden rounded-2xl border border-gray-100 dark:border-zinc-800 bg-white dark:bg-surface-1 shadow-sm transition-all duration-500 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0f0f14] dark:hover:shadow-black/30">
                       {/* Image Container - 16:9 aspect ratio for wide posters */}
                       <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
                         {event.imageUrl ? (
@@ -172,7 +172,7 @@ export function UpcomingEvents() {
                       {/* Badges */}
                       <div className="absolute top-4 left-4 flex gap-2">
                         {event.eventType && (
-                          <Badge className="bg-white/90 text-gray-800 backdrop-blur-sm shadow-sm">
+                          <Badge className="bg-white dark:bg-surface-1/90 text-gray-800 dark:text-zinc-200 backdrop-blur-sm shadow-sm">
                             {event.eventType}
                           </Badge>
                         )}
@@ -194,7 +194,7 @@ export function UpcomingEvents() {
                       
                       {/* Date Badge */}
                         <div className="absolute bottom-4 left-4">
-                        <div className="rounded-xl bg-white px-4 py-2 shadow-lg dark:bg-zinc-900">
+                        <div className="rounded-xl bg-white dark:bg-surface-1 px-4 py-2 shadow-lg dark:bg-zinc-900">
                           <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-zinc-400">
                             {getWeekdayShort(event.startDate)}
                           </p>
@@ -210,7 +210,7 @@ export function UpcomingEvents() {
                     
                     {/* Content */}
                     <div className="p-6">
-                      <h3 className="mb-2 line-clamp-1 text-xl font-bold text-gray-900 transition-colors group-hover:text-amber-600 dark:text-zinc-100 dark:group-hover:text-rose-300">
+                      <h3 className="mb-2 line-clamp-1 text-xl font-bold text-gray-900 dark:text-zinc-100 transition-colors group-hover:text-amber-600 dark:text-zinc-100 dark:group-hover:text-rose-300">
                         {event.title}
                       </h3>
                       <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-zinc-400">
@@ -240,7 +240,7 @@ export function UpcomingEvents() {
                       {/* CTA */}
                       {isRegistered ? (
                         <Button 
-                          className="w-full border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-200 dark:hover:bg-emerald-500/20"
+                          className="w-full border border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-200 dark:hover:bg-emerald-500/20"
                         >
                           Registered - View Details
                         </Button>
@@ -249,7 +249,7 @@ export function UpcomingEvents() {
                           className={`w-full ${
                             regStatus.canRegister 
                               ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 dark:from-rose-500 dark:to-orange-400 dark:hover:from-rose-400 dark:hover:to-orange-300'
-                              : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                              : 'bg-gray-100 dark:bg-surface-2 text-gray-500 dark:text-zinc-400 hover:bg-gray-200 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800'
                           }`}
                         >
                           {regStatus.canRegister ? 'View & Register' : 'View Details'}

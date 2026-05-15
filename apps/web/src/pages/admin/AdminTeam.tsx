@@ -348,7 +348,7 @@ export default function AdminTeam() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-amber-900">Team Management</h1>
-          <p className="text-gray-600">Manage club team members</p>
+          <p className="text-gray-600 dark:text-zinc-400">Manage club team members</p>
         </div>
         <Button onClick={() => { resetForm(); setShowForm(!showForm); }}>
           <Plus className="h-4 w-4 mr-2" />
@@ -360,7 +360,7 @@ export default function AdminTeam() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-lg text-red-700 dark:text-red-300"
         >
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
@@ -440,7 +440,7 @@ export default function AdminTeam() {
                   onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                   placeholder="Leave empty for auto-generated avatar"
                 />
-                <p className="text-xs text-gray-500">Leave empty to auto-generate an avatar or link user to copy their avatar</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Leave empty to auto-generate an avatar or link user to copy their avatar</p>
               </div>
               <div className="grid gap-4 sm:grid-cols-4">
                 <div className="space-y-2">
@@ -488,7 +488,7 @@ export default function AdminTeam() {
                   Link to User Account
                 </p>
                 {linkingUserId ? (
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-white border border-amber-200">
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-white dark:bg-surface-1 border border-amber-200">
                     <div className="h-8 w-8 rounded-full overflow-hidden bg-amber-200 flex-shrink-0">
                       <img
                         src={linkedUserInfo?.avatar || '/fallback-avatar.svg'}
@@ -502,7 +502,7 @@ export default function AdminTeam() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{linkedUserInfo?.name || 'Linked User'}</p>
                       {linkedUserInfo?.email && (
-                        <p className="text-xs text-gray-500 truncate">{linkedUserInfo.email}</p>
+                        <p className="text-xs text-gray-500 dark:text-zinc-400 truncate">{linkedUserInfo.email}</p>
                       )}
                     </div>
                       <Button
@@ -519,7 +519,7 @@ export default function AdminTeam() {
                         }
                         clearLinkedUserState();
                       }}
-                      className="text-red-600 hover:text-red-700"
+                      className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                     >
                       <Unlink className="h-4 w-4 mr-1" />
                       Unlink
@@ -528,7 +528,7 @@ export default function AdminTeam() {
                 ) : (
                   <div className="space-y-2">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-zinc-500" />
                       <Input
                         placeholder="Search users by name or email..."
                         value={userSearchQuery}
@@ -537,7 +537,7 @@ export default function AdminTeam() {
                       />
                     </div>
                     {searchingUsers && (
-                      <p className="text-xs text-gray-500">Searching...</p>
+                      <p className="text-xs text-gray-500 dark:text-zinc-400">Searching...</p>
                     )}
                     {userSearchResults.length > 0 && (
                       <div className="space-y-1 max-h-40 overflow-y-auto">
@@ -587,7 +587,7 @@ export default function AdminTeam() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium truncate">{user.name}</p>
-                              <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                              <p className="text-xs text-gray-500 dark:text-zinc-400 truncate">{user.email}</p>
                             </div>
                             <Link2 className="h-4 w-4 text-amber-600" />
                           </button>
@@ -596,18 +596,18 @@ export default function AdminTeam() {
                     )}
                   </div>
                 )}
-                <p className="text-xs text-gray-500">Link this team member to a registered user account for profile sync and edit permissions</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Link this team member to a registered user account for profile sync and edit permissions</p>
               </div>
 
               {/* Profile Content Section */}
-              <div className="space-y-4 p-4 rounded-lg border border-gray-200 bg-gray-50/50">
+              <div className="space-y-4 p-4 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1/50">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium">Profile Content (Optional)</p>
                   <Badge variant="secondary">Rich Text/Markdown</Badge>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <label htmlFor="admin-team-slug" className="text-sm font-medium text-gray-600">URL Slug</label>
+                    <label htmlFor="admin-team-slug" className="text-sm font-medium text-gray-600 dark:text-zinc-400">URL Slug</label>
                     <Input
                       id="admin-team-slug"
                       value={form.slug}
@@ -616,7 +616,7 @@ export default function AdminTeam() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="admin-team-website" className="text-sm font-medium text-gray-600">Website</label>
+                    <label htmlFor="admin-team-website" className="text-sm font-medium text-gray-600 dark:text-zinc-400">Website</label>
                     <Input
                       id="admin-team-website"
                       value={form.website}
@@ -626,7 +626,7 @@ export default function AdminTeam() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="admin-team-bio" className="text-sm font-medium text-gray-600">Bio</label>
+                  <label htmlFor="admin-team-bio" className="text-sm font-medium text-gray-600 dark:text-zinc-400">Bio</label>
                   <Textarea
                     id="admin-team-bio"
                     value={form.bio}
@@ -636,7 +636,7 @@ export default function AdminTeam() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="admin-team-vision" className="text-sm font-medium text-gray-600">Vision</label>
+                  <label htmlFor="admin-team-vision" className="text-sm font-medium text-gray-600 dark:text-zinc-400">Vision</label>
                   <Textarea
                     id="admin-team-vision"
                     value={form.vision}
@@ -646,7 +646,7 @@ export default function AdminTeam() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="admin-team-story" className="text-sm font-medium text-gray-600">Story</label>
+                  <label htmlFor="admin-team-story" className="text-sm font-medium text-gray-600 dark:text-zinc-400">Story</label>
                   <Textarea
                     id="admin-team-story"
                     value={form.story}
@@ -656,7 +656,7 @@ export default function AdminTeam() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="admin-team-expertise" className="text-sm font-medium text-gray-600">Expertise</label>
+                  <label htmlFor="admin-team-expertise" className="text-sm font-medium text-gray-600 dark:text-zinc-400">Expertise</label>
                   <Textarea
                     id="admin-team-expertise"
                     value={form.expertise}
@@ -666,7 +666,7 @@ export default function AdminTeam() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="admin-team-achievements" className="text-sm font-medium text-gray-600">Achievements</label>
+                  <label htmlFor="admin-team-achievements" className="text-sm font-medium text-gray-600 dark:text-zinc-400">Achievements</label>
                   <Textarea
                     id="admin-team-achievements"
                     value={form.achievements}
@@ -702,8 +702,8 @@ export default function AdminTeam() {
         </CardHeader>
         <CardContent>
           {members.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Shield className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <div className="text-center py-8 text-gray-500 dark:text-zinc-400">
+              <Shield className="h-12 w-12 mx-auto mb-4 text-gray-300 dark:text-zinc-600" />
               <p>No team members yet.</p>
               <p className="text-sm mt-1">Add your first team member above!</p>
             </div>
@@ -736,7 +736,7 @@ export default function AdminTeam() {
                       </div>
                       <div>
                         <p className="font-medium text-amber-900">{member.name}</p>
-                        <p className="text-sm text-gray-600">{member.role}</p>
+                        <p className="text-sm text-gray-600 dark:text-zinc-400">{member.role}</p>
                         <div className="flex items-center gap-1.5 mt-1">
                           <Badge variant="secondary">{member.team}</Badge>
                           {member.slug && (
@@ -765,7 +765,7 @@ export default function AdminTeam() {
                         variant="ghost"
                         size="icon"
                         onClick={() => setMemberToDelete(member)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        className="text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
