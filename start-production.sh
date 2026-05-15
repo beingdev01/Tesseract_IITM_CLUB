@@ -1,14 +1,16 @@
 #!/bin/bash
 
 # Production start script for Tesseract.
-# Runs the API and the frontend (vite preview) side-by-side.
+# Runs the API. The frontend (apps/web/dist) is served statically by the platform
+# (Render's static publish per render.yaml); this script does not run `vite preview`,
+# which is a dev-mode server and not production-grade.
 
 set -e
 
-echo "🚀 Starting Tesseract in production mode..."
+echo "Starting Tesseract API in production mode..."
 
 if [ ! -f .env ]; then
-    echo "❌ Error: .env file not found!"
+    echo "Error: .env file not found!"
     echo "Please copy .env.example to .env and configure it properly."
     exit 1
 fi
@@ -25,24 +27,17 @@ for var in "${required_vars[@]}"; do
 done
 
 if [ ${#missing_vars[@]} -gt 0 ]; then
-    echo "❌ Error: Missing required environment variables:"
+    echo "Error: Missing required environment variables:"
     for var in "${missing_vars[@]}"; do
         echo "  - $var"
     done
     exit 1
 fi
 
-echo "📦 Building application..."
+echo "Building application..."
 npm run build
 
-echo "🌐 Starting frontend and backend servers..."
-echo "   Backend: ${BACKEND_URL:-http://localhost:5001}"
-echo "   Frontend: ${FRONTEND_URL:-http://localhost:5173}"
+echo "Backend: ${BACKEND_URL:-http://localhost:5001}"
+echo "Frontend dist: apps/web/dist (serve via your static host or CDN; not started here)"
 
-NODE_ENV=production npm run start --workspace=apps/api &
-BACKEND_PID=$!
-
-NODE_ENV=production npm run preview --workspace=apps/web &
-FRONTEND_PID=$!
-
-wait $BACKEND_PID $FRONTEND_PID
+exec env NODE_ENV=production npm run start --workspace=apps/api

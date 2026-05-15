@@ -433,8 +433,9 @@ Common variables referenced by API code:
 - `ENABLE_REQUEST_LOGGING`
 - `SOCKET_PING_TIMEOUT_MS`, `SOCKET_PING_INTERVAL_MS`
 - `API_BASE_URL`, `PUBLIC_API_BASE_URL`, `RENDER_EXTERNAL_URL`
+- `INVITE_LINK_WH` — optional WhatsApp invite URL appended to the verified-user welcome email.
 
-No new environment variables were added for the games platform.
+A template lives at [apps/api/.env.example](apps/api/.env.example).
 
 ---
 
