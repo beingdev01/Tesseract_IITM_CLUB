@@ -24,19 +24,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Markdown } from '@/components/ui/markdown';
+import { api } from '@/lib/api';
+import type { MailRecipient as Recipient } from '@/lib/api';
 
 type BodyType = 'markdown' | 'html';
 type Audience = 'all_users' | 'all_network' | 'specific';
 type SearchType = 'users' | 'network';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-
-interface Recipient {
-  id: string;
-  name: string;
-  email: string;
-  role?: string;
-}
 
 export default function AdminMail() {
   const { token } = useAuth();
@@ -77,7 +70,9 @@ export default function AdminMail() {
   // Refs to avoid stale closures
   const selectedRef = useRef(selectedRecipients);
   selectedRef.current = selectedRecipients;
-  const abortRef = useRef<AbortController | null>(null);
+  // Monotonic run id — newer searches discard older responses (replaces AbortController
+  // since the typed client doesn't plumb signals).
+  const latestRunIdRef = useRef(0);
 
   // --- Search function (stable — no deps on selectedRecipients) ---
   const doSearch = useCallback(async (query: string, type: SearchType) => {
@@ -87,36 +82,19 @@ export default function AdminMail() {
       return;
     }
 
-    // Cancel any in-flight request
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
+    const runId = ++latestRunIdRef.current;
     setSearching(true);
     setHasSearched(false);
 
     try {
-      const url = `${API_URL}/mail/recipients?search=${encodeURIComponent(query)}&type=${type}`;
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` },
-        signal: controller.signal,
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        // Filter out already-selected recipients using ref (no stale closure)
-        const selectedEmails = new Set(selectedRef.current.map(r => r.email));
-        const filtered = (data.data as Recipient[]).filter(r => !selectedEmails.has(r.email));
-        setSearchResults(filtered);
-      } else {
-        setSearchResults([]);
-      }
-    } catch (err) {
-      if ((err as Error).name !== 'AbortError') {
-        setSearchResults([]);
-      }
+      const results = await api.getMailRecipients(query, type, token);
+      if (runId !== latestRunIdRef.current) return;
+      const selectedEmails = new Set(selectedRef.current.map(r => r.email));
+      setSearchResults(results.filter(r => !selectedEmails.has(r.email)));
+    } catch {
+      if (runId === latestRunIdRef.current) setSearchResults([]);
     } finally {
-      if (!controller.signal.aborted) {
+      if (runId === latestRunIdRef.current) {
         setSearching(false);
         setHasSearched(true);
       }
@@ -139,8 +117,8 @@ export default function AdminMail() {
     return () => clearTimeout(timer);
   }, [searchQuery, searchType, audience, doSearch]);
 
-  // Cleanup abort controller on unmount
-  useEffect(() => () => abortRef.current?.abort(), []);
+  // Invalidate any in-flight search on unmount so its response is dropped.
+  useEffect(() => () => { latestRunIdRef.current = -1; }, []);
 
   // --- Recipient management ---
   const addRecipient = (recipient: Recipient) => {
@@ -217,7 +195,7 @@ export default function AdminMail() {
     setSuccess(null);
 
     try {
-      const payload = {
+      const data = await api.sendMail({
         audience,
         emails: audience === 'specific' ? selectedRecipients.map(r => r.email) : undefined,
         cc: ccEmails.length > 0 ? ccEmails : undefined,
@@ -225,21 +203,9 @@ export default function AdminMail() {
         subject: subject.trim(),
         body: body.trim(),
         bodyType,
-      };
+      }, token);
 
-      const res = await fetch(`${API_URL}/mail/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || 'Failed to send email');
-
-      setSuccess(data.message || `Email sent to ${data.data?.recipientCount ?? 0} recipient(s)`);
+      setSuccess(data.message || `Email sent to ${data.recipientCount ?? 0} recipient(s)`);
       setConfirmSend(false);
       setSubject('');
       setBody('');

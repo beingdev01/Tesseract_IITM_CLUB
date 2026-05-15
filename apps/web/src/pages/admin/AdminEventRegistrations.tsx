@@ -347,30 +347,15 @@ export default function AdminEventRegistrations() {
               setEventSyncSubmitting(true);
               setEventSyncResult(null);
               try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-                const res = await fetch(`${apiUrl}/settings/event-status/sync-now`, {
-                  method: 'POST',
-                  headers: { Authorization: `Bearer ${token}` },
-                  credentials: 'include',
-                });
-                const data = await res.json();
-                if (data.success && data.data) {
-                  setEventSyncResult(data.data);
-                  await loadEvents();
-                } else {
-                  setEventSyncResult({
-                    toOngoing: 0,
-                    toPastFromOngoing: 0,
-                    toPastFromUpcoming: 0,
-                    error: data.error?.message || 'Sync failed',
-                  });
-                }
-              } catch {
+                const data = await api.syncEventStatus(token);
+                setEventSyncResult(data);
+                await loadEvents();
+              } catch (err) {
                 setEventSyncResult({
                   toOngoing: 0,
                   toPastFromOngoing: 0,
                   toPastFromUpcoming: 0,
-                  error: 'Network error',
+                  error: err instanceof Error ? err.message : 'Sync failed',
                 });
               } finally {
                 setEventSyncSubmitting(false);

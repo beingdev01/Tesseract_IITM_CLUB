@@ -4,8 +4,7 @@ import { AlertCircle } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Brackets, TesseractHero, GateBar, MetaChip } from '@/components/tesseract';
 import { useAuth } from '@/context/AuthContext';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+import { api } from '@/lib/api';
 
 const ERROR_MESSAGES: Record<string, string> = {
   google_auth_failed: 'Google authentication failed. Try again.',
@@ -26,7 +25,7 @@ export default function SignInPage() {
   }, [user, navigate]);
 
   const handleGoogleSignIn = () => {
-    window.location.href = `${API_URL}/auth/google`;
+    window.location.href = api.getGoogleOAuthUrl();
   };
 
   return (

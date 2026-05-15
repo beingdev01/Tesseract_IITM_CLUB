@@ -171,9 +171,7 @@ async function requestBlob(endpoint: string, options: RequestOptions = {}): Prom
 
 export interface AuthProviders {
   google: boolean;
-  github: boolean;
   devLogin: boolean;
-  emailPassword: boolean;
 }
 
 export type GameCategory = 'multiplayer' | 'party' | 'solo' | 'esports';
@@ -483,6 +481,48 @@ export interface SecurityEnvStatus {
   runtimeOnlyMode?: boolean;
   runtimeOnlyApplied?: boolean;
   updatedAt: string | null;
+}
+
+export type HiringApplicationStatus = 'PENDING' | 'INTERVIEW_SCHEDULED' | 'SELECTED' | 'REJECTED';
+export type HiringApplyingRole = 'TECHNICAL' | 'DSA_CHAMPS' | 'DESIGNING' | 'SOCIAL_MEDIA' | 'MANAGEMENT';
+
+export interface HiringApplication {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  department: string;
+  year: string;
+  skills: string | null;
+  applyingRole: HiringApplyingRole;
+  status: HiringApplicationStatus;
+  userId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user?: { id: string; name: string; email: string; avatar?: string | null; role?: string } | null;
+}
+
+export interface HiringStats {
+  total: number;
+  byStatus: Record<string, number>;
+  byRole: Record<string, number>;
+}
+
+export interface MailRecipient {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+}
+
+export interface MailSendPayload {
+  audience: 'all_users' | 'all_network' | 'specific';
+  emails?: string[];
+  cc?: string[];
+  bcc?: string[];
+  subject: string;
+  body: string;
+  bodyType?: 'markdown' | 'html';
 }
 
 // Extended types for event details
@@ -1517,6 +1557,7 @@ export interface HomePageData {
 export const api = {
   // Auth
   getProviders: () => request<AuthProviders>('/auth/providers'),
+  getGoogleOAuthUrl: () => `${API_BASE_URL}/auth/google`,
   getMe: (token: string) => request<User>('/auth/me', { token }),
   getMeWithToken: async (token?: string | null) => {
     const response = await requestEnvelope<User>('/auth/me', token ? { token } : {});
@@ -1802,10 +1843,87 @@ export const api = {
   
   // Settings
   getSettings: () => request<Settings>('/settings/public'),
+  getAdminSettings: (token: string) => request<Settings>('/settings', { token }),
   updateSettings: (data: Partial<Settings>, token: string) =>
     request<Settings>('/settings', { method: 'PUT', body: JSON.stringify(data), token }),
   patchSetting: (key: string, value: boolean | string | number, token: string) =>
     request<Settings>(`/settings/${key}`, { method: 'PATCH', body: JSON.stringify({ value }), token }),
+  updateEmailTemplates: (
+    data: { emailWelcomeBody?: string; emailAnnouncementBody?: string; emailEventBody?: string; emailFooterText?: string },
+    token: string,
+  ) => request<Settings>('/settings/email-templates', { method: 'PATCH', body: JSON.stringify(data), token }),
+  syncEventStatus: (token: string) =>
+    request<{ toOngoing: number; toPastFromOngoing: number; toPastFromUpcoming: number }>(
+      '/settings/event-status/sync-now',
+      { method: 'POST', token },
+    ),
+  resetSettings: (token: string) =>
+    request<Settings>('/settings/reset', { method: 'POST', token }),
+
+  // Mail (admin)
+  getMailRecipients: (search: string, type: 'users' | 'network', token: string) =>
+    request<MailRecipient[]>(
+      `/mail/recipients?search=${encodeURIComponent(search)}&type=${encodeURIComponent(type)}`,
+      { token },
+    ),
+  sendMail: (payload: MailSendPayload, token: string) =>
+    request<{ recipientCount: number; message?: string }>('/mail/send', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      token,
+    }),
+
+  // Hiring (admin)
+  getHiringApplications: async (
+    params: { status?: string; role?: string; search?: string; page?: number; limit?: number },
+    token: string,
+  ) => {
+    const qs = new URLSearchParams();
+    if (params.status) qs.set('status', params.status);
+    if (params.role) qs.set('role', params.role);
+    if (params.search) qs.set('search', params.search);
+    if (params.page) qs.set('page', String(params.page));
+    if (params.limit) qs.set('limit', String(params.limit));
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    const envelope = await requestEnvelope<HiringApplication[]>(
+      `/hiring/applications${query}`,
+      { token },
+    );
+    const meta = (envelope.meta as { total?: number; page?: number; limit?: number; totalPages?: number; hasMore?: boolean } | undefined) ?? {};
+    return {
+      applications: Array.isArray(envelope.data) ? envelope.data : [],
+      total: meta.total ?? 0,
+      page: meta.page ?? 1,
+      limit: meta.limit ?? 20,
+      totalPages: meta.totalPages ?? 0,
+      hasMore: meta.hasMore ?? false,
+    };
+  },
+  getHiringApplication: (id: string, token: string) =>
+    request<HiringApplication>(`/hiring/applications/${id}`, { token }),
+  updateHiringStatus: (id: string, status: HiringApplicationStatus, token: string) =>
+    request<{ message: string; application: HiringApplication }>(
+      `/hiring/applications/${id}/status`,
+      { method: 'PATCH', body: JSON.stringify({ status }), token },
+    ),
+  deleteHiringApplication: (id: string, token: string) =>
+    request<{ message: string }>(`/hiring/applications/${id}`, { method: 'DELETE', token }),
+  getHiringStats: (token: string) =>
+    request<HiringStats>('/hiring/stats', { token }),
+  exportHiringApplications: (
+    filters: { status?: string; role?: string } | undefined,
+    token: string,
+  ) => {
+    const qs = new URLSearchParams();
+    if (filters?.status) qs.set('status', filters.status);
+    if (filters?.role) qs.set('role', filters.role);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return requestBlob(`/hiring/export${query}`, { token });
+  },
+
+  // Users export
+  exportUsersExcel: (token: string) =>
+    requestBlob('/users/export', { token }),
   getSecurityEnvStatus: (token: string) =>
     request<SecurityEnvStatus>('/settings/security-env', { token }),
   updateSecurityEnvSettings: (
@@ -2010,8 +2128,7 @@ export const api = {
   uploadImage: async (file: File, token: string): Promise<string> => {
     const formData = new FormData();
     formData.append('image', file);
-    const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:5001/api';
-    const res = await fetch(`${BASE_URL}/upload/image`, {
+    const res = await fetch(`${API_BASE_URL}/upload/image`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
@@ -2360,9 +2477,11 @@ export const api = {
   getMyTeam: async (eventId: string, token: string): Promise<EventTeam | null> => {
     try {
       return await request<EventTeam>(`/teams/my-team/${eventId}`, { token });
-    } catch {
-      // 404 means no team - return null instead of throwing
-      return null;
+    } catch (err) {
+      // 404 means no team — return null. Bubble everything else so the UI can
+      // distinguish "no team" from "server unreachable" / "auth expired".
+      if (err instanceof Error && /404|not.?found|no team/i.test(err.message)) return null;
+      throw err;
     }
   },
 

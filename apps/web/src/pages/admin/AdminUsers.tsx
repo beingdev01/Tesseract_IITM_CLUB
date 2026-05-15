@@ -72,7 +72,6 @@ export default function AdminUsers() {
     course: '',
     branch: '',
     year: '',
-    password: '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -238,7 +237,6 @@ export default function AdminUsers() {
       course: user.course || '',
       branch: user.branch || '',
       year: user.year || '',
-      password: '',
     });
   };
 
@@ -261,14 +259,12 @@ export default function AdminUsers() {
     try {
       setSaving(true);
       setError(null);
-      const password = editForm.password.trim();
       const payload = {
         name: editForm.name,
         phone: editForm.phone,
         course: editForm.course,
         branch: editForm.branch,
         year: editForm.year,
-        ...(password && { password }),
       };
 
       await api.updateUser(editingUser.id, payload, token);
@@ -285,11 +281,7 @@ export default function AdminUsers() {
     if (!token) return;
     try {
       setExporting(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}/users/export`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error('Export failed');
-      const blob = await response.blob();
+      const blob = await api.exportUsersExcel(token);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -802,20 +794,6 @@ export default function AdminUsers() {
                       <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
-                </div>
-
-                <div className="pt-2 border-t border-gray-100">
-                  <Label htmlFor="edit-password">New Password (Optional)</Label>
-                  <Input
-                    id="edit-password"
-                    type="password"
-                    value={editForm.password || ''}
-                    onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-                    placeholder="Leave empty to keep current password"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Entering a value here will override the user's current password.
-                  </p>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4">

@@ -6,11 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Chrome, 
-  Github, 
-  AlertCircle, 
-  Loader2, 
+import {
+  Chrome,
+  AlertCircle,
+  Loader2,
   CheckCircle2,
   Users,
   Palette,
@@ -28,8 +27,6 @@ import type { AuthProviders } from '@/lib/api';
 import { extractApiErrorMessage } from '@/lib/error';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 const teamRoles = [
   {
@@ -173,9 +170,7 @@ export default function JoinUsPage() {
       .catch(() => {
         setProviders({
           google: false,
-          github: false,
           devLogin: false,
-          emailPassword: true,
         });
       })
       .finally(() => setLoading(false));
@@ -221,7 +216,7 @@ export default function JoinUsPage() {
     }
   };
 
-  const handleOAuthSignIn = (provider: 'google' | 'github') => {
+  const handleOAuthSignIn = (provider: 'google') => {
     // Store hiring intent in localStorage
     localStorage.setItem('hiring_intent', JSON.stringify({
       role: selectedRole,
@@ -232,7 +227,7 @@ export default function JoinUsPage() {
       skills,
     }));
     
-    window.location.href = `${API_URL}/auth/${provider}`;
+    if (provider === 'google') window.location.href = api.getGoogleOAuthUrl();
   };
 
   if (loading) {
@@ -577,34 +572,21 @@ export default function JoinUsPage() {
                       </form>
 
                       {/* OAuth Options */}
-                      {(providers?.google || providers?.github) && (
+                      {providers?.google && (
                         <div className="mt-8 pt-6 border-t border-gray-200">
                           <p className="text-center text-sm text-gray-500 mb-4">
                             Or quickly fill your details using
                           </p>
                           <div className="flex flex-wrap gap-3 justify-center">
-                            {providers.google && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => handleOAuthSignIn('google')}
-                                className="gap-2"
-                              >
-                                <Chrome className="h-4 w-4" />
-                                Google
-                              </Button>
-                            )}
-                            {providers.github && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => handleOAuthSignIn('github')}
-                                className="gap-2"
-                              >
-                                <Github className="h-4 w-4" />
-                                GitHub
-                              </Button>
-                            )}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => handleOAuthSignIn('google')}
+                              className="gap-2"
+                            >
+                              <Chrome className="h-4 w-4" />
+                              Google
+                            </Button>
                           </div>
                         </div>
                       )}
