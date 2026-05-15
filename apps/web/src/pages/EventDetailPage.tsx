@@ -243,19 +243,7 @@ export default function EventDetailPage() {
   const [teamLoading, setTeamLoading] = useState(false);
   const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
   const [showJoinTeamModal, setShowJoinTeamModal] = useState(false);
-  const [competitionRounds, setCompetitionRounds] = useState<
-    Array<{
-      id: string;
-      title: string;
-      status: 'DRAFT' | 'ACTIVE' | 'LOCKED' | 'JUDGING' | 'FINISHED';
-      hasSubmitted?: boolean;
-      isEligible?: boolean;
-      eligibilityReason?: string;
-    }>
-  >([]);
   const trustedVideoUrl = event?.videoUrl ? normalizeTrustedVideoEmbedUrl(event.videoUrl) : null;
-
-  const getCompetitionRoundUrl = (roundId: string) => `/games/competition/${roundId}`;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -307,31 +295,6 @@ export default function EventDetailPage() {
 
     fetchTeam();
   }, [event?.id, event?.teamRegistration, token]);
-
-  useEffect(() => {
-    const fetchCompetitionRounds = async () => {
-      if (!event?.id) {
-        setCompetitionRounds([]);
-        return;
-      }
-
-      try {
-        const data = await api.getCompetitionRounds(event.id, token || undefined);
-        setCompetitionRounds(
-          (data.rounds || []).filter((round) =>
-            round.status === 'ACTIVE' ||
-            round.status === 'LOCKED' ||
-            round.status === 'JUDGING' ||
-            round.status === 'FINISHED'
-          )
-        );
-      } catch {
-        setCompetitionRounds([]);
-      }
-    };
-
-    void fetchCompetitionRounds();
-  }, [event?.id, token]);
 
   // Fetch attendance summary for past events
   useEffect(() => {
@@ -1034,57 +997,6 @@ export default function EventDetailPage() {
                       )}
                     </>
                   )}
-                  {competitionRounds.length > 0 && (
-                    <div className="mt-3 space-y-2 rounded-lg border border-blue-200 bg-blue-50 p-3">
-                      <p className="text-sm font-semibold text-blue-900">Competition Rounds</p>
-                      {competitionRounds.map((round) => (
-                        <div key={round.id} className="rounded-md border border-blue-200 bg-white px-2.5 py-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <p className="text-xs font-medium text-blue-900 truncate">{round.title}</p>
-                            <Badge variant="outline" className="text-[10px] border-blue-300 text-blue-700">
-                              {round.status}
-                            </Badge>
-                          </div>
-                          <div className="mt-1 flex items-center justify-between gap-2">
-                            <p className="text-[11px] text-blue-700">
-                              {round.hasSubmitted
-                                ? 'Submitted'
-                                : round.isEligible === false
-                                  ? (round.eligibilityReason || 'Not eligible')
-                                  : round.status === 'ACTIVE'
-                                    ? 'Open now'
-                                    : round.status === 'LOCKED'
-                                      ? 'Locked'
-                                      : round.status === 'JUDGING'
-                                        ? 'Judging'
-                                        : 'Results published'}
-                            </p>
-                            <div className="flex items-center gap-2">
-                              {round.status === 'FINISHED' && (
-                                <Link
-                                  to={`/competition/${round.id}/results`}
-                                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 underline"
-                                >
-                                  View Results
-                                </Link>
-                              )}
-                              {user && round.status !== 'FINISHED' && round.isEligible !== false && (
-                                <a
-                                  href={getCompetitionRoundUrl(round.id)}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 underline"
-                                >
-                                  Open
-                                  <ExternalLink className="h-3 w-3" />
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                   {showAttendanceSummary && (
                     <p className="text-sm text-center text-gray-500 mt-2">
                       <Users className="inline h-4 w-4 mr-1" />
@@ -1455,57 +1367,6 @@ export default function EventDetailPage() {
                           </Button>
                         )}
                       </>
-                    )}
-                    {competitionRounds.length > 0 && (
-                      <div className="mt-3 space-y-2 rounded-lg border border-blue-200 bg-blue-50 p-3">
-                        <p className="text-sm font-semibold text-blue-900">Competition Rounds</p>
-                        {competitionRounds.map((round) => (
-                          <div key={round.id} className="rounded-md border border-blue-200 bg-white px-2.5 py-2">
-                            <div className="flex items-center justify-between gap-2">
-                              <p className="text-xs font-medium text-blue-900 truncate">{round.title}</p>
-                              <Badge variant="outline" className="text-[10px] border-blue-300 text-blue-700">
-                                {round.status}
-                              </Badge>
-                            </div>
-                            <div className="mt-1 flex items-center justify-between gap-2">
-                              <p className="text-[11px] text-blue-700">
-                                {round.hasSubmitted
-                                  ? 'Submitted'
-                                  : round.isEligible === false
-                                    ? (round.eligibilityReason || 'Not eligible')
-                                    : round.status === 'ACTIVE'
-                                      ? 'Open now'
-                                      : round.status === 'LOCKED'
-                                        ? 'Locked'
-                                        : round.status === 'JUDGING'
-                                          ? 'Judging'
-                                          : 'Results published'}
-                              </p>
-                              <div className="flex items-center gap-2">
-                                {round.status === 'FINISHED' && (
-                                  <Link
-                                    to={`/competition/${round.id}/results`}
-                                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 underline"
-                                  >
-                                    View Results
-                                  </Link>
-                                )}
-                                {user && round.status !== 'FINISHED' && round.isEligible !== false && (
-                                  <a
-                                    href={getCompetitionRoundUrl(round.id)}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 underline"
-                                  >
-                                    Open
-                                    <ExternalLink className="h-3 w-3" />
-                                  </a>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
                     )}
                     {showAttendanceSummary && (
                       <p className="text-sm text-center text-gray-500 mt-2">

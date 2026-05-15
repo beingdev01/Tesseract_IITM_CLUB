@@ -58,6 +58,8 @@ const AuthCallbackPage       = lazy(() => import('@/pages/AuthCallbackPage'));
 const OnboardingPage         = lazy(() => import('@/pages/OnboardingPage'));
 const PrivacyPolicyPage      = lazy(() => import('@/pages/PrivacyPolicyPage'));
 const VerifyCertificatePage  = lazy(() => import('@/pages/VerifyCertificatePage'));
+const JoinUsPage             = lazy(() => import('@/pages/JoinUsPage'));
+const PollDetailPage         = lazy(() => import('@/pages/PollDetailPage'));
 
 // ── Games (new) ───────────────────────────────────────────────────────────────
 const GamesPage      = lazy(() => import('@/pages/GamesPage'));
@@ -94,6 +96,7 @@ const AdminAuditLog          = lazy(() => import('@/pages/admin/AdminAuditLog'))
 const AdminMail              = lazy(() => import('@/pages/admin/AdminMail'));
 const AdminPublicView        = lazy(() => import('@/pages/admin/AdminPublicView'));
 const AdminGameContent       = lazy(() => import('@/pages/admin/AdminGameContent'));
+const AdminHiring            = lazy(() => import('@/pages/admin/AdminHiring'));
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { SuperAdminOrPresidentRoute } from '@/components/auth/SuperAdminOrPresidentRoute';
@@ -145,6 +148,8 @@ function App() {
                 <Route path="/verify"        element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/verify/:certId" element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/privacy-policy" element={wrap(<PrivacyPolicyPage />)} />
+                <Route path="/join-us"       element={wrap(<JoinUsPage />)} />
+                <Route path="/polls/:slug"   element={wrap(<PollDetailPage />)} />
 
                 {/* ── Protected user ────────────────────────────────────── */}
                 <Route element={<ProtectedRoute minRole="USER" />}>
@@ -180,6 +185,7 @@ function App() {
                     <Route path="mail"               element={wrap(<AdminMail />)} />
                     <Route path="public-view"        element={wrap(<AdminPublicView />)} />
                     <Route path="game-content"       element={wrap(<AdminGameContent />)} />
+                    <Route path="hiring"             element={wrap(<AdminHiring />)} />
                     <Route path="events/:eventId/attendance" element={wrap(<EventAdminHub />)} />
                     <Route element={<SuperAdminOrPresidentRoute />}>
                       <Route path="settings" element={wrap(<AdminSettings />)} />

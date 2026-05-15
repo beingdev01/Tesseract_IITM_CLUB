@@ -33,6 +33,7 @@ const breadcrumbNames: Record<string, string> = {
   '/admin/mail': 'Send Mail',
   '/admin/public-view': 'Public View',
   '/admin/game-content': 'Game Content',
+  '/admin/hiring': 'Hiring',
   '/admin/settings': 'Settings',
 };
 
@@ -67,6 +68,7 @@ const getAdminNavItems = (
   items.push({ id: 'admin-registrations', name: 'event registrations', href: '/admin/event-registrations' });
   if (certificatesEnabled !== false) items.push({ id: 'admin-certificates', name: 'certificates', href: '/admin/certificates' });
   items.push({ id: 'admin-mail', name: 'send mail', href: '/admin/mail' });
+  items.push({ id: 'admin-hiring', name: 'hiring', href: '/admin/hiring' });
   items.push({ id: 'admin-game-content', name: 'game content', href: '/admin/game-content' });
   if (isSuperAdmin || isPresident) items.push({ id: 'admin-settings', name: 'settings', href: '/admin/settings' });
   return items;
