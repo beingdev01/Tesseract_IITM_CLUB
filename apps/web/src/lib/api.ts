@@ -430,26 +430,23 @@ export interface Settings {
   showAchievements?: boolean;
   show_tech_blogs?: boolean;
   hiringEnabled?: boolean;
-  hiringTechnical?: boolean;
-  hiringDsaChamps?: boolean;
-  hiringDesigning?: boolean;
-  hiringSocialMedia?: boolean;
-  hiringManagement?: boolean;
+  whatsappCommunityUrl?: string | null;
   competitionEnabled?: boolean;
   showNetwork?: boolean;
   mailingEnabled?: boolean;
   certificatesEnabled?: boolean;
   attendanceEnabled?: boolean;
   // Social Links
-  githubUrl?: string;
-  linkedinUrl?: string;
-  twitterUrl?: string;
-  instagramUrl?: string;
-  discordUrl?: string;
+  githubUrl?: string | null;
+  linkedinUrl?: string | null;
+  twitterUrl?: string | null;
+  instagramUrl?: string | null;
+  discordUrl?: string | null;
   // Email Template Customization
   emailWelcomeBody?: string;
   emailAnnouncementBody?: string;
   emailEventBody?: string;
+  emailInterviewScheduledBody?: string;
   emailFooterText?: string;
   // Email Notification Controls
   emailWelcomeEnabled?: boolean;
@@ -484,19 +481,46 @@ export interface SecurityEnvStatus {
 }
 
 export type HiringApplicationStatus = 'PENDING' | 'INTERVIEW_SCHEDULED' | 'SELECTED' | 'REJECTED';
-export type HiringApplyingRole = 'TECHNICAL' | 'DSA_CHAMPS' | 'DESIGNING' | 'SOCIAL_MEDIA' | 'MANAGEMENT';
+export type HiringApplicationType = 'MEMBER' | 'CORE';
+export type BsLevel = 'FOUNDATION' | 'DIPLOMA' | 'DEGREE';
+export type TesseractHouse =
+  | 'BANDIPUR' | 'CORBETT' | 'GIR' | 'KANHA' | 'KAZIRANGA' | 'NALLAMALA' | 'NAMDAPHA'
+  | 'NILGIRI' | 'PICHAVARAM' | 'SARANDA' | 'SUNDARBANS' | 'WAYANAD' | 'NOT_ALLOTED';
+export type TesseractRegion =
+  | 'BENGALURU' | 'CHANDIGARH' | 'CHENNAI' | 'DELHI' | 'HYDERABAD' | 'KOLKATA'
+  | 'LUCKNOW' | 'MUMBAI' | 'PATNA' | 'INTERNATIONAL' | 'NOT_ALLOTED';
+export type HiringGender = 'MALE' | 'FEMALE' | 'PREFER_NOT_TO_SAY';
+export type CoreInterest = 'YES' | 'MAYBE' | 'NO';
+export type WeeklyHours = 'LT_7' | 'H_7_15' | 'GT_15';
+export type CoreRole =
+  | 'MANAGEMENT' | 'CONTENT_CREATOR' | 'GRAPHIC_DESIGNER' | 'TECHNICAL_WEBOPS'
+  | 'MEMER' | 'PR_OUTREACH' | 'RESEARCH_SPONSORSHIP' | 'DOCUMENTATION' | 'STREAMER_SPEAKER';
 
 export interface HiringApplication {
   id: string;
+  applicationType: HiringApplicationType;
   name: string;
   email: string;
-  phone: string | null;
-  department: string;
-  year: string;
-  skills: string | null;
-  applyingRole: HiringApplyingRole;
-  status: HiringApplicationStatus;
+  phone: string;
+  house: TesseractHouse;
+  bsLevel: BsLevel;
+  crazyIdeas: string | null;
   userId: string | null;
+
+  // Member-only
+  gender: HiringGender | null;
+  region: TesseractRegion | null;
+  coreInterest: CoreInterest | null;
+
+  // Core-only
+  weeklyHours: WeeklyHours | null;
+  rolesApplied: CoreRole[];
+  hasExperience: boolean | null;
+  experienceDesc: string | null;
+  resumeUrl: string | null;
+  confirmAccurate: boolean;
+
+  status: HiringApplicationStatus;
   createdAt: string;
   updatedAt: string;
   user?: { id: string; name: string; email: string; avatar?: string | null; role?: string } | null;
@@ -504,8 +528,57 @@ export interface HiringApplication {
 
 export interface HiringStats {
   total: number;
-  byStatus: Record<string, number>;
-  byRole: Record<string, number>;
+  byStatus: Partial<Record<HiringApplicationStatus, number>>;
+  byType: Partial<Record<HiringApplicationType, number>>;
+}
+
+export type MemberSubmission = {
+  applicationType: 'MEMBER';
+  name: string;
+  email: string;
+  phone: string;
+  house: TesseractHouse;
+  bsLevel: BsLevel;
+  gender: HiringGender;
+  region: TesseractRegion;
+  coreInterest: CoreInterest;
+  crazyIdeas?: string | null;
+};
+
+export type CoreSubmission = {
+  applicationType: 'CORE';
+  name: string;
+  email: string;
+  phone: string;
+  house: Exclude<TesseractHouse, 'NOT_ALLOTED'>;
+  bsLevel: BsLevel;
+  weeklyHours: WeeklyHours;
+  rolesApplied: CoreRole[];
+  hasExperience: boolean;
+  experienceDesc?: string | null;
+  resumeUrl: string;
+  crazyIdeas: string;
+  confirmAccurate: true;
+};
+
+export type HiringSubmission = MemberSubmission | CoreSubmission;
+
+export interface MyHiringApplications {
+  member: HiringApplication | null;
+  core: HiringApplication | null;
+  whatsappCommunityUrl: string | null;
+}
+
+export interface SubmitHiringResponse {
+  message: string;
+  whatsappCommunityUrl?: string | null;
+  application: {
+    id: string;
+    applicationType: HiringApplicationType;
+    status: HiringApplicationStatus;
+    coreInterest?: CoreInterest | null;
+    rolesApplied?: CoreRole[];
+  };
 }
 
 export interface MailRecipient {
@@ -1875,11 +1948,19 @@ export const api = {
 
   // Hiring (admin)
   getHiringApplications: async (
-    params: { status?: string; role?: string; search?: string; page?: number; limit?: number },
+    params: {
+      status?: HiringApplicationStatus;
+      type?: HiringApplicationType | 'ALL';
+      role?: CoreRole;
+      search?: string;
+      page?: number;
+      limit?: number;
+    },
     token: string,
   ) => {
     const qs = new URLSearchParams();
     if (params.status) qs.set('status', params.status);
+    if (params.type && params.type !== 'ALL') qs.set('type', params.type);
     if (params.role) qs.set('role', params.role);
     if (params.search) qs.set('search', params.search);
     if (params.page) qs.set('page', String(params.page));
@@ -1911,11 +1992,12 @@ export const api = {
   getHiringStats: (token: string) =>
     request<HiringStats>('/hiring/stats', { token }),
   exportHiringApplications: (
-    filters: { status?: string; role?: string } | undefined,
+    filters: { status?: HiringApplicationStatus; type?: HiringApplicationType | 'ALL'; role?: CoreRole } | undefined,
     token: string,
   ) => {
     const qs = new URLSearchParams();
     if (filters?.status) qs.set('status', filters.status);
+    if (filters?.type && filters.type !== 'ALL') qs.set('type', filters.type);
     if (filters?.role) qs.set('role', filters.role);
     const query = qs.toString() ? `?${qs.toString()}` : '';
     return requestBlob(`/hiring/export${query}`, { token });
@@ -1971,30 +2053,11 @@ export const api = {
   }, token: string) =>
     request<User>('/users/me', { method: 'PUT', body: JSON.stringify(data), token }),
 
-  // Hiring
+  // Hiring (user)
   getMyHiringApplication: (token: string) =>
-    request<{
-      hasApplied: boolean;
-      application?: {
-        id: string;
-        applyingRole: string;
-        status: string;
-        createdAt: string;
-      };
-    } | null>('/hiring/my-application', { token }),
-  submitHiringApplication: (
-    data: {
-      name: string;
-      email: string;
-      phone?: string;
-      department: string;
-      year: string;
-      skills?: string;
-      applyingRole: string;
-    },
-    token?: string
-  ) =>
-    request<{ message?: string }>('/hiring/apply', {
+    request<MyHiringApplications>('/hiring/my-application', { token }),
+  submitHiringApplication: (data: HiringSubmission, token?: string) =>
+    request<SubmitHiringResponse>('/hiring/apply', {
       method: 'POST',
       body: JSON.stringify(data),
       token,

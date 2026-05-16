@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, type ReactNode } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/context/AuthContext';
@@ -58,7 +58,9 @@ const AuthCallbackPage       = lazy(() => import('@/pages/AuthCallbackPage'));
 const OnboardingPage         = lazy(() => import('@/pages/OnboardingPage'));
 const PrivacyPolicyPage      = lazy(() => import('@/pages/PrivacyPolicyPage'));
 const VerifyCertificatePage  = lazy(() => import('@/pages/VerifyCertificatePage'));
-const JoinUsPage             = lazy(() => import('@/pages/JoinUsPage'));
+const JoinPage               = lazy(() => import('@/pages/JoinPage'));
+const JoinMemberPage         = lazy(() => import('@/pages/JoinMemberPage'));
+const JoinCorePage           = lazy(() => import('@/pages/JoinCorePage'));
 const PollDetailPage         = lazy(() => import('@/pages/PollDetailPage'));
 
 // ── Games (new) ───────────────────────────────────────────────────────────────
@@ -148,7 +150,10 @@ function App() {
                 <Route path="/verify"        element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/verify/:certId" element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/privacy-policy" element={wrap(<PrivacyPolicyPage />)} />
-                <Route path="/join-us"       element={wrap(<JoinUsPage />)} />
+                <Route path="/join"          element={wrap(<JoinPage />)} />
+                <Route path="/join/member"   element={wrap(<JoinMemberPage />)} />
+                <Route path="/join/core"     element={wrap(<JoinCorePage />)} />
+                <Route path="/join-us"       element={<Navigate to="/join" replace />} />
                 <Route path="/polls/:slug"   element={wrap(<PollDetailPage />)} />
 
                 {/* ── Protected user ────────────────────────────────────── */}

@@ -70,6 +70,15 @@ export default function AuthCallbackPage() {
           return;
         }
 
+        // Honor ?next= stashed by SignInPage before OAuth handoff
+        const stashedNext = sessionStorage.getItem('tesseract_post_signin_next');
+        if (stashedNext && stashedNext.startsWith('/') && !stashedNext.startsWith('//')) {
+          sessionStorage.removeItem('tesseract_post_signin_next');
+          setStatus('Returning to where you were…');
+          navigate(stashedNext, { replace: true });
+          return;
+        }
+
         setStatus('Welcome back.');
         navigate('/dashboard');
       } catch (err) {

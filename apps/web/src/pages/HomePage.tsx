@@ -96,7 +96,7 @@ export default function HomePage() {
               </>
             ) : (
               <>
-                <Link to="/signin" className="lb-btn-primary lb-btn-lg">▶ JOIN TESSERACT</Link>
+                <Link to="/join" className="lb-btn-primary lb-btn-lg">▶ JOIN TESSERACT</Link>
                 <Link to="/about" className="lb-btn-ghost lb-btn-lg">{'// read more'}</Link>
               </>
             )}
@@ -283,7 +283,7 @@ export default function HomePage() {
             {user ? (
               <Link to="/dashboard" className="lb-btn-primary lb-btn-lg">▶ GO TO DASHBOARD</Link>
             ) : (
-              <Link to="/signin" className="lb-btn-primary lb-btn-lg">▶ JOIN TESSERACT</Link>
+              <Link to="/join" className="lb-btn-primary lb-btn-lg">▶ JOIN TESSERACT</Link>
             )}
             <div className="lb-join-steps">
               <div><span>01</span> verify email</div>

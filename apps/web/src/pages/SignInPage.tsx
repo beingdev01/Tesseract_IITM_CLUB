@@ -13,6 +13,12 @@ const ERROR_MESSAGES: Record<string, string> = {
   invalid_oauth_callback: 'OAuth callback was invalid. Try again.',
 };
 
+const NEXT_STORAGE_KEY = 'tesseract_post_signin_next';
+
+function isSafeNext(value: string | null): value is string {
+  return Boolean(value && value.startsWith('/') && !value.startsWith('//'));
+}
+
 export default function SignInPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -20,8 +26,19 @@ export default function SignInPage() {
   const errorParam = searchParams.get('error');
   const errorMessage = errorParam ? ERROR_MESSAGES[errorParam] ?? `Auth error: ${errorParam}` : null;
 
+  // Stash ?next= so AuthCallback can honor it after OAuth round-trip
   useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
+    const next = searchParams.get('next');
+    if (isSafeNext(next)) {
+      sessionStorage.setItem(NEXT_STORAGE_KEY, next);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!user) return;
+    const stashed = sessionStorage.getItem(NEXT_STORAGE_KEY);
+    sessionStorage.removeItem(NEXT_STORAGE_KEY);
+    navigate(isSafeNext(stashed) ? stashed : '/dashboard', { replace: true });
   }, [user, navigate]);
 
   const handleGoogleSignIn = () => {

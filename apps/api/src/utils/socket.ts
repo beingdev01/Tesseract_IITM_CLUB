@@ -88,7 +88,9 @@ export function initializeSocket(httpServer: HTTPServer) {
     // Lower defaults tighten stale-connection detection for large live quizzes.
     pingTimeout: SOCKET_PING_TIMEOUT_MS,
     pingInterval: SOCKET_PING_INTERVAL_MS,
-    transports: ['websocket'],
+    // Polling first, then upgrade to WebSocket. Forcing websocket-only breaks on
+    // Render's proxy where the Upgrade handshake fails silently in production.
+    transports: ['polling', 'websocket'],
     maxHttpBufferSize: 1e6,
     upgradeTimeout: 10000,
   });

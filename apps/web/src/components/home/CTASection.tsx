@@ -112,9 +112,9 @@ export function CTASection() {
             viewport={{ once: true, margin: '-50px' }}
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center px-4 sm:px-0"
           >
-            <Link to="/signin" className="w-full sm:w-auto">
-              <Button 
-                size="lg" 
+            <Link to="/join" className="w-full sm:w-auto">
+              <Button
+                size="lg"
                 className="relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-400 hover:to-orange-400 shadow-xl shadow-amber-500/25 h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold group border-0 w-full sm:w-auto"
               >
                 <span className="relative z-10 flex items-center">

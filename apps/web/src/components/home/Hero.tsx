@@ -414,7 +414,7 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center pt-4 px-4 sm:px-0"
           >
             {canRenderHiringCta && hiringEnabled === true && (
-              <Link to="/join-us" className="w-full sm:w-auto">
+              <Link to="/join" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
                   className="relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-400 hover:to-orange-400 shadow-xl shadow-amber-500/25 h-12 sm:h-14 px-6 sm:px-8 text-base font-semibold group border-0 w-full sm:w-auto"

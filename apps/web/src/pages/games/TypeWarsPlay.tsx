@@ -23,7 +23,7 @@ export default function TypeWarsPlay() {
   const connect = (roomCode: string) => {
     if (!token) return;
     socketRef.current?.disconnect();
-    const socket = io(`${SOCKET_URL}/games/type-wars`, { transports: ['websocket'], auth: { token } });
+    const socket = io(`${SOCKET_URL}/games/type-wars`, { transports: ['polling', 'websocket'], auth: { token } });
     socketRef.current = socket;
     socket.on('connect', () => socket.emit('room:join', { code: roomCode }, (response: { ok: boolean; room?: TypeWarsRoom; error?: string }) => {
       if (!response.ok) toast.error(response.error || 'Failed to join socket room');

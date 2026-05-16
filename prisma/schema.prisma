@@ -97,21 +97,16 @@ model Settings {
   linkedinUrl              String?  @map("linkedin_url")
   twitterUrl               String?  @map("twitter_url")
   hiringEnabled            Boolean  @default(true) @map("hiring_enabled")
+  whatsappCommunityUrl     String?  @map("whatsapp_community_url")
   emailAnnouncementBody    String?  @map("email_announcement_body")
   emailEventBody           String?  @map("email_event_body")
   emailFooterText          String?  @map("email_footer_text")
   emailWelcomeBody         String?  @map("email_welcome_body")
+  emailInterviewScheduledBody String? @map("email_interview_scheduled_body")
   show_tech_blogs          Boolean  @default(true)
   showNetwork              Boolean  @default(true) @map("show_network")
   emailNetworkVerifiedBody String?  @map("email_network_verified_body")
   emailNetworkRejectedBody String?  @map("email_network_rejected_body")
-
-  // Per-team hiring toggles (only apply when hiringEnabled is true)
-  hiringTechnical   Boolean @default(true) @map("hiring_technical")
-  hiringDsaChamps   Boolean @default(true) @map("hiring_dsa_champs")
-  hiringDesigning   Boolean @default(true) @map("hiring_designing")
-  hiringSocialMedia Boolean @default(true) @map("hiring_social_media")
-  hiringManagement  Boolean @default(true) @map("hiring_management")
 
   // Mailing system toggle
   mailingEnabled Boolean @default(true) @map("mailing_enabled")
@@ -595,22 +590,36 @@ model AuditLog {
 }
 
 model HiringApplication {
-  id           String            @id @default(uuid())
-  name         String
-  email        String            @unique
-  phone        String?
-  department   String
-  year         String
-  skills       String?
-  applyingRole ApplyingRole      @map("applying_role")
-  status       ApplicationStatus @default(PENDING)
-  userId       String?           @map("user_id")
-  createdAt    DateTime          @default(now()) @map("created_at")
-  updatedAt    DateTime          @updatedAt @map("updated_at")
-  user         User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id              String            @id @default(uuid())
+  applicationType ApplicationType   @map("application_type")
 
+  name            String
+  email           String
+  phone           String
+  house           TesseractHouse
+  bsLevel         BsLevel           @map("bs_level")
+  crazyIdeas      String?           @map("crazy_ideas")
+  userId          String?           @map("user_id")
+
+  gender          Gender?
+  region          TesseractRegion?
+  coreInterest    CoreInterest?     @map("core_interest")
+
+  weeklyHours     WeeklyHours?      @map("weekly_hours")
+  rolesApplied    CoreRole[]        @map("roles_applied")
+  hasExperience   Boolean?          @map("has_experience")
+  experienceDesc  String?           @map("experience_desc")
+  resumeUrl       String?           @map("resume_url")
+  confirmAccurate Boolean           @default(false) @map("confirm_accurate")
+
+  status          ApplicationStatus @default(PENDING)
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  user            User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([email, applicationType], map: "hiring_applications_email_type_unique")
+  @@index([applicationType, status, createdAt])
   @@index([status, createdAt])
-  @@index([applyingRole, createdAt])
   @@map("hiring_applications")
 }
 
@@ -656,12 +665,75 @@ enum AnnouncementPriority {
   URGENT
 }
 
-enum ApplyingRole {
-  TECHNICAL
-  DSA_CHAMPS
-  DESIGNING
-  SOCIAL_MEDIA
+enum ApplicationType {
+  MEMBER
+  CORE
+}
+
+enum BsLevel {
+  FOUNDATION
+  DIPLOMA
+  DEGREE
+}
+
+enum TesseractHouse {
+  BANDIPUR
+  CORBETT
+  GIR
+  KANHA
+  KAZIRANGA
+  NALLAMALA
+  NAMDAPHA
+  NILGIRI
+  PICHAVARAM
+  SARANDA
+  SUNDARBANS
+  WAYANAD
+  NOT_ALLOTED
+}
+
+enum TesseractRegion {
+  BENGALURU
+  CHANDIGARH
+  CHENNAI
+  DELHI
+  HYDERABAD
+  KOLKATA
+  LUCKNOW
+  MUMBAI
+  PATNA
+  INTERNATIONAL
+  NOT_ALLOTED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  PREFER_NOT_TO_SAY
+}
+
+enum CoreInterest {
+  YES
+  MAYBE
+  NO
+}
+
+enum WeeklyHours {
+  LT_7
+  H_7_15
+  GT_15
+}
+
+enum CoreRole {
   MANAGEMENT
+  CONTENT_CREATOR
+  GRAPHIC_DESIGNER
+  TECHNICAL_WEBOPS
+  MEMER
+  PR_OUTREACH
+  RESEARCH_SPONSORSHIP
+  DOCUMENTATION
+  STREAMER_SPEAKER
 }
 
 enum ApplicationStatus {

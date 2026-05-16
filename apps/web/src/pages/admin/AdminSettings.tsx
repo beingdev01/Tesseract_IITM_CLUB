@@ -40,11 +40,7 @@ export default function AdminSettings() {
     showAchievements: true,
     show_tech_blogs: true,
     hiringEnabled: false,
-    hiringTechnical: true,
-    hiringDsaChamps: true,
-    hiringDesigning: true,
-    hiringSocialMedia: true,
-    hiringManagement: true,
+    whatsappCommunityUrl: '',
     showNetwork: false,
     mailingEnabled: true,
     emailWelcomeEnabled: true,
@@ -354,6 +350,17 @@ export default function AdminSettings() {
             </Field>
             <Field label="DISCORD">
               <input className="t-input" value={settings.discordUrl || ''} onChange={(e) => setSettings({ ...settings, discordUrl: e.target.value })} placeholder="https://discord.gg/invite-code" />
+            </Field>
+            <Field label="WHATSAPP COMMUNITY INVITE">
+              <input
+                className="t-input"
+                value={settings.whatsappCommunityUrl || ''}
+                onChange={(e) => setSettings({ ...settings, whatsappCommunityUrl: e.target.value })}
+                placeholder="https://chat.whatsapp.com/…"
+              />
+              <p className="lb-mono text-[10px] mt-1" style={{ color: 'var(--fg-mute)', letterSpacing: '0.06em' }}>
+                // shown on the Join Tesseract success screen + dashboard tile for members
+              </p>
             </Field>
           </div>
         </Brackets>
