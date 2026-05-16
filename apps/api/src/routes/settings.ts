@@ -26,11 +26,7 @@ const updateSettingsSchema = z.object({
   showAchievements: z.boolean().optional(),
   show_tech_blogs: z.boolean().optional(),
   hiringEnabled: z.boolean().optional(),
-  hiringTechnical: z.boolean().optional(),
-  hiringDsaChamps: z.boolean().optional(),
-  hiringDesigning: z.boolean().optional(),
-  hiringSocialMedia: z.boolean().optional(),
-  hiringManagement: z.boolean().optional(),
+  whatsappCommunityUrl: optionalUrl,
   showNetwork: z.boolean().optional(),
   mailingEnabled: z.boolean().optional(),
   certificatesEnabled: z.boolean().optional(),
@@ -57,6 +53,7 @@ const updateEmailTemplatesSchema = z.object({
   emailWelcomeBody: z.string().max(20000).nullable().optional(),
   emailAnnouncementBody: z.string().max(20000).nullable().optional(),
   emailEventBody: z.string().max(20000).nullable().optional(),
+  emailInterviewScheduledBody: z.string().max(20000).nullable().optional(),
   emailFooterText: z.string().max(5000).nullable().optional(),
 });
 
@@ -186,11 +183,7 @@ settingsRouter.get('/public', async (req: Request, res: Response) => {
         showAchievements: true,
         show_tech_blogs: true,
         hiringEnabled: true,
-        hiringTechnical: true,
-        hiringDsaChamps: true,
-        hiringDesigning: true,
-        hiringSocialMedia: true,
-        hiringManagement: true,
+        whatsappCommunityUrl: true,
         showNetwork: true,
         mailingEnabled: true,
         certificatesEnabled: true,
@@ -218,11 +211,7 @@ settingsRouter.get('/public', async (req: Request, res: Response) => {
           showAchievements: true,
           show_tech_blogs: true,
           hiringEnabled: true,
-          hiringTechnical: true,
-          hiringDsaChamps: true,
-          hiringDesigning: true,
-          hiringSocialMedia: true,
-          hiringManagement: true,
+          whatsappCommunityUrl: null,
           showNetwork: true,
           mailingEnabled: true,
           certificatesEnabled: true,
@@ -297,11 +286,7 @@ settingsRouter.put('/', authMiddleware, requireRole('PRESIDENT'), async (req: Re
       showAchievements,
       show_tech_blogs,
       hiringEnabled,
-      hiringTechnical,
-      hiringDsaChamps,
-      hiringDesigning,
-      hiringSocialMedia,
-      hiringManagement,
+      whatsappCommunityUrl,
       showNetwork,
       mailingEnabled,
       certificatesEnabled,
@@ -334,11 +319,9 @@ settingsRouter.put('/', authMiddleware, requireRole('PRESIDENT'), async (req: Re
       ...(showAchievements !== undefined && { showAchievements }),
       ...(show_tech_blogs !== undefined && { show_tech_blogs }),
       ...(hiringEnabled !== undefined && { hiringEnabled }),
-      ...(hiringTechnical !== undefined && { hiringTechnical }),
-      ...(hiringDsaChamps !== undefined && { hiringDsaChamps }),
-      ...(hiringDesigning !== undefined && { hiringDesigning }),
-      ...(hiringSocialMedia !== undefined && { hiringSocialMedia }),
-      ...(hiringManagement !== undefined && { hiringManagement }),
+      ...(whatsappCommunityUrl !== undefined && {
+        whatsappCommunityUrl: typeof whatsappCommunityUrl === 'string' && whatsappCommunityUrl.trim() === '' ? null : whatsappCommunityUrl,
+      }),
       ...(showNetwork !== undefined && { showNetwork }),
       ...(mailingEnabled !== undefined && { mailingEnabled }),
       ...(certificatesEnabled !== undefined && { certificatesEnabled }),
@@ -603,11 +586,7 @@ settingsRouter.patch('/:key', authMiddleware, requireRole('ADMIN'), async (req: 
       'showAchievements',
       'show_tech_blogs',
       'hiringEnabled',
-      'hiringTechnical',
-      'hiringDsaChamps',
-      'hiringDesigning',
-      'hiringSocialMedia',
-      'hiringManagement',
+      'whatsappCommunityUrl',
       'showNetwork',
       'mailingEnabled',
       'certificatesEnabled',
@@ -644,11 +623,6 @@ settingsRouter.patch('/:key', authMiddleware, requireRole('ADMIN'), async (req: 
       'showAchievements',
       'show_tech_blogs',
       'hiringEnabled',
-      'hiringTechnical',
-      'hiringDsaChamps',
-      'hiringDesigning',
-      'hiringSocialMedia',
-      'hiringManagement',
       'showNetwork',
       'mailingEnabled',
       'certificatesEnabled',
@@ -668,6 +642,7 @@ settingsRouter.patch('/:key', authMiddleware, requireRole('ADMIN'), async (req: 
       'twitterUrl',
       'instagramUrl',
       'discordUrl',
+      'whatsappCommunityUrl',
     ]);
 
     if (booleanKeys.has(key) && typeof value !== 'boolean') {
@@ -711,7 +686,7 @@ settingsRouter.patch('/:key', authMiddleware, requireRole('ADMIN'), async (req: 
 
     let normalizedValue: unknown = key === 'maxEventsPerUser' ? parsedMaxEvents : value;
     if (
-      ['githubUrl', 'linkedinUrl', 'twitterUrl', 'instagramUrl', 'discordUrl', 'emailTestRecipients'].includes(key) &&
+      ['githubUrl', 'linkedinUrl', 'twitterUrl', 'instagramUrl', 'discordUrl', 'whatsappCommunityUrl', 'emailTestRecipients'].includes(key) &&
       typeof value === 'string' &&
       value.trim() === ''
     ) {

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { CheckCircle2, Clock, ExternalLink, XCircle, CalendarClock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
 import { api } from '@/lib/api';
-import type { Registration, Announcement } from '@/lib/api';
+import type { Registration, Announcement, MyHiringApplications, HiringApplicationStatus } from '@/lib/api';
 import { Brackets, MetaChip, RowAccent, rotateAccent } from '@/components/tesseract';
 import { formatDate } from '@/lib/dateUtils';
+import { STATUS_LABEL } from '@/pages/join/_shared';
 
 const fadeUp = {
   initial: { opacity: 0, y: 12 },
@@ -28,6 +30,7 @@ export default function DashboardOverview() {
   const { settings } = useSettings();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [myApps, setMyApps] = useState<MyHiringApplications | null>(null);
   const [loading, setLoading] = useState(true);
   const [partialError, setPartialError] = useState<string | null>(null);
 
@@ -38,12 +41,14 @@ export default function DashboardOverview() {
         return;
       }
       try {
-        const [regsResult, annsResult] = await Promise.allSettled([
+        const [regsResult, annsResult, mineResult] = await Promise.allSettled([
           api.getMyRegistrations(token),
           api.getAnnouncements(),
+          api.getMyHiringApplication(token),
         ]);
         const regs = regsResult.status === 'fulfilled' ? regsResult.value : [];
         const anns = annsResult.status === 'fulfilled' ? annsResult.value : [];
+        const mine = mineResult.status === 'fulfilled' ? mineResult.value : null;
         setPartialError(
           [regsResult, annsResult].some((r) => r.status === 'rejected')
             ? 'Some dashboard data could not be loaded.'
@@ -51,6 +56,7 @@ export default function DashboardOverview() {
         );
         setRegistrations(regs);
         setAnnouncements(anns.slice(0, 6));
+        setMyApps(mine);
       } catch {
         setPartialError('Failed to load dashboard data.');
       } finally {
@@ -239,8 +245,15 @@ export default function DashboardOverview() {
             </Brackets>
           </motion.div>
 
-          {/* Quick links */}
+          {/* My Tesseract (join status) */}
           <motion.div {...stagger(3)}>
+            <Brackets tag="my.tesseract" accent="green">
+              <MyTesseractTile myApps={myApps} />
+            </Brackets>
+          </motion.div>
+
+          {/* Quick links */}
+          <motion.div {...stagger(4)}>
             <Brackets tag="quick.links" accent="green">
               <div className="flex flex-col gap-2">
                 <QuickLink to="/dashboard/events" label="MY EVENTS" />
@@ -255,7 +268,7 @@ export default function DashboardOverview() {
           </motion.div>
 
           {/* Domain status */}
-          <motion.div {...stagger(4)}>
+          <motion.div {...stagger(5)}>
             <Brackets tag="access.profile" accent="yellow">
               <div className="flex flex-col gap-2 lb-mono text-xs" style={{ letterSpacing: '0.06em' }}>
                 <DomainRow label="USER" value={user?.email?.split('@')[0] ?? '—'} />
@@ -293,6 +306,91 @@ function QuickLink({ to, label }: { to: string; label: string }) {
       <span>{label}</span>
       <span>→</span>
     </Link>
+  );
+}
+
+function MyTesseractTile({ myApps }: { myApps: MyHiringApplications | null }) {
+  // If the fetch hasn't returned a result, treat as "not joined" so the
+  // user is never stranded on a perpetual loading state when the call
+  // silently fails (e.g. token not yet hydrated, transient network blip).
+  const hasMember = Boolean(myApps?.member);
+  const core = myApps?.core ?? null;
+  const whatsappUrl = myApps?.whatsappCommunityUrl ?? null;
+
+  if (!hasMember && !core) {
+    return (
+      <div className="flex flex-col gap-3 py-2">
+        <p className="lb-mono text-[11px]" style={{ color: 'var(--fg-dim)', letterSpacing: '0.06em' }}>
+          // not joined yet
+        </p>
+        <p className="text-sm" style={{ color: 'var(--fg-dim)' }}>
+          Drop into the community or apply to the Core Team.
+        </p>
+        <Link to="/join" className="lb-btn-primary lb-btn-sm self-start mt-1">JOIN TESSERACT →</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {hasMember && (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 size={16} className="text-emerald-400" />
+            <span className="lb-mono text-[11px]" style={{ color: 'var(--c-green)', letterSpacing: '0.08em' }}>
+              MEMBER · JOINED
+            </span>
+          </div>
+          {whatsappUrl ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lb-btn-primary lb-btn-sm inline-flex items-center gap-2"
+              style={{ background: '#25d366', borderColor: '#25d366', color: '#000', width: 'fit-content' }}
+            >
+              OPEN WHATSAPP <ExternalLink size={12} />
+            </a>
+          ) : (
+            <p className="lb-mono text-[10px]" style={{ color: 'var(--fg-mute)', letterSpacing: '0.06em' }}>
+              // whatsapp invite not configured yet
+            </p>
+          )}
+        </div>
+      )}
+
+      {core && (
+        <div className="flex flex-col gap-2" style={hasMember ? { borderTop: '1px solid var(--line)', paddingTop: 12 } : undefined}>
+          <CoreStatusBadge status={core.status} />
+          <p className="text-sm" style={{ color: 'var(--fg-dim)' }}>
+            {STATUS_LABEL[core.status]}
+          </p>
+        </div>
+      )}
+
+      {hasMember && !core && (
+        <Link to="/join/core" className="lb-mono text-[11px]" style={{ color: 'var(--c-yellow)', letterSpacing: '0.08em' }}>
+          ALSO APPLY FOR CORE →
+        </Link>
+      )}
+    </div>
+  );
+}
+
+function CoreStatusBadge({ status }: { status: HiringApplicationStatus }) {
+  const conf: Record<HiringApplicationStatus, { label: string; color: string; Icon: typeof Clock }> = {
+    PENDING: { label: 'CORE · PENDING', color: 'var(--c-yellow)', Icon: Clock },
+    INTERVIEW_SCHEDULED: { label: 'CORE · INTERVIEW', color: 'var(--c-blue)', Icon: CalendarClock },
+    SELECTED: { label: 'CORE · SELECTED', color: 'var(--c-green)', Icon: CheckCircle2 },
+    REJECTED: { label: 'CORE · NOT SELECTED', color: 'var(--c-red)', Icon: XCircle },
+  };
+  const c = conf[status];
+  const I = c.Icon;
+  return (
+    <div className="flex items-center gap-2">
+      <I size={16} style={{ color: c.color }} />
+      <span className="lb-mono text-[11px]" style={{ color: c.color, letterSpacing: '0.08em' }}>{c.label}</span>
+    </div>
   );
 }
 

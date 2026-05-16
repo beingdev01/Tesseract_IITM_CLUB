@@ -15,9 +15,20 @@ import {
   type ScribblRoomState,
 } from './state.js';
 
-const strokeSchema = z.object({
-  strokes: z.array(z.unknown()).max(200),
+const pointSchema = z.object({ x: z.number(), y: z.number() });
+const singleStrokeSchema = z.object({
+  from: pointSchema,
+  to: pointSchema,
+  color: z.string().max(40),
+  size: z.number().min(1).max(80),
+  erase: z.boolean().optional(),
 });
+const strokeSchema = z.object({
+  strokes: z.array(singleStrokeSchema).max(30),
+});
+
+const STROKE_BUCKET_MAX = 90; // burst tolerance per second
+const STROKE_REFILL_PER_MS = 90 / 1000; // 90 strokes per second steady state
 
 function roomChannel(code: string): string {
   return `scribbl:${code}`;
@@ -27,9 +38,23 @@ function emitState(ns: Namespace, room: ScribblRoomState): void {
   ns.to(roomChannel(room.code)).emit('room:state', publicScribblRoom(room));
 }
 
+function findDrawer(room: ScribblRoomState) {
+  if (!room.currentDrawerId) return null;
+  return room.members.find((m) => m.userId === room.currentDrawerId) ?? null;
+}
+
+function pickNextDrawer(room: ScribblRoomState): typeof room.members[number] | null {
+  const active = room.members.filter((m) => m.active);
+  if (active.length === 0) return null;
+  if (!room.currentDrawerId) return active[0] ?? null;
+  const currentIdx = active.findIndex((m) => m.userId === room.currentDrawerId);
+  if (currentIdx === -1) return active[0] ?? null;
+  return active[(currentIdx + 1) % active.length] ?? null;
+}
+
 async function persistRound(room: ScribblRoomState): Promise<void> {
   if (!room.promptWord || !room.roundStartedAt) return;
-  const drawer = room.members[room.drawerIndex];
+  const drawer = findDrawer(room);
   if (!drawer) return;
   const startedAt = room.roundStartedAt;
   const round = await withRetry(() => prisma.scribblRound.create({
@@ -69,14 +94,16 @@ async function endRound(ns: Namespace, room: ScribblRoomState): Promise<void> {
   room.promptWord = null;
   room.roundStartedAt = null;
   room.currentRound += 1;
-  const totalRounds = room.roundCount * Math.max(1, room.members.length);
-  if (room.currentRound >= totalRounds) {
+  const activeMembers = room.members.filter((m) => m.active);
+  const totalRounds = room.roundCount * Math.max(1, activeMembers.length);
+  if (room.currentRound >= totalRounds || activeMembers.length < 2) {
     await completeScribblGame(room);
     ns.to(roomChannel(room.code)).emit('game:end', { finalScores: publicScribblRoom(room).members });
     emitState(ns, room);
     return;
   }
-  room.drawerIndex = (room.drawerIndex + 1) % Math.max(1, room.members.length);
+  const next = pickNextDrawer(room);
+  room.currentDrawerId = next?.userId ?? null;
   setTimeout(() => {
     void startRound(ns, room);
   }, 5000);
@@ -84,7 +111,12 @@ async function endRound(ns: Namespace, room: ScribblRoomState): Promise<void> {
 
 async function startRound(ns: Namespace, room: ScribblRoomState): Promise<void> {
   if (room.status !== 'ACTIVE') return;
-  const drawer = room.members[room.drawerIndex];
+  if (!room.currentDrawerId) {
+    const first = pickNextDrawer(room);
+    if (!first) return;
+    room.currentDrawerId = first.userId;
+  }
+  const drawer = findDrawer(room);
   if (!drawer) return;
   const word = await randomScribblPrompt();
   room.promptWord = word;
@@ -141,9 +173,18 @@ function register(ns: Namespace): void {
       }
     });
 
-    socket.on('room:start', async () => {
+    socket.on('room:start', async (_payload: unknown, ack?: (response: unknown) => void) => {
       const room = gameSocket.data.roomCode ? await getScribblRoom(gameSocket.data.roomCode) : null;
-      if (!room || room.hostUserId !== authUser.id || room.status !== 'LOBBY') return;
+      if (!room || room.hostUserId !== authUser.id || room.status !== 'LOBBY') {
+        ack?.({ ok: false, error: 'NOT_HOST_OR_NOT_LOBBY' });
+        return;
+      }
+      const activeCount = room.members.filter((m) => m.active).length;
+      if (activeCount < 2) {
+        ack?.({ ok: false, error: 'NEED_MORE_PLAYERS', minPlayers: 2, currentPlayers: activeCount });
+        return;
+      }
+      ack?.({ ok: true });
       room.status = 'ACTIVE';
       await withRetry(() => prisma.scribblRoom.update({
         where: { id: room.roomId },
@@ -156,30 +197,33 @@ function register(ns: Namespace): void {
     socket.on('canvas:stroke', async (payload: unknown) => {
       const room = gameSocket.data.roomCode ? await getScribblRoom(gameSocket.data.roomCode) : null;
       if (!room || room.status !== 'ACTIVE') return;
-      const drawer = room.members[room.drawerIndex];
+      const drawer = findDrawer(room);
       if (!drawer || drawer.userId !== authUser.id) return;
       const parsed = strokeSchema.safeParse(payload);
       if (!parsed.success) return;
+      // Token bucket: refill since last tick, then debit one token per stroke
       const now = Date.now();
-      if (now - room.strokeWindowStartedAt > 1000) {
-        room.strokeWindowStartedAt = now;
-        room.strokeCount = 0;
+      const elapsed = Math.max(0, now - room.strokeBudgetUpdatedAt);
+      room.strokeBudget = Math.min(STROKE_BUCKET_MAX, room.strokeBudget + elapsed * STROKE_REFILL_PER_MS);
+      room.strokeBudgetUpdatedAt = now;
+      if (room.strokeBudget < parsed.data.strokes.length) {
+        // Drop excess silently; client sees no stroke from itself or others
+        return;
       }
-      room.strokeCount += parsed.data.strokes.length;
-      if (room.strokeCount > 300) return;
+      room.strokeBudget -= parsed.data.strokes.length;
       socket.to(roomChannel(room.code)).emit('canvas:stroke', parsed.data);
     });
 
     socket.on('canvas:clear', async () => {
       const room = gameSocket.data.roomCode ? await getScribblRoom(gameSocket.data.roomCode) : null;
-      if (!room || room.members[room.drawerIndex]?.userId !== authUser.id) return;
+      if (!room || findDrawer(room)?.userId !== authUser.id) return;
       socket.to(roomChannel(room.code)).emit('canvas:clear');
     });
 
     socket.on('guess:submit', async (payload: unknown, ack?: (response: unknown) => void) => {
       const room = gameSocket.data.roomCode ? await getScribblRoom(gameSocket.data.roomCode) : null;
       if (!room || room.status !== 'ACTIVE' || !room.promptWord || !room.roundStartedAt) return;
-      const drawer = room.members[room.drawerIndex];
+      const drawer = findDrawer(room);
       if (!drawer || drawer.userId === authUser.id || room.solvedThisRound.has(authUser.id)) {
         ack?.({ ok: true, ignored: true });
         return;

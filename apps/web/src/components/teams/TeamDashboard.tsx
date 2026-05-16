@@ -196,7 +196,7 @@ export function TeamDashboard({ team, event, onTeamChange }: TeamDashboardProps)
               <Button variant="outline" size="sm" onClick={handleCopyCode}>
                 {copied ? (
                   <>
-                    <Check className="mr-2 h-4 w-4 text-green-600" />
+                    <Check className="mr-2 h-4 w-4 text-green-600 dark:text-green-400" />
                     Copied!
                   </>
                 ) : (

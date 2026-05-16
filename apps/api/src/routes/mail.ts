@@ -42,7 +42,9 @@ function sanitizeEmailHtml(html: string): string {
     allowedSchemesByTag: {
       img: ['https', 'data'],
     },
-    // Enforce rel="noopener noreferrer" on all links automatically
+    // GHSA-rpr9-rxv7-x643 defense in depth: discard raw-text content of these tags
+    // even though they're not in the allowed list (xmp historically leaked unescaped HTML).
+    nonTextTags: ['style', 'script', 'textarea', 'option', 'noscript', 'xmp'],
     transformTags: {
       'a': sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer', target: '_blank' }),
     },

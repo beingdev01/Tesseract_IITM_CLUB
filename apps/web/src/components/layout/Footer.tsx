@@ -1,8 +1,63 @@
 import { Link } from 'react-router-dom';
+import { Github, Instagram, Linkedin, Twitter, MessagesSquare } from 'lucide-react';
+import type { ComponentType } from 'react';
 import { useSettings } from '@/context/SettingsContext';
+
+const iconLinkStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 36,
+  height: 36,
+  border: '1px solid rgba(255,255,255,0.18)',
+  color: 'rgba(255,255,255,0.7)',
+  transition: 'color 0.15s, border-color 0.15s, background 0.15s',
+};
+
+function SocialIcon({
+  href,
+  label,
+  Icon,
+}: {
+  href: string | null | undefined;
+  label: string;
+  Icon: ComponentType<{ size?: number; strokeWidth?: number }>;
+}) {
+  if (!href) return null;
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={label}
+      aria-label={label}
+      style={iconLinkStyle}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.color = 'var(--c-yellow)';
+        e.currentTarget.style.borderColor = 'var(--c-yellow)';
+        e.currentTarget.style.background = 'rgba(255,217,59,0.06)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
+        e.currentTarget.style.background = 'transparent';
+      }}
+    >
+      <Icon size={16} strokeWidth={1.6} />
+    </a>
+  );
+}
 
 export function Footer() {
   const { settings } = useSettings();
+
+  const anySocial = Boolean(
+    settings?.discordUrl ||
+      settings?.instagramUrl ||
+      settings?.githubUrl ||
+      settings?.linkedinUrl ||
+      settings?.twitterUrl,
+  );
 
   return (
     <footer className="tf-root">
@@ -30,11 +85,19 @@ export function Footer() {
             <Link to="/leaderboard">Leaderboard</Link>
           </div>
           <div className="tf-col">
-            <h4>COMMUNITY</h4>
-            {settings?.discordUrl && <a href={settings.discordUrl} target="_blank" rel="noopener noreferrer">Discord</a>}
-            {settings?.instagramUrl && <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram</a>}
-            {settings?.githubUrl && <a href={settings.githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a>}
-            <Link to="/privacy-policy">Privacy Policy</Link>
+            <h4>SOCIAL</h4>
+            {anySocial ? (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 2 }}>
+                <SocialIcon href={settings?.discordUrl} label="Discord" Icon={MessagesSquare} />
+                <SocialIcon href={settings?.instagramUrl} label="Instagram" Icon={Instagram} />
+                <SocialIcon href={settings?.githubUrl} label="GitHub" Icon={Github} />
+                <SocialIcon href={settings?.linkedinUrl} label="LinkedIn" Icon={Linkedin} />
+                <SocialIcon href={settings?.twitterUrl} label="Twitter / X" Icon={Twitter} />
+              </div>
+            ) : (
+              <span className="lb-mono" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>// not configured</span>
+            )}
+            <Link to="/privacy-policy" style={{ marginTop: 12 }}>Privacy Policy</Link>
           </div>
           <div className="tf-col">
             <h4>CORE</h4>

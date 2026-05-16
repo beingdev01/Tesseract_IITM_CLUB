@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, type ReactNode } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/context/AuthContext';
@@ -58,6 +58,10 @@ const AuthCallbackPage       = lazy(() => import('@/pages/AuthCallbackPage'));
 const OnboardingPage         = lazy(() => import('@/pages/OnboardingPage'));
 const PrivacyPolicyPage      = lazy(() => import('@/pages/PrivacyPolicyPage'));
 const VerifyCertificatePage  = lazy(() => import('@/pages/VerifyCertificatePage'));
+const JoinPage               = lazy(() => import('@/pages/JoinPage'));
+const JoinMemberPage         = lazy(() => import('@/pages/JoinMemberPage'));
+const JoinCorePage           = lazy(() => import('@/pages/JoinCorePage'));
+const PollDetailPage         = lazy(() => import('@/pages/PollDetailPage'));
 
 // ── Games (new) ───────────────────────────────────────────────────────────────
 const GamesPage      = lazy(() => import('@/pages/GamesPage'));
@@ -94,6 +98,7 @@ const AdminAuditLog          = lazy(() => import('@/pages/admin/AdminAuditLog'))
 const AdminMail              = lazy(() => import('@/pages/admin/AdminMail'));
 const AdminPublicView        = lazy(() => import('@/pages/admin/AdminPublicView'));
 const AdminGameContent       = lazy(() => import('@/pages/admin/AdminGameContent'));
+const AdminHiring            = lazy(() => import('@/pages/admin/AdminHiring'));
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { SuperAdminOrPresidentRoute } from '@/components/auth/SuperAdminOrPresidentRoute';
@@ -145,6 +150,11 @@ function App() {
                 <Route path="/verify"        element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/verify/:certId" element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/privacy-policy" element={wrap(<PrivacyPolicyPage />)} />
+                <Route path="/join"          element={wrap(<JoinPage />)} />
+                <Route path="/join/member"   element={wrap(<JoinMemberPage />)} />
+                <Route path="/join/core"     element={wrap(<JoinCorePage />)} />
+                <Route path="/join-us"       element={<Navigate to="/join" replace />} />
+                <Route path="/polls/:slug"   element={wrap(<PollDetailPage />)} />
 
                 {/* ── Protected user ────────────────────────────────────── */}
                 <Route element={<ProtectedRoute minRole="USER" />}>
@@ -180,6 +190,7 @@ function App() {
                     <Route path="mail"               element={wrap(<AdminMail />)} />
                     <Route path="public-view"        element={wrap(<AdminPublicView />)} />
                     <Route path="game-content"       element={wrap(<AdminGameContent />)} />
+                    <Route path="hiring"             element={wrap(<AdminHiring />)} />
                     <Route path="events/:eventId/attendance" element={wrap(<EventAdminHub />)} />
                     <Route element={<SuperAdminOrPresidentRoute />}>
                       <Route path="settings" element={wrap(<AdminSettings />)} />

@@ -156,7 +156,7 @@ export default function CreateAnnouncement() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-amber-900">New Announcement</h1>
-          <p className="text-gray-600">Create a new announcement for members</p>
+          <p className="text-gray-600 dark:text-zinc-400">Create a new announcement for members</p>
         </div>
       </div>
 
@@ -164,7 +164,7 @@ export default function CreateAnnouncement() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-lg text-red-700 dark:text-red-300"
         >
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
@@ -183,8 +183,8 @@ export default function CreateAnnouncement() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="create-announcement-title" className="text-sm font-medium text-gray-700">
-                Title <span className="text-red-500">*</span>
+              <label htmlFor="create-announcement-title" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                Title <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <Input
                 id="create-announcement-title"
@@ -197,8 +197,8 @@ export default function CreateAnnouncement() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="create-announcement-short-description" className="text-sm font-medium text-gray-700">
-                Short Description <span className="text-gray-400">(optional)</span>
+              <label htmlFor="create-announcement-short-description" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                Short Description <span className="text-gray-400 dark:text-zinc-500">(optional)</span>
               </label>
               <Input
                 id="create-announcement-short-description"
@@ -208,12 +208,12 @@ export default function CreateAnnouncement() {
                 placeholder="Brief summary for cards and previews"
                 maxLength={200}
               />
-              <p className="text-xs text-gray-500">{form.shortDescription.length}/200 characters</p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400">{form.shortDescription.length}/200 characters</p>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="create-announcement-body" className="text-sm font-medium text-gray-700">
-                Content <span className="text-red-500">*</span>
+              <label htmlFor="create-announcement-body" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                Content <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <textarea
                 id="create-announcement-body"
@@ -224,12 +224,12 @@ export default function CreateAnnouncement() {
                 className="w-full min-h-[200px] px-3 py-2 border border-input rounded-md bg-background text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 font-mono"
                 required
               />
-              <p className="text-xs text-gray-500">Supports Markdown formatting</p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400">Supports Markdown formatting</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="create-announcement-priority" className="text-sm font-medium text-gray-700">Priority</label>
+                <label htmlFor="create-announcement-priority" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Priority</label>
                 <select
                   id="create-announcement-priority"
                   name="priority"
@@ -245,9 +245,9 @@ export default function CreateAnnouncement() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="create-announcement-expires-at" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <label htmlFor="create-announcement-expires-at" className="text-sm font-medium text-gray-700 dark:text-zinc-300 flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  Expires At <span className="text-gray-400">(optional)</span>
+                  Expires At <span className="text-gray-400 dark:text-zinc-500">(optional)</span>
                 </label>
                 <Input
                   id="create-announcement-expires-at"
@@ -267,10 +267,10 @@ export default function CreateAnnouncement() {
                   name="pinned"
                   checked={form.pinned}
                   onChange={handleChange}
-                  className="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                  className="h-4 w-4 rounded border-gray-300 dark:border-zinc-700 text-amber-600 focus:ring-amber-500"
                 />
                 <Pin className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-700">Pin to top</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">Pin to top</span>
               </label>
               
               <label htmlFor="create-announcement-featured" className="flex items-center gap-2 cursor-pointer">
@@ -280,10 +280,10 @@ export default function CreateAnnouncement() {
                   name="featured"
                   checked={form.featured}
                   onChange={handleChange}
-                  className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  className="h-4 w-4 rounded border-gray-300 dark:border-zinc-700 text-purple-600 focus:ring-purple-500"
                 />
                 <Star className="h-4 w-4 text-purple-600" />
-                <span className="text-sm font-medium text-gray-700">Featured</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">Featured</span>
               </label>
             </div>
           </CardContent>
@@ -313,7 +313,7 @@ export default function CreateAnnouncement() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="create-announcement-image-url" className="text-sm font-medium text-gray-700">Cover Image URL</label>
+                  <label htmlFor="create-announcement-image-url" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Cover Image URL</label>
                   <Input
                     id="create-announcement-image-url"
                     name="imageUrl"
@@ -337,7 +337,7 @@ export default function CreateAnnouncement() {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="create-announcement-gallery-url" className="text-sm font-medium text-gray-700">Image Gallery</label>
+                  <label htmlFor="create-announcement-gallery-url" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Image Gallery</label>
                   <div className="flex gap-2">
                     <Input
                       id="create-announcement-gallery-url"
@@ -457,14 +457,14 @@ export default function CreateAnnouncement() {
                 {form.attachments.length > 0 && (
                   <div className="space-y-2">
                     {form.attachments.map((att, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                        <FileText className="h-4 w-4 text-gray-500" />
+                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-surface-1 rounded-lg">
+                        <FileText className="h-4 w-4 text-gray-500 dark:text-zinc-400" />
                         <span className="font-medium text-sm flex-1">{att.title}</span>
-                        <span className="text-xs text-gray-500 uppercase">{att.type}</span>
+                        <span className="text-xs text-gray-500 dark:text-zinc-400 uppercase">{att.type}</span>
                         <button
                           type="button"
                           onClick={() => removeAttachment(index)}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -505,8 +505,8 @@ export default function CreateAnnouncement() {
                 {form.links.length > 0 && (
                   <div className="space-y-2">
                     {form.links.map((link, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                        <LinkIcon className="h-4 w-4 text-gray-500" />
+                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-surface-1 rounded-lg">
+                        <LinkIcon className="h-4 w-4 text-gray-500 dark:text-zinc-400" />
                         <span className="font-medium text-sm flex-1">{link.title}</span>
                         <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-xs text-amber-600 hover:underline truncate max-w-[150px]">
                           {link.url}
@@ -514,7 +514,7 @@ export default function CreateAnnouncement() {
                         <button
                           type="button"
                           onClick={() => removeLink(index)}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

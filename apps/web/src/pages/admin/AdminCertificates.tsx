@@ -102,16 +102,16 @@ function SignatoryPicker({
   }
 
   return (
-    <div className="col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-3 space-y-3">
+    <div className="col-span-2 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 p-3 space-y-3">
       {/* Label */}
-      <p className="text-sm font-semibold text-gray-700">
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+      <p className="text-sm font-semibold text-gray-700 dark:text-zinc-300">
+        {label}{required && <span className="text-red-500 dark:text-red-400 ml-0.5">*</span>}
       </p>
 
       {/* Dropdown */}
       <select
         id={`${pickerId}-select`}
-        className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+        className="w-full rounded-md border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-1 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
         value={selectedId || '__custom__'}
         onChange={e => {
           const val = e.target.value;
@@ -134,15 +134,15 @@ function SignatoryPicker({
 
       {/* Selected saved signatory preview */}
       {selected && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-gray-100 bg-white p-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-gray-100 dark:border-zinc-800 bg-white dark:bg-surface-1 p-2">
           <div>
-            <p className="text-sm font-medium text-gray-800">{selected.name}</p>
-            <p className="text-xs text-gray-500">{selected.title}</p>
+            <p className="text-sm font-medium text-gray-800 dark:text-zinc-200">{selected.name}</p>
+            <p className="text-xs text-gray-500 dark:text-zinc-400">{selected.title}</p>
           </div>
           {selected.signatureUrl ? (
-            <div className="flex items-center gap-2 rounded border border-green-200 bg-green-50 px-2 py-1.5">
-              <ImageIcon className="w-3.5 h-3.5 text-green-600 shrink-0" />
-              <span className="text-xs text-green-700 font-medium">Signature image</span>
+            <div className="flex items-center gap-2 rounded border border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/30 px-2 py-1.5">
+              <ImageIcon className="w-3.5 h-3.5 text-green-600 dark:text-green-400 shrink-0" />
+              <span className="text-xs text-green-700 dark:text-green-300 font-medium">Signature image</span>
               <img
                 src={selected.signatureUrl}
                 alt="Signature"
@@ -164,7 +164,7 @@ function SignatoryPicker({
         <div className="space-y-2.5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div>
-              <label htmlFor={`${pickerId}-name`} className="text-xs text-gray-500 block mb-0.5">Name{required && ' *'}</label>
+              <label htmlFor={`${pickerId}-name`} className="text-xs text-gray-500 dark:text-zinc-400 block mb-0.5">Name{required && ' *'}</label>
               <Input
                 id={`${pickerId}-name`}
                 value={name}
@@ -174,7 +174,7 @@ function SignatoryPicker({
               />
             </div>
             <div>
-              <label htmlFor={`${pickerId}-title`} className="text-xs text-gray-500 block mb-0.5">Title</label>
+              <label htmlFor={`${pickerId}-title`} className="text-xs text-gray-500 dark:text-zinc-400 block mb-0.5">Title</label>
               <Input
                 id={`${pickerId}-title`}
                 value={title}
@@ -187,16 +187,16 @@ function SignatoryPicker({
 
           {/* Signature image — Cloudinary upload */}
           {imageUrl ? (
-            <div className="flex items-center gap-3 rounded-md border border-green-200 bg-white p-2">
+            <div className="flex items-center gap-3 rounded-md border border-green-200 dark:border-green-900/40 bg-white dark:bg-surface-1 p-2">
               <img src={imageUrl} alt="Signature preview" className="h-10 max-w-[120px] object-contain shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-green-700">Signature uploaded</p>
-                <p className="text-xs text-gray-400 truncate">{imageUrl.split('/').pop()}</p>
+                <p className="text-xs font-medium text-green-700 dark:text-green-300">Signature uploaded</p>
+                <p className="text-xs text-gray-400 dark:text-zinc-500 truncate">{imageUrl.split('/').pop()}</p>
               </div>
               <button
                 type="button"
                 onClick={() => onImageUrlChange('')}
-                className="text-xs text-red-500 hover:text-red-600 shrink-0 font-medium"
+                className="text-xs text-red-500 dark:text-red-400 hover:text-red-600 dark:text-red-400 shrink-0 font-medium"
               >
                 Remove
               </button>
@@ -205,12 +205,12 @@ function SignatoryPicker({
             <label htmlFor={`${pickerId}-signature-file`} className={`flex items-center gap-2 cursor-pointer rounded-md border border-dashed px-3 py-2.5 text-sm transition-colors ${
               uploading
                 ? 'border-amber-300 bg-amber-50 text-amber-600 cursor-not-allowed'
-                : 'border-gray-300 bg-white text-gray-500 hover:border-amber-400 hover:text-amber-600'
+                : 'border-gray-300 dark:border-zinc-700 bg-white dark:bg-surface-1 text-gray-500 dark:text-zinc-400 hover:border-amber-400 hover:text-amber-600'
             }`}>
               {uploading ? (
                 <><Loader2 className="w-4 h-4 animate-spin shrink-0" /><span>Uploading to Cloudinary…</span></>
               ) : (
-                <><ImageIcon className="w-4 h-4 shrink-0" /><span>Upload signature image <span className="text-xs text-gray-400">(PNG/JPG — optional)</span></span></>
+                <><ImageIcon className="w-4 h-4 shrink-0" /><span>Upload signature image <span className="text-xs text-gray-400 dark:text-zinc-500">(PNG/JPG — optional)</span></span></>
               )}
               <input id={`${pickerId}-signature-file`} type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleImageFile} />
             </label>
@@ -241,8 +241,8 @@ interface Certificate {
 }
 
 const typeColors: Record<CertType, string> = {
-  PARTICIPATION: 'bg-blue-100 text-blue-700',
-  COMPLETION: 'bg-green-100 text-green-700',
+  PARTICIPATION: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+  COMPLETION: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
   WINNER: 'bg-amber-100 text-amber-700',
   SPEAKER: 'bg-purple-100 text-purple-700',
 };
@@ -921,11 +921,11 @@ export default function AdminCertificates() {
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 flex items-center gap-2">
             <Award className="w-6 h-6 text-amber-500" />
             Certificates
           </h1>
-          <p className="text-gray-500 text-sm mt-0.5">{total} certificate{total !== 1 ? 's' : ''} total</p>
+          <p className="text-gray-500 dark:text-zinc-400 text-sm mt-0.5">{total} certificate{total !== 1 ? 's' : ''} total</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setShowBulk(true)} variant="outline" className="gap-2">
@@ -943,10 +943,10 @@ export default function AdminCertificates() {
       <Card>
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-zinc-300 flex items-center gap-1.5">
               <PenLine className="w-4 h-4 text-amber-500" />
               Saved Signatures
-              <span className="text-xs text-gray-400 font-normal ml-1">
+              <span className="text-xs text-gray-400 dark:text-zinc-500 font-normal ml-1">
                 ({allSignatories.length} {allSignatories.length === 1 ? 'entry' : 'entries'})
               </span>
             </h2>
@@ -958,7 +958,7 @@ export default function AdminCertificates() {
           {loadingAllSigs ? (
             <div className="flex justify-center py-4"><Loader2 className="w-5 h-5 animate-spin text-amber-500" /></div>
           ) : allSignatories.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-4">No saved signatures yet. Add one to make it available in all certificate forms.</p>
+            <p className="text-sm text-gray-400 dark:text-zinc-500 text-center py-4">No saved signatures yet. Add one to make it available in all certificate forms.</p>
           ) : (
             <div className="divide-y divide-gray-100">
               {allSignatories.map(sig => {
@@ -969,26 +969,26 @@ export default function AdminCertificates() {
                       <img
                         src={sig.signatureUrl}
                         alt={sig.name}
-                        className="h-8 w-24 object-contain shrink-0 rounded border border-gray-100 bg-white"
+                        className="h-8 w-24 object-contain shrink-0 rounded border border-gray-100 dark:border-zinc-800 bg-white dark:bg-surface-1"
                         onError={e => { (e.target as HTMLImageElement).src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='; }}
                       />
                     ) : (
-                      <div className="h-8 w-24 rounded border border-dashed border-gray-200 flex items-center justify-center shrink-0">
-                        <PenLine className="w-4 h-4 text-gray-300" />
+                      <div className="h-8 w-24 rounded border border-dashed border-gray-200 dark:border-zinc-800 flex items-center justify-center shrink-0">
+                        <PenLine className="w-4 h-4 text-gray-300 dark:text-zinc-600" />
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-800 truncate">{sig.name}</p>
-                      <p className="text-xs text-gray-400">{sig.title} · {certCount} cert{certCount !== 1 ? 's' : ''}</p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-zinc-200 truncate">{sig.name}</p>
+                      <p className="text-xs text-gray-400 dark:text-zinc-500">{sig.title} · {certCount} cert{certCount !== 1 ? 's' : ''}</p>
                     </div>
                     {!sig.isActive && (
-                      <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded shrink-0">Inactive</span>
+                      <span className="text-xs text-gray-400 dark:text-zinc-500 bg-gray-100 dark:bg-surface-2 px-1.5 py-0.5 rounded shrink-0">Inactive</span>
                     )}
                     <div className="flex gap-1 shrink-0">
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-gray-700" onClick={() => openSigModal(sig)} title="Edit">
+                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:text-zinc-300" onClick={() => openSigModal(sig)} title="Edit">
                         <PenLine className="w-3.5 h-3.5" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 hover:text-red-600" onClick={() => setSignatoryToDelete(sig)} title="Delete">
+                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-gray-400 dark:text-zinc-500 hover:text-red-600 dark:text-red-400" onClick={() => setSignatoryToDelete(sig)} title="Delete">
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </div>
@@ -1030,7 +1030,7 @@ export default function AdminCertificates() {
       <Card>
         <CardContent className="p-4 flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-zinc-500" />
             <Input
               placeholder="Search name, email, event, or cert ID…"
               value={search}
@@ -1041,7 +1041,7 @@ export default function AdminCertificates() {
           <select
             value={typeFilter}
             onChange={e => setTypeFilter(e.target.value)}
-            className="border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+            className="border border-gray-200 dark:border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
           >
             <option value="">All Types</option>
             {CERT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -1057,12 +1057,12 @@ export default function AdminCertificates() {
       {loading ? (
         <div className="flex justify-center items-center h-48"><Loader2 className="w-6 h-6 animate-spin text-amber-500" /></div>
       ) : error ? (
-        <div className="flex items-center gap-2 text-red-600 bg-red-50 p-4 rounded-lg">
+        <div className="flex items-center gap-2 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-4 rounded-lg">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           <span>{error}</span>
         </div>
       ) : certs.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-gray-400 dark:text-zinc-500">
           <Award className="w-10 h-10 mx-auto mb-2 opacity-30" />
           <p>No certificates found</p>
         </div>
@@ -1071,38 +1071,38 @@ export default function AdminCertificates() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b bg-gray-50">
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Cert ID</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Recipient</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Event</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Type</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Issued</th>
-                  <th className="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+                <tr className="border-b bg-gray-50 dark:bg-surface-1">
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-zinc-400">Cert ID</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-zinc-400">Recipient</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-zinc-400">Event</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-zinc-400">Type</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-zinc-400">Status</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-zinc-400">Issued</th>
+                  <th className="text-right px-4 py-3 font-medium text-gray-600 dark:text-zinc-400">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {certs.map(cert => (
-                  <tr key={cert.certId} className="hover:bg-gray-50 transition-colors">
+                  <tr key={cert.certId} className="hover:bg-gray-50 dark:bg-surface-1 transition-colors">
                     <td className="px-4 py-3 font-mono text-xs text-amber-700 font-medium">{cert.certId}</td>
                     <td className="px-4 py-3">
-                      <p className="font-medium text-gray-800">{cert.recipientName}</p>
-                      <p className="text-gray-400 text-xs">{cert.recipientEmail}</p>
+                      <p className="font-medium text-gray-800 dark:text-zinc-200">{cert.recipientName}</p>
+                      <p className="text-gray-400 dark:text-zinc-500 text-xs">{cert.recipientEmail}</p>
                     </td>
-                    <td className="px-4 py-3 text-gray-700 max-w-[160px] truncate">{cert.eventName}</td>
+                    <td className="px-4 py-3 text-gray-700 dark:text-zinc-300 max-w-[160px] truncate">{cert.eventName}</td>
                     <td className="px-4 py-3"><CertTypeBadge type={cert.type} /></td>
                     <td className="px-4 py-3">
                       {cert.isRevoked ? (
-                        <span className="inline-flex items-center gap-1 text-xs text-red-600 font-medium">
+                        <span className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 font-medium">
                           <XCircle className="w-3.5 h-3.5" /> Revoked
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
+                        <span className="inline-flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-medium">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Active
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-gray-500 text-xs">
+                    <td className="px-4 py-3 text-gray-500 dark:text-zinc-400 text-xs">
                       {formatDate(cert.issuedAt, 'short')}
                     </td>
                     <td className="px-4 py-3">
@@ -1130,7 +1130,7 @@ export default function AdminCertificates() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-7 w-7 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+                              className="h-7 w-7 p-0 text-red-500 dark:text-red-400 hover:text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30"
                               onClick={() => setRevokeTarget(cert)}
                               title="Revoke"
                             >
@@ -1141,7 +1141,7 @@ export default function AdminCertificates() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="h-7 w-7 p-0 text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30"
                           onClick={() => setDeleteTarget(cert)}
                           title="Delete Permanently"
                         >
@@ -1157,7 +1157,7 @@ export default function AdminCertificates() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-4 py-3 border-t">
-              <p className="text-sm text-gray-500">Page {page} of {totalPages}</p>
+              <p className="text-sm text-gray-500 dark:text-zinc-400">Page {page} of {totalPages}</p>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage(p => p - 1)} className="h-8 w-8 p-0">
                   <ChevronLeft className="w-4 h-4" />
@@ -1181,7 +1181,7 @@ export default function AdminCertificates() {
             </DialogTitle>
           </DialogHeader>
           {generateError && (
-            <div className="shrink-0 flex items-start gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <div className="shrink-0 flex items-start gap-2 rounded-md border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 px-3 py-2 text-sm text-red-700 dark:text-red-300">
               <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <span>{generateError}</span>
             </div>
@@ -1189,22 +1189,22 @@ export default function AdminCertificates() {
           <div className="flex-1 overflow-y-auto min-h-0 py-1 pr-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="col-span-full">
-                <label htmlFor="admin-certificates-recipient-name" className="text-sm font-medium text-gray-700">Recipient Name *</label>
+                <label htmlFor="admin-certificates-recipient-name" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Recipient Name *</label>
                 <Input id="admin-certificates-recipient-name" value={form.recipientName} onChange={e => setForm(f => ({ ...f, recipientName: e.target.value }))} placeholder="Full name" className="mt-1" />
               </div>
               <div className="col-span-full">
-                <label htmlFor="admin-certificates-recipient-email" className="text-sm font-medium text-gray-700">Recipient Email *</label>
+                <label htmlFor="admin-certificates-recipient-email" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Recipient Email *</label>
                 <Input id="admin-certificates-recipient-email" type="email" value={form.recipientEmail} onChange={e => setForm(f => ({ ...f, recipientEmail: e.target.value }))} placeholder="email@example.com" className="mt-1" />
               </div>
               <div className="col-span-full">
-                <label htmlFor="admin-certificates-event-name" className="text-sm font-medium text-gray-700">Event Name (optional)</label>
+                <label htmlFor="admin-certificates-event-name" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Event Name (optional)</label>
                 <Input id="admin-certificates-event-name" value={form.eventName} onChange={e => setForm(f => ({ ...f, eventName: e.target.value }))} placeholder="e.g. Hackathon 2026" className="mt-1" />
               </div>
               <div className="col-span-full">
-                <label htmlFor="admin-certificates-type" className="text-sm font-medium text-gray-700">Certificate Type</label>
+                <label htmlFor="admin-certificates-type" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Certificate Type</label>
                 <select
                   id="admin-certificates-type"
-                  className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  className="mt-1 w-full border border-gray-200 dark:border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
                   value={form.type}
                   onChange={e => setForm(f => ({ ...f, type: e.target.value as CertType }))}
                 >
@@ -1212,15 +1212,15 @@ export default function AdminCertificates() {
                 </select>
               </div>
               <div>
-                <label htmlFor="admin-certificates-position" className="text-sm font-medium text-gray-700">Position / Rank</label>
+                <label htmlFor="admin-certificates-position" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Position / Rank</label>
                 <Input id="admin-certificates-position" value={form.position} onChange={e => setForm(f => ({ ...f, position: e.target.value }))} placeholder="e.g. 1st Place" className="mt-1" />
               </div>
               <div>
-                <label htmlFor="admin-certificates-domain" className="text-sm font-medium text-gray-700">Domain / Track</label>
+                <label htmlFor="admin-certificates-domain" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Domain / Track</label>
                 <Input id="admin-certificates-domain" value={form.domain} onChange={e => setForm(f => ({ ...f, domain: e.target.value }))} placeholder="e.g. Web Dev" className="mt-1" />
               </div>
               <div className="col-span-full">
-                <label htmlFor="admin-certificates-team-name" className="text-sm font-medium text-gray-700">Team Name (optional)</label>
+                <label htmlFor="admin-certificates-team-name" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Team Name (optional)</label>
                 <Input id="admin-certificates-team-name" value={form.teamName} onChange={e => setForm(f => ({ ...f, teamName: e.target.value }))} placeholder="e.g. Team Alpha" className="mt-1" />
               </div>
               <SignatoryPicker
@@ -1249,7 +1249,7 @@ export default function AdminCertificates() {
                 onImageUrlChange={url => setForm(f => ({ ...f, facultyImageUrl: url }))}
               />
               <div className="col-span-full">
-                <label htmlFor="admin-certificates-description" className="text-sm font-medium text-gray-700">Description</label>
+                <label htmlFor="admin-certificates-description" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Description</label>
                 <Textarea
                   id="admin-certificates-description"
                   value={form.description}
@@ -1257,16 +1257,16 @@ export default function AdminCertificates() {
                   placeholder="Custom recognition text (optional). Markdown supported: **bold**, *italic*, ***bold italic***"
                   className="mt-1 min-h-[92px]"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
                   Supports Markdown formatting like <code>**bold**</code>, <code>*italic*</code>, <code>***bold italic***</code>, and <code>~~strikethrough~~</code>.
                 </p>
                 <p className="mt-1 text-xs text-amber-600">
                   Placeholders resolve when generating: <code>{'{name}'}</code>, <code>{'{email}'}</code>, <code>{'{position}'}</code>, <code>{'{domain}'}</code>, <code>{'{teamName}'}</code>, <code>{'{eventName}'}</code>, <code>{'{type}'}</code>.
                 </p>
                 {form.description.trim() && (
-                  <div className="mt-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Preview</p>
-                    <div className="mt-1 text-sm text-gray-700 leading-relaxed">
+                  <div className="mt-2 rounded-md border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 px-3 py-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-zinc-400">Preview</p>
+                    <div className="mt-1 text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">
                       <InlineMarkdown>{form.description}</InlineMarkdown>
                     </div>
                   </div>
@@ -1280,11 +1280,11 @@ export default function AdminCertificates() {
                   onChange={e => setForm(f => ({ ...f, sendEmail: e.target.checked }))}
                   className="w-4 h-4 rounded accent-amber-500"
                 />
-                <label htmlFor="sendEmail" className="text-sm text-gray-700">Send certificate via email</label>
+                <label htmlFor="sendEmail" className="text-sm text-gray-700 dark:text-zinc-300">Send certificate via email</label>
               </div>
             </div>
           </div>
-          <DialogFooter className="shrink-0 border-t border-gray-100 pt-2">
+          <DialogFooter className="shrink-0 border-t border-gray-100 dark:border-zinc-800 pt-2">
             <Button variant="outline" onClick={() => setShowGenerate(false)}>Cancel</Button>
             <Button onClick={handleGenerate} disabled={generating} className="bg-amber-500 hover:bg-amber-600 text-white">
               {generating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Award className="w-4 h-4 mr-2" />}
@@ -1305,12 +1305,12 @@ export default function AdminCertificates() {
           </DialogHeader>
           <div className="flex-1 overflow-y-auto min-h-0 space-y-4 py-1 pr-1">
             <div>
-              <label htmlFor="admin-certificates-bulk-event-name" className="text-sm font-medium text-gray-700">Event Name (optional)</label>
+              <label htmlFor="admin-certificates-bulk-event-name" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Event Name (optional)</label>
               <Input id="admin-certificates-bulk-event-name" value={bulkEventName} onChange={e => setBulkEventName(e.target.value)} placeholder="Hackathon 2026" className="mt-1" />
             </div>
             <div>
-              <label htmlFor="admin-certificates-bulk-type" className="text-sm font-medium text-gray-700">Type</label>
-              <select id="admin-certificates-bulk-type" className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" value={bulkType} onChange={e => setBulkType(e.target.value as CertType)}>
+              <label htmlFor="admin-certificates-bulk-type" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Type</label>
+              <select id="admin-certificates-bulk-type" className="mt-1 w-full border border-gray-200 dark:border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" value={bulkType} onChange={e => setBulkType(e.target.value as CertType)}>
                 {CERT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
@@ -1340,11 +1340,11 @@ export default function AdminCertificates() {
               onImageUrlChange={setBulkFacultyImageUrl}
             />
             <div>
-              <label htmlFor="admin-certificates-bulk-domain" className="text-sm font-medium text-gray-700">Domain / Track</label>
+              <label htmlFor="admin-certificates-bulk-domain" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Domain / Track</label>
               <Input id="admin-certificates-bulk-domain" value={bulkDomain} onChange={e => setBulkDomain(e.target.value)} placeholder="e.g. Web Development (optional)" className="mt-1" />
             </div>
             <div>
-              <label htmlFor="admin-certificates-bulk-description" className="text-sm font-medium text-gray-700">Description</label>
+              <label htmlFor="admin-certificates-bulk-description" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Description</label>
               <Textarea
                 id="admin-certificates-bulk-description"
                 value={bulkDescription}
@@ -1352,16 +1352,16 @@ export default function AdminCertificates() {
                 placeholder="Custom recognition text (optional). Markdown supported: **bold**, *italic*, ***bold italic***"
                 className="mt-1 min-h-[92px]"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">
                 Supports Markdown formatting like <code>**bold**</code>, <code>*italic*</code>, <code>***bold italic***</code>, and <code>~~strikethrough~~</code>.
               </p>
               <p className="mt-1 text-xs text-amber-600">
                 Placeholders resolve per row: <code>{'{name}'}</code>, <code>{'{email}'}</code>, <code>{'{position}'}</code>, <code>{'{domain}'}</code>, <code>{'{teamName}'}</code>, <code>{'{eventName}'}</code>, <code>{'{type}'}</code>.
               </p>
               {bulkDescription.trim() && (
-                <div className="mt-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Preview</p>
-                  <div className="mt-1 text-sm text-gray-700 leading-relaxed">
+                <div className="mt-2 rounded-md border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 px-3 py-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-zinc-400">Preview</p>
+                  <div className="mt-1 text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">
                     <InlineMarkdown>{bulkDescription}</InlineMarkdown>
                   </div>
                 </div>
@@ -1369,7 +1369,7 @@ export default function AdminCertificates() {
             </div>
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label htmlFor="admin-certificates-bulk-csv" className="text-sm font-medium text-gray-700">
+                <label htmlFor="admin-certificates-bulk-csv" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
                   Recipients (CSV) *
                 </label>
                 <Button variant="ghost" size="sm" onClick={downloadCsvTemplate} className="h-7 text-xs gap-1 text-amber-600 hover:text-amber-700">
@@ -1377,22 +1377,22 @@ export default function AdminCertificates() {
                   Download Template
                 </Button>
               </div>
-              <p className="text-xs text-gray-400 mb-1">One per line: <code>Name, Email, Position</code>. You can also use a header row with <code>Team Name</code>, <code>Domain</code>, <code>Description</code>, <code>Type</code>, <code>Template</code>, or <code>User ID</code>.</p>
+              <p className="text-xs text-gray-400 dark:text-zinc-500 mb-1">One per line: <code>Name, Email, Position</code>. You can also use a header row with <code>Team Name</code>, <code>Domain</code>, <code>Description</code>, <code>Type</code>, <code>Template</code>, or <code>User ID</code>.</p>
               <textarea
                 id="admin-certificates-bulk-csv"
                 value={bulkCsv}
                 onChange={e => { setBulkCsv(e.target.value); setBulkPreview(null); setBulkParseErrors([]); }}
                 rows={6}
                 placeholder={"Alice, alice@example.com, 1st Place\nBob, bob@example.com"}
-                className="mt-1 w-full border border-gray-200 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
+                className="mt-1 w-full border border-gray-200 dark:border-zinc-800 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
               />
               {bulkParseErrors.length > 0 && (
-                <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-600 space-y-0.5">
+                <div className="mt-2 p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded text-xs text-red-600 dark:text-red-400 space-y-0.5">
                   {bulkParseErrors.map((e, i) => <p key={i}>{e}</p>)}
                 </div>
               )}
               {bulkPreview && (
-                <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded text-xs text-green-700">
+                <div className="mt-2 p-2 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900/40 rounded text-xs text-green-700 dark:text-green-300">
                   <p className="font-medium mb-1">{bulkPreview.length} recipient(s) ready:</p>
                   <div className="max-h-24 overflow-y-auto space-y-0.5">
                     {bulkPreview.slice(0, 10).map((r, i) => (
@@ -1402,17 +1402,17 @@ export default function AdminCertificates() {
                         {r.teamName ? ` · ${r.teamName}` : ''}
                       </p>
                     ))}
-                    {bulkPreview.length > 10 && <p className="text-green-500">…and {bulkPreview.length - 10} more</p>}
+                    {bulkPreview.length > 10 && <p className="text-green-500 dark:text-green-400">…and {bulkPreview.length - 10} more</p>}
                   </div>
                 </div>
               )}
             </div>
             <div className="flex items-center gap-2">
               <input type="checkbox" id="bulkSendEmail" checked={bulkSendEmail} onChange={e => setBulkSendEmail(e.target.checked)} className="w-4 h-4 rounded accent-amber-500" />
-              <label htmlFor="bulkSendEmail" className="text-sm text-gray-700">Send certificate emails to all recipients</label>
+              <label htmlFor="bulkSendEmail" className="text-sm text-gray-700 dark:text-zinc-300">Send certificate emails to all recipients</label>
             </div>
           </div>
-          <DialogFooter className="shrink-0 border-t border-gray-100 pt-2">
+          <DialogFooter className="shrink-0 border-t border-gray-100 dark:border-zinc-800 pt-2">
             <Button variant="outline" onClick={() => setShowBulk(false)}>Cancel</Button>
             {!bulkPreview ? (
               <Button onClick={handleBulkPreview} className="bg-blue-500 hover:bg-blue-600 text-white">
@@ -1433,18 +1433,18 @@ export default function AdminCertificates() {
       <Dialog open={!!revokeTarget} onOpenChange={open => { if (!open) setRevokeTarget(null); }}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-red-600 flex items-center gap-2">
+            <DialogTitle className="text-red-600 dark:text-red-400 flex items-center gap-2">
               <XCircle className="w-5 h-5" />
               Revoke Certificate
             </DialogTitle>
           </DialogHeader>
           <div className="py-2 space-y-3">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-zinc-400">
               Are you sure you want to revoke certificate <strong className="font-mono">{revokeTarget?.certId}</strong> for <strong>{revokeTarget?.recipientName}</strong>?
               This action cannot be undone.
             </p>
             <div>
-              <label htmlFor="admin-certificates-revoke-reason" className="text-sm font-medium text-gray-700">Reason (optional)</label>
+              <label htmlFor="admin-certificates-revoke-reason" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Reason (optional)</label>
               <Input id="admin-certificates-revoke-reason" value={revokeReason} onChange={e => setRevokeReason(e.target.value)} placeholder="Reason for revocation" className="mt-1" />
             </div>
           </div>
@@ -1462,16 +1462,16 @@ export default function AdminCertificates() {
       <Dialog open={!!deleteTarget} onOpenChange={open => { if (!open) setDeleteTarget(null); }}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-red-600 flex items-center gap-2">
+            <DialogTitle className="text-red-600 dark:text-red-400 flex items-center gap-2">
               <Trash2 className="w-5 h-5" />
               Delete Certificate
             </DialogTitle>
           </DialogHeader>
           <div className="py-2 space-y-3">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-zinc-400">
               Are you sure you want to <strong>permanently delete</strong> certificate <strong className="font-mono">{deleteTarget?.certId}</strong> for <strong>{deleteTarget?.recipientName}</strong>?
             </p>
-            <p className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded border border-red-100">
+            <p className="text-sm text-red-600 dark:text-red-400 font-medium bg-red-50 dark:bg-red-950/30 p-2 rounded border border-red-100 dark:border-red-900/40">
               This will completely remove it from the database and invalidate the local PDF mapping. This action cannot be undone.
             </p>
           </div>
@@ -1493,19 +1493,19 @@ export default function AdminCertificates() {
           </DialogHeader>
           <div className="space-y-3 pt-1">
             <div>
-              <label htmlFor="admin-certificates-signatory-name" className="text-xs text-gray-500 block mb-1">Name <span className="text-red-500">*</span></label>
+              <label htmlFor="admin-certificates-signatory-name" className="text-xs text-gray-500 dark:text-zinc-400 block mb-1">Name <span className="text-red-500 dark:text-red-400">*</span></label>
               <Input id="admin-certificates-signatory-name" value={sigModalName} onChange={e => setSigModalName(e.target.value)} placeholder="e.g. Aarav Mehta" className="h-9" />
             </div>
             <div>
-              <label htmlFor="admin-certificates-signatory-title" className="text-xs text-gray-500 block mb-1">Title</label>
+              <label htmlFor="admin-certificates-signatory-title" className="text-xs text-gray-500 dark:text-zinc-400 block mb-1">Title</label>
               <Input id="admin-certificates-signatory-title" value={sigModalTitle} onChange={e => setSigModalTitle(e.target.value)} placeholder="e.g. Club President" className="h-9" />
             </div>
             <div>
-              <label htmlFor="admin-certificates-signatory-file" className="text-xs text-gray-500 block mb-1">Signature Image <span className="text-gray-400">(optional, PNG/JPG)</span></label>
+              <label htmlFor="admin-certificates-signatory-file" className="text-xs text-gray-500 dark:text-zinc-400 block mb-1">Signature Image <span className="text-gray-400 dark:text-zinc-500">(optional, PNG/JPG)</span></label>
               {sigModalEdit?.signatureUrl && !sigModalUploadedUrl && !sigModalClearImg && (
-                <div className="flex items-center gap-2 rounded border p-2 bg-gray-50 mb-2">
+                <div className="flex items-center gap-2 rounded border p-2 bg-gray-50 dark:bg-surface-1 mb-2">
                   <img src={sigModalEdit.signatureUrl} alt="Current" className="h-8 max-w-[100px] object-contain" onError={e => { (e.target as HTMLImageElement).src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='; }} />
-                  <button type="button" className="text-xs text-red-500 hover:text-red-700 ml-auto" onClick={() => setSigModalClearImg(true)}>Remove</button>
+                  <button type="button" className="text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300 ml-auto" onClick={() => setSigModalClearImg(true)}>Remove</button>
                 </div>
               )}
               {sigModalClearImg && (
@@ -1515,18 +1515,18 @@ export default function AdminCertificates() {
                 </p>
               )}
               {sigModalUploading ? (
-                <div className="flex items-center gap-2 rounded border p-2 bg-gray-50">
+                <div className="flex items-center gap-2 rounded border p-2 bg-gray-50 dark:bg-surface-1">
                   <Loader2 className="w-4 h-4 animate-spin text-amber-500 shrink-0" />
-                  <span className="text-xs text-gray-500">Uploading to Cloudinary…</span>
+                  <span className="text-xs text-gray-500 dark:text-zinc-400">Uploading to Cloudinary…</span>
                 </div>
               ) : sigModalUploadedUrl ? (
-                <div className="flex items-center gap-2 rounded border p-2 bg-gray-50 overflow-hidden">
+                <div className="flex items-center gap-2 rounded border p-2 bg-gray-50 dark:bg-surface-1 overflow-hidden">
                   <img src={sigModalUploadedUrl} alt="Preview" className="h-8 max-w-[80px] object-contain shrink-0" />
-                  <p className="text-xs text-gray-500 truncate flex-1 min-w-0">{sigModalUploadedUrl.split('/').pop()}</p>
-                  <button type="button" className="text-xs text-red-500 shrink-0" onClick={() => setSigModalUploadedUrl(null)}>Remove</button>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400 truncate flex-1 min-w-0">{sigModalUploadedUrl.split('/').pop()}</p>
+                  <button type="button" className="text-xs text-red-500 dark:text-red-400 shrink-0" onClick={() => setSigModalUploadedUrl(null)}>Remove</button>
                 </div>
               ) : (
-                <label htmlFor="admin-certificates-signatory-file" className="flex items-center gap-2 cursor-pointer rounded-md border border-dashed border-gray-300 bg-white px-3 py-2 text-sm text-gray-500 hover:border-amber-400 hover:text-amber-600 transition-colors">
+                <label htmlFor="admin-certificates-signatory-file" className="flex items-center gap-2 cursor-pointer rounded-md border border-dashed border-gray-300 dark:border-zinc-700 bg-white dark:bg-surface-1 px-3 py-2 text-sm text-gray-500 dark:text-zinc-400 hover:border-amber-400 hover:text-amber-600 transition-colors">
                   <ImageIcon className="w-4 h-4 shrink-0" />
                   <span>Choose image file</span>
                   <input

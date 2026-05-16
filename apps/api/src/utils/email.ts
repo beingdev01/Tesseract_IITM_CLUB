@@ -1271,16 +1271,9 @@ export const EmailTemplates = {
     text: `Registration is now open for ${eventTitle}! Date: ${startDate.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}. Register: ${SITE_URL}/events/${slug}`,
   }),
 
-  // Hiring application confirmation
+  // Hiring application confirmation (Core Team)
   hiringApplication: (name: string, email: string, applyingRole: string): EmailTemplate => {
-    const roleNames: Record<string, string> = {
-      TECHNICAL: 'Technical Division',
-      DSA_CHAMPS: 'DSA Champs Division',
-      DESIGNING: 'Design Division',
-      SOCIAL_MEDIA: 'Social Media Division',
-      MANAGEMENT: 'Operations & Management',
-    };
-    const roleName = roleNames[applyingRole] || applyingRole;
+    const roleName = applyingRole;
 
     return {
       subject: `Application Received · ${roleName} · Tesseract`,
@@ -1346,14 +1339,7 @@ export const EmailTemplates = {
 
   // Hiring application SELECTED
   hiringSelected: (name: string, applyingRole: string): EmailTemplate => {
-    const roleNames: Record<string, string> = {
-      TECHNICAL: 'Technical Division',
-      DSA_CHAMPS: 'DSA Champs Division',
-      DESIGNING: 'Design Division',
-      SOCIAL_MEDIA: 'Social Media Division',
-      MANAGEMENT: 'Operations & Management',
-    };
-    const roleName = roleNames[applyingRole] || applyingRole;
+    const roleName = applyingRole;
 
     return {
       subject: `🎉 Congratulations! You're Now Part of Tesseract · ${roleName}`,
@@ -1415,14 +1401,7 @@ export const EmailTemplates = {
 
   // Hiring application REJECTED
   hiringRejected: (name: string, applyingRole: string): EmailTemplate => {
-    const roleNames: Record<string, string> = {
-      TECHNICAL: 'Technical Division',
-      DSA_CHAMPS: 'DSA Champs Division',
-      DESIGNING: 'Design Division',
-      SOCIAL_MEDIA: 'Social Media Division',
-      MANAGEMENT: 'Operations & Management',
-    };
-    const roleName = roleNames[applyingRole] || applyingRole;
+    const roleName = applyingRole;
 
     return {
       subject: `Application Update · ${roleName} · Tesseract`,
@@ -1483,6 +1462,83 @@ export const EmailTemplates = {
         footer: 'Keep coding, keep growing. We hope to see you again.',
       }),
       text: `Hi ${name}, thank you for applying to the ${roleName} at Tesseract. After careful review, we won't be moving forward with your application at this time. We encourage you to work on strengthening your fundamentals and building projects. When you feel ready, we'd love to see you apply again in the next recruitment round. Keep learning and growing!`,
+    };
+  },
+
+  // Hiring application INTERVIEW_SCHEDULED
+  hiringInterviewScheduled: (name: string, applyingRole: string): EmailTemplate => {
+    const roleName = applyingRole;
+    return {
+      subject: `Interview Scheduled · ${roleName} · Tesseract`,
+      html: generateEmailTemplate({
+        preheader: `Your interview for ${roleName} is being set up by our team.`,
+        accentColor: '#6366f1',
+        badge: { text: 'Interview Stage', icon: '🎯' },
+        title: `You're moving forward, ${name}!`,
+        subtitle: `Your application for the ${roleName} at Tesseract has been shortlisted for an interview.`,
+        body: `
+          <p style="margin: 0 0 20px; font-size: 16px; color: #e5e7eb; line-height: 1.8;">
+            Great news — we loved your application and want to learn more. A Tesseract core member will reach out shortly with interview details (date, time, and a meeting link).
+          </p>
+          <div style="margin: 24px 0; padding: 20px; background: linear-gradient(135deg, #6366f115, #4f46e510); border: 1px solid #6366f140; border-radius: 12px;">
+            <p style="margin: 0 0 12px; font-size: 12px; color: #6366f1; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">📅 What's next</p>
+            <p style="margin: 0; font-size: 14px; color: #d1d5db; line-height: 1.7;">
+              Keep an eye on your inbox (including <strong>Spam</strong> and <strong>Promotions</strong>) for the scheduling email. Reply quickly with your availability so we can lock the slot.
+            </p>
+          </div>
+          <p style="margin: 24px 0 0; font-size: 14px; color: #a1a1aa; line-height: 1.7;">
+            Bring your curiosity, your favourite projects, and any questions you have about the team — we want it to be a real conversation, not a trivia round.
+          </p>
+        `,
+        cta: { text: 'Open Tesseract', url: SITE_URL },
+        footer: 'Looking forward to meeting you.',
+      }),
+      text: `Hi ${name}, your application for the ${roleName} at Tesseract has been shortlisted. A core member will reach out shortly with interview details — please watch your inbox (including spam/promotions). Reply quickly with your availability so we can confirm the slot.`,
+    };
+  },
+
+  // Member welcome (after joining the Tesseract community)
+  memberWelcome: (name: string, whatsappUrl?: string): EmailTemplate => {
+    const safeName = name;
+    const whatsappBlock = whatsappUrl
+      ? `
+          <div style="margin: 24px 0; padding: 20px; background: linear-gradient(135deg, #25d36615, #128c7e10); border: 1px solid #25d36640; border-radius: 12px; text-align: center;">
+            <p style="margin: 0 0 12px; font-size: 12px; color: #25d366; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">💬 Join the WhatsApp community</p>
+            <p style="margin: 0 0 16px; font-size: 14px; color: #d1d5db; line-height: 1.7;">
+              Tap below to drop into the Tesseract WhatsApp group — that's where the chaos lives.
+            </p>
+            <a href="${whatsappUrl}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #25d366, #128c7e); color: #ffffff; font-weight: 700; text-decoration: none; border-radius: 8px; letter-spacing: 0.5px;">Open WhatsApp Group</a>
+          </div>
+        `
+      : `
+          <div style="margin: 24px 0; padding: 20px; background: #18181b; border: 1px solid #27272a; border-radius: 12px;">
+            <p style="margin: 0; font-size: 14px; color: #a1a1aa; line-height: 1.7;">
+              The WhatsApp community invite isn't live yet — check the Tesseract dashboard in a day or two; it will show up there as soon as it's configured.
+            </p>
+          </div>
+        `;
+
+    return {
+      subject: `Welcome to the Tesseract community, ${safeName}! 🎮`,
+      html: generateEmailTemplate({
+        preheader: 'You\'re in. Welcome to the Tesseract Interest Group.',
+        accentColor: '#25d366',
+        badge: { text: 'You\'re In', icon: '✨' },
+        title: `Welcome, ${safeName}!`,
+        subtitle: 'You\'ve officially joined the Tesseract Interest Group community.',
+        body: `
+          <p style="margin: 0 0 20px; font-size: 16px; color: #e5e7eb; line-height: 1.8;">
+            Thanks for joining the Tesseract community — events, challenges, late-night chaos, and the occasional meaningful conversation are all incoming.
+          </p>
+          ${whatsappBlock}
+          <p style="margin: 24px 0 0; font-size: 14px; color: #a1a1aa; line-height: 1.7;">
+            You can re-open the WhatsApp invite anytime from your <a href="${SITE_URL}/dashboard" style="color: #fbbf24; text-decoration: none; font-weight: 600;">Tesseract dashboard</a>.
+          </p>
+        `,
+        cta: { text: 'Open Dashboard', url: `${SITE_URL}/dashboard` },
+        footer: 'See you in the group chat.',
+      }),
+      text: `Hi ${safeName}, welcome to the Tesseract Interest Group community!${whatsappUrl ? ` Join the WhatsApp group here: ${whatsappUrl}` : ' The WhatsApp invite will be available on your dashboard soon.'} You can always re-open it from ${SITE_URL}/dashboard.`,
     };
   },
 
@@ -1945,6 +2001,16 @@ class EmailService {
   async sendHiringRejected(email: string, name: string, applyingRole: string): Promise<boolean> {
     const template = EmailTemplates.hiringRejected(sanitizeText(name), sanitizeText(applyingRole));
     return this.send({ to: email, ...template });
+  }
+
+  async sendHiringInterviewScheduled(email: string, name: string, applyingRole: string): Promise<boolean> {
+    const template = EmailTemplates.hiringInterviewScheduled(sanitizeText(name), sanitizeText(applyingRole));
+    return this.send({ to: email, ...template });
+  }
+
+  async sendMemberWelcome(email: string, name: string, whatsappUrl?: string): Promise<boolean> {
+    const template = EmailTemplates.memberWelcome(sanitizeText(name), whatsappUrl);
+    return this.send({ to: email, ...template, category: 'welcome' });
   }
 
   // Network-specific emails (for NETWORK role users only)

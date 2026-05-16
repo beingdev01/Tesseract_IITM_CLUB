@@ -36,6 +36,7 @@ export interface RiddleRoomState extends BaseRoomState {
   members: Map<string, RiddleMemberState>;
   clues: RiddleClueState[];
   sessionsRecorded: boolean;
+  finalizingPromise?: Promise<void>;
 }
 
 export const riddleRooms = new RoomStore<RiddleRoomState>({
@@ -229,8 +230,14 @@ export async function joinRiddleRoom(input: {
   return room;
 }
 
-export async function completeRiddleRoom(room: RiddleRoomState): Promise<void> {
-  if (room.status === 'FINISHED') return;
+export function completeRiddleRoom(room: RiddleRoomState): Promise<void> {
+  if (room.status === 'FINISHED') return Promise.resolve();
+  if (room.finalizingPromise) return room.finalizingPromise;
+  room.finalizingPromise = doCompleteRiddleRoom(room);
+  return room.finalizingPromise;
+}
+
+async function doCompleteRiddleRoom(room: RiddleRoomState): Promise<void> {
   room.status = 'FINISHED';
   await withRetry(() => prisma.riddleRoom.update({
     where: { id: room.roomId },

@@ -190,8 +190,8 @@ export default function AdminAchievements() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Achievements Management</h1>
-          <p className="text-gray-500">Manage club achievements and milestones</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">Achievements Management</h1>
+          <p className="text-gray-500 dark:text-zinc-400">Manage club achievements and milestones</p>
         </div>
         <Button onClick={openCreateForm} className="bg-amber-500 hover:bg-amber-600">
           <Plus className="h-4 w-4 mr-2" />
@@ -201,10 +201,10 @@ export default function AdminAchievements() {
 
       {/* Messages */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30">
           <CardContent className="flex items-center gap-3 pt-6">
-            <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
-            <p className="text-red-700">{error}</p>
+            <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-400 flex-shrink-0" />
+            <p className="text-red-700 dark:text-red-300">{error}</p>
           </CardContent>
         </Card>
       )}
@@ -306,7 +306,7 @@ export default function AdminAchievements() {
                     placeholder="Detailed content with markdown support. This will be shown on the achievement detail page."
                     rows={6}
                   />
-                  <p className="text-xs text-gray-500">Supports Markdown formatting</p>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400">Supports Markdown formatting</p>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
@@ -340,7 +340,7 @@ export default function AdminAchievements() {
                     placeholder="https://image1.jpg&#10;https://image2.jpg&#10;https://image3.jpg"
                     rows={4}
                   />
-                  <p className="text-xs text-gray-500">Add one image URL per line for the gallery</p>
+                  <p className="text-xs text-gray-500 dark:text-zinc-400">Add one image URL per line for the gallery</p>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -388,7 +388,7 @@ export default function AdminAchievements() {
           ) : achievements.length === 0 ? (
             <div className="text-center py-12">
               <Trophy className="h-12 w-12 text-amber-300 mx-auto mb-4" />
-              <p className="text-gray-500">No achievements yet. Add your first achievement!</p>
+              <p className="text-gray-500 dark:text-zinc-400">No achievements yet. Add your first achievement!</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -397,7 +397,7 @@ export default function AdminAchievements() {
                   key={achievement.id}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-amber-300 transition-colors gap-4"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-gray-200 dark:border-zinc-800 rounded-lg hover:border-amber-300 transition-colors gap-4"
                 >
                   <div className="flex items-start gap-4">
                     {achievement.imageUrl ? (
@@ -414,7 +414,7 @@ export default function AdminAchievements() {
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold text-gray-900">{achievement.title}</h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-zinc-100">{achievement.title}</h3>
                         {achievement.featured && (
                           <Badge className="bg-amber-100 text-amber-700 border-amber-300">
                             <Star className="h-3 w-3 mr-1" />
@@ -427,11 +427,11 @@ export default function AdminAchievements() {
                         <p className="text-sm text-amber-600">{achievement.eventName}</p>
                       )}
                       
-                      <p className="text-sm text-gray-600 line-clamp-1 mt-1">
+                      <p className="text-sm text-gray-600 dark:text-zinc-400 line-clamp-1 mt-1">
                         {achievement.shortDescription || achievement.description}
                       </p>
                       
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-zinc-400">
                         <div className="flex items-center gap-1">
                           <Users className="h-3 w-3" />
                           <span>{achievement.achievedBy}</span>
@@ -478,7 +478,7 @@ export default function AdminAchievements() {
                       variant="outline"
                       size="sm"
                       onClick={() => setAchievementToDelete(achievement)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

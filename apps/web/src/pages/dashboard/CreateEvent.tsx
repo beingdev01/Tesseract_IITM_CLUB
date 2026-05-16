@@ -101,7 +101,7 @@ function CollapsibleSection({
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-5 w-5 text-gray-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </motion.div>
@@ -381,7 +381,7 @@ export default function CreateEvent() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-amber-900">Create Event</h1>
-          <p className="text-gray-600">Add a new event with all the details</p>
+          <p className="text-gray-600 dark:text-zinc-400">Add a new event with all the details</p>
         </div>
       </div>
 
@@ -389,7 +389,7 @@ export default function CreateEvent() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-lg text-red-700 dark:text-red-300"
         >
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
@@ -409,8 +409,8 @@ export default function CreateEvent() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="sm:col-span-2 space-y-2">
-                <label htmlFor="create-event-title" className="text-sm font-medium text-gray-700">
-                  Title <span className="text-red-500">*</span>
+                <label htmlFor="create-event-title" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                  Title <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <Input
                   id="create-event-title"
@@ -422,7 +422,7 @@ export default function CreateEvent() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="create-event-type" className="text-sm font-medium text-gray-700">Event Type</label>
+                <label htmlFor="create-event-type" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Event Type</label>
                 <select
                   id="create-event-type"
                   name="eventType"
@@ -438,8 +438,8 @@ export default function CreateEvent() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="create-event-short-description" className="text-sm font-medium text-gray-700">
-                Short Description <span className="text-gray-400">(for event cards - max 300 chars)</span>
+              <label htmlFor="create-event-short-description" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                Short Description <span className="text-gray-400 dark:text-zinc-500">(for event cards - max 300 chars)</span>
               </label>
               <textarea
                 id="create-event-short-description"
@@ -450,12 +450,12 @@ export default function CreateEvent() {
                 maxLength={300}
                 className="w-full min-h-[80px] px-3 py-2 border border-input rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
-              <p className="text-xs text-gray-500 text-right">{form.shortDescription.length}/300</p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400 text-right">{form.shortDescription.length}/300</p>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="create-event-description" className="text-sm font-medium text-gray-700">
-                Full Description <span className="text-red-500">*</span>
+              <label htmlFor="create-event-description" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                Full Description <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <textarea
                 id="create-event-description"
@@ -477,9 +477,9 @@ export default function CreateEvent() {
                 onChange={handleChange}
                 className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500"
               />
-              <label htmlFor="featured" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              <label htmlFor="featured" className="text-sm font-medium text-gray-700 dark:text-zinc-300 flex items-center gap-2">
                 <Star className="h-4 w-4 text-amber-500" />
-                Featured Event <span className="text-gray-400">(will be highlighted)</span>
+                Featured Event <span className="text-gray-400 dark:text-zinc-500">(will be highlighted)</span>
               </label>
             </div>
           </CardContent>
@@ -497,8 +497,8 @@ export default function CreateEvent() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="create-event-start-date" className="text-sm font-medium text-gray-700">
-                  Event Start Date & Time <span className="text-red-500">*</span>
+                <label htmlFor="create-event-start-date" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                  Event Start Date & Time <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <Input
                   id="create-event-start-date"
@@ -510,7 +510,7 @@ export default function CreateEvent() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="create-event-end-date" className="text-sm font-medium text-gray-700">Event End Date & Time</label>
+                <label htmlFor="create-event-end-date" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Event End Date & Time</label>
                 <Input
                   id="create-event-end-date"
                   name="endDate"
@@ -518,10 +518,10 @@ export default function CreateEvent() {
                   value={form.endDate}
                   onChange={handleChange}
                 />
-                <p className="text-xs text-gray-500">Leave empty for single-day events</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Leave empty for single-day events</p>
               </div>
               <div className="space-y-2">
-                <label htmlFor="create-event-days" className="text-sm font-medium text-gray-700">
+                <label htmlFor="create-event-days" className="text-sm font-medium text-gray-700 dark:text-zinc-300">
                   Attendance Days
                 </label>
                 <Input
@@ -533,7 +533,7 @@ export default function CreateEvent() {
                   value={form.eventDays}
                   onChange={handleChange}
                 />
-                <p className="text-xs text-gray-500">Use more than 1 for multi-day attendance tracking.</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Use more than 1 for multi-day attendance tracking.</p>
               </div>
             </div>
           </CardContent>
@@ -551,7 +551,7 @@ export default function CreateEvent() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="create-event-registration-start" className="text-sm font-medium text-gray-700">Registration Opens</label>
+                <label htmlFor="create-event-registration-start" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Registration Opens</label>
                 <Input
                   id="create-event-registration-start"
                   name="registrationStartDate"
@@ -559,10 +559,10 @@ export default function CreateEvent() {
                   value={form.registrationStartDate}
                   onChange={handleChange}
                 />
-                <p className="text-xs text-gray-500">When users can start registering</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">When users can start registering</p>
               </div>
               <div className="space-y-2">
-                <label htmlFor="create-event-registration-end" className="text-sm font-medium text-gray-700">Registration Closes</label>
+                <label htmlFor="create-event-registration-end" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Registration Closes</label>
                 <Input
                   id="create-event-registration-end"
                   name="registrationEndDate"
@@ -570,17 +570,17 @@ export default function CreateEvent() {
                   value={form.registrationEndDate}
                   onChange={handleChange}
                 />
-                <p className="text-xs text-gray-500">Last date to register</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Last date to register</p>
               </div>
             </div>
             
             {/* Late Registration Toggle */}
             <div className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-100/50 p-4">
               <div className="space-y-0.5">
-                <label htmlFor="allowLateRegistration" className="text-sm font-medium text-gray-700 cursor-pointer">
+                <label htmlFor="allowLateRegistration" className="text-sm font-medium text-gray-700 dark:text-zinc-300 cursor-pointer">
                   Allow Late Registration
                 </label>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-zinc-400">
                   Let users register even after the event has started
                 </p>
               </div>
@@ -593,7 +593,7 @@ export default function CreateEvent() {
                   onChange={handleChange}
                   className="peer sr-only"
                 />
-                <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-amber-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300"></div>
+                <div className="peer h-6 w-11 rounded-full bg-gray-200 dark:bg-surface-3 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 dark:border-zinc-700 after:bg-white dark:bg-surface-1 after:transition-all after:content-[''] peer-checked:bg-amber-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300"></div>
               </label>
             </div>
 
@@ -601,11 +601,11 @@ export default function CreateEvent() {
             <div className="rounded-lg border border-amber-200 bg-amber-100/50 p-4 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <label htmlFor="teamRegistration" className="text-sm font-medium text-gray-700 flex items-center gap-2 cursor-pointer">
+                  <label htmlFor="teamRegistration" className="text-sm font-medium text-gray-700 dark:text-zinc-300 flex items-center gap-2 cursor-pointer">
                     <Users className="h-4 w-4 text-amber-600" />
                     Enable Team Registration
                   </label>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-zinc-400">
                     Allow users to form teams for this event instead of solo registration
                   </p>
                 </div>
@@ -618,7 +618,7 @@ export default function CreateEvent() {
                     onChange={handleChange}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-amber-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 dark:bg-surface-3 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 dark:border-zinc-700 after:bg-white dark:bg-surface-1 after:transition-all after:content-[''] peer-checked:bg-amber-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300"></div>
                 </label>
               </div>
               
@@ -633,7 +633,7 @@ export default function CreateEvent() {
                     className="overflow-hidden"
                   >
                     <div className="pt-4 border-t border-amber-200 space-y-4">
-                      <p className="text-sm font-medium text-gray-700">Team Size</p>
+                      <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">Team Size</p>
                       
                       {/* Quick presets */}
                       <div className="flex flex-wrap gap-2">
@@ -656,7 +656,7 @@ export default function CreateEvent() {
                             className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
                               form.teamMinSize === preset.min && form.teamMaxSize === preset.max
                                 ? 'bg-amber-500 text-white border-amber-500'
-                                : 'bg-white text-gray-700 border-gray-300 hover:border-amber-400 hover:bg-amber-50'
+                                : 'bg-white dark:bg-surface-1 text-gray-700 dark:text-zinc-300 border-gray-300 dark:border-zinc-700 hover:border-amber-400 hover:bg-amber-50'
                             }`}
                           >
                             {preset.label}
@@ -666,7 +666,7 @@ export default function CreateEvent() {
 
                       {/* Custom size inputs */}
                       <div className="flex items-center gap-3">
-                        <span className="text-sm text-gray-600">Or custom:</span>
+                        <span className="text-sm text-gray-600 dark:text-zinc-400">Or custom:</span>
                         <div className="flex items-center gap-2">
                           <Input
                             type="number"
@@ -684,7 +684,7 @@ export default function CreateEvent() {
                             }}
                             className="w-16 text-center border-amber-200"
                           />
-                          <span className="text-gray-500">to</span>
+                          <span className="text-gray-500 dark:text-zinc-400">to</span>
                           <Input
                             type="number"
                             id="teamMaxSize"
@@ -700,11 +700,11 @@ export default function CreateEvent() {
                             }}
                             className="w-16 text-center border-amber-200"
                           />
-                          <span className="text-sm text-gray-500">members</span>
+                          <span className="text-sm text-gray-500 dark:text-zinc-400">members</span>
                         </div>
                       </div>
 
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-zinc-400">
                         Teams need {form.teamMinSize === form.teamMaxSize 
                           ? `exactly ${form.teamMinSize}` 
                           : `${form.teamMinSize}-${form.teamMaxSize}`} members to be complete.
@@ -744,7 +744,7 @@ export default function CreateEvent() {
                         variant="ghost"
                         size="sm"
                         onClick={() => removeRegistrationField(index)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:bg-red-950/30"
                       >
                         <Trash2 className="h-4 w-4 mr-1" />
                         Remove
@@ -753,8 +753,8 @@ export default function CreateEvent() {
 
                     <div className="grid gap-4 sm:grid-cols-3">
                       <div className="sm:col-span-2 space-y-2">
-                        <label htmlFor={`create-event-registration-field-name-${field.id}`} className="text-sm font-medium text-gray-700">
-                          Field Name <span className="text-red-500">*</span>
+                        <label htmlFor={`create-event-registration-field-name-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">
+                          Field Name <span className="text-red-500 dark:text-red-400">*</span>
                         </label>
                         <Input
                           id={`create-event-registration-field-name-${field.id}`}
@@ -764,7 +764,7 @@ export default function CreateEvent() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`create-event-registration-field-type-${field.id}`} className="text-sm font-medium text-gray-700">Type</label>
+                        <label htmlFor={`create-event-registration-field-type-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Type</label>
                         <select
                           id={`create-event-registration-field-type-${field.id}`}
                           value={field.type}
@@ -783,7 +783,7 @@ export default function CreateEvent() {
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor={`create-event-registration-field-placeholder-${field.id}`} className="text-sm font-medium text-gray-700">Placeholder</label>
+                      <label htmlFor={`create-event-registration-field-placeholder-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Placeholder</label>
                       <Input
                         id={`create-event-registration-field-placeholder-${field.id}`}
                         value={field.placeholder || ''}
@@ -794,7 +794,7 @@ export default function CreateEvent() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
-                        <label htmlFor={`create-event-registration-field-min-length-${field.id}`} className="text-sm font-medium text-gray-700">Min Length</label>
+                        <label htmlFor={`create-event-registration-field-min-length-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Min Length</label>
                         <Input
                           id={`create-event-registration-field-min-length-${field.id}`}
                           type="number"
@@ -809,7 +809,7 @@ export default function CreateEvent() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`create-event-registration-field-max-length-${field.id}`} className="text-sm font-medium text-gray-700">Max Length</label>
+                        <label htmlFor={`create-event-registration-field-max-length-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Max Length</label>
                         <Input
                           id={`create-event-registration-field-max-length-${field.id}`}
                           type="number"
@@ -827,7 +827,7 @@ export default function CreateEvent() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
-                        <label htmlFor={`create-event-registration-field-min-value-${field.id}`} className="text-sm font-medium text-gray-700">Min Value (for number fields)</label>
+                        <label htmlFor={`create-event-registration-field-min-value-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Min Value (for number fields)</label>
                         <Input
                           id={`create-event-registration-field-min-value-${field.id}`}
                           type="number"
@@ -841,7 +841,7 @@ export default function CreateEvent() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor={`create-event-registration-field-max-value-${field.id}`} className="text-sm font-medium text-gray-700">Max Value (for number fields)</label>
+                        <label htmlFor={`create-event-registration-field-max-value-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Max Value (for number fields)</label>
                         <Input
                           id={`create-event-registration-field-max-value-${field.id}`}
                           type="number"
@@ -857,7 +857,7 @@ export default function CreateEvent() {
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor={`create-event-registration-field-pattern-${field.id}`} className="text-sm font-medium text-gray-700">Regex Pattern (optional)</label>
+                      <label htmlFor={`create-event-registration-field-pattern-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Regex Pattern (optional)</label>
                       <Input
                         id={`create-event-registration-field-pattern-${field.id}`}
                         value={field.pattern || ''}
@@ -874,7 +874,7 @@ export default function CreateEvent() {
                         onChange={(e) => updateRegistrationField(index, { required: e.target.checked })}
                         className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500"
                       />
-                      <label htmlFor={`create-event-registration-field-required-${field.id}`} className="text-sm font-medium text-gray-700">Required field</label>
+                      <label htmlFor={`create-event-registration-field-required-${field.id}`} className="text-sm font-medium text-gray-700 dark:text-zinc-300">Required field</label>
                     </div>
                   </div>
                 ))}
@@ -900,7 +900,7 @@ export default function CreateEvent() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="create-event-location" className="text-sm font-medium text-gray-700">Location</label>
+                <label htmlFor="create-event-location" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Location</label>
                 <Input
                   id="create-event-location"
                   name="location"
@@ -910,7 +910,7 @@ export default function CreateEvent() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="create-event-venue" className="text-sm font-medium text-gray-700">Venue</label>
+                <label htmlFor="create-event-venue" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Venue</label>
                 <Input
                   id="create-event-venue"
                   name="venue"
@@ -923,7 +923,7 @@ export default function CreateEvent() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="create-event-capacity" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <label htmlFor="create-event-capacity" className="text-sm font-medium text-gray-700 dark:text-zinc-300 flex items-center gap-2">
                   <Users className="h-4 w-4" />
                   Maximum Capacity
                 </label>
@@ -938,7 +938,7 @@ export default function CreateEvent() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="create-event-target-audience" className="text-sm font-medium text-gray-700">Target Audience</label>
+                <label htmlFor="create-event-target-audience" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Target Audience</label>
                 <Input
                   id="create-event-target-audience"
                   name="targetAudience"
@@ -950,7 +950,7 @@ export default function CreateEvent() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="create-event-prerequisites" className="text-sm font-medium text-gray-700">Prerequisites</label>
+              <label htmlFor="create-event-prerequisites" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Prerequisites</label>
               <textarea
                 id="create-event-prerequisites"
                 name="prerequisites"
@@ -975,7 +975,7 @@ export default function CreateEvent() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="create-event-image-url" className="text-sm font-medium text-gray-700">Cover Image URL</label>
+                <label htmlFor="create-event-image-url" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Cover Image URL</label>
                 <Input
                   id="create-event-image-url"
                   name="imageUrl"
@@ -984,10 +984,10 @@ export default function CreateEvent() {
                   onChange={handleChange}
                   placeholder="Google Drive link or direct image URL"
                 />
-                <p className="text-xs text-gray-500">Supports Google Drive shareable links</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">Supports Google Drive shareable links</p>
               </div>
               <div className="space-y-2">
-                <label htmlFor="create-event-video-url" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <label htmlFor="create-event-video-url" className="text-sm font-medium text-gray-700 dark:text-zinc-300 flex items-center gap-2">
                   <Video className="h-4 w-4" />
                   Video URL
                 </label>
@@ -999,7 +999,7 @@ export default function CreateEvent() {
                   onChange={handleChange}
                   placeholder="YouTube, Vimeo, or Loom link"
                 />
-                <p className="text-xs text-gray-500">We convert supported video links into a safe embed URL automatically.</p>
+                <p className="text-xs text-gray-500 dark:text-zinc-400">We convert supported video links into a safe embed URL automatically.</p>
               </div>
             </div>
           </CardContent>
@@ -1011,7 +1011,7 @@ export default function CreateEvent() {
           icon={<Star className="h-5 w-5 text-amber-600" />}
         >
           <div className="space-y-2">
-            <label htmlFor="create-event-highlights" className="text-sm font-medium text-gray-700">Key highlights of the event</label>
+            <label htmlFor="create-event-highlights" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Key highlights of the event</label>
             <textarea
               id="create-event-highlights"
               name="highlights"
@@ -1029,7 +1029,7 @@ export default function CreateEvent() {
           icon={<Calendar className="h-5 w-5 text-amber-600" />}
         >
           <div className="space-y-2">
-            <label htmlFor="create-event-agenda" className="text-sm font-medium text-gray-700">Detailed event schedule</label>
+            <label htmlFor="create-event-agenda" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Detailed event schedule</label>
             <textarea
               id="create-event-agenda"
               name="agenda"
@@ -1047,7 +1047,7 @@ export default function CreateEvent() {
           icon={<Target className="h-5 w-5 text-amber-600" />}
         >
           <div className="space-y-2">
-            <label htmlFor="create-event-learning-outcomes" className="text-sm font-medium text-gray-700">What participants will gain</label>
+            <label htmlFor="create-event-learning-outcomes" className="text-sm font-medium text-gray-700 dark:text-zinc-300">What participants will gain</label>
             <textarea
               id="create-event-learning-outcomes"
               name="learningOutcomes"
@@ -1067,15 +1067,15 @@ export default function CreateEvent() {
         >
           <div className="space-y-4">
             {speakers.map((speaker, index) => (
-              <div key={index} className="p-4 border border-gray-200 rounded-lg space-y-3">
+              <div key={index} className="p-4 border border-gray-200 dark:border-zinc-800 rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-700">Speaker {index + 1}</span>
+                  <span className="font-medium text-gray-700 dark:text-zinc-300">Speaker {index + 1}</span>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     onClick={() => removeSpeaker(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -1120,15 +1120,15 @@ export default function CreateEvent() {
         >
           <div className="space-y-4">
             {resources.map((resource, index) => (
-              <div key={index} className="p-4 border border-gray-200 rounded-lg space-y-3">
+              <div key={index} className="p-4 border border-gray-200 dark:border-zinc-800 rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-700">Resource {index + 1}</span>
+                  <span className="font-medium text-gray-700 dark:text-zinc-300">Resource {index + 1}</span>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     onClick={() => removeResource(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -1171,15 +1171,15 @@ export default function CreateEvent() {
         >
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="p-4 border border-gray-200 rounded-lg space-y-3">
+              <div key={index} className="p-4 border border-gray-200 dark:border-zinc-800 rounded-lg space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-700">FAQ {index + 1}</span>
+                  <span className="font-medium text-gray-700 dark:text-zinc-300">FAQ {index + 1}</span>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     onClick={() => removeFaq(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -1211,7 +1211,7 @@ export default function CreateEvent() {
           badge={imageGallery.filter(u => u.trim()).length > 0 ? `${imageGallery.filter(u => u.trim()).length}` : undefined}
         >
           <div className="space-y-4">
-            <p className="text-sm text-gray-500">Add Google Drive shareable links for event images</p>
+            <p className="text-sm text-gray-500 dark:text-zinc-400">Add Google Drive shareable links for event images</p>
             {imageGallery.map((url, index) => (
               <div key={index} className="flex gap-2">
                 <Input
@@ -1225,7 +1225,7 @@ export default function CreateEvent() {
                   variant="ghost"
                   size="icon"
                   onClick={() => removeGalleryImage(index)}
-                  className="text-red-500 hover:text-red-700"
+                  className="text-red-500 dark:text-red-400 hover:text-red-700 dark:text-red-300"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -1270,7 +1270,7 @@ export default function CreateEvent() {
                     <button
                       type="button"
                       onClick={() => removeTag(index)}
-                      className="text-gray-500 hover:text-gray-700"
+                      className="text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:text-zinc-300"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -1282,7 +1282,7 @@ export default function CreateEvent() {
         </CollapsibleSection>
 
         {/* Submit */}
-        <div className="flex gap-4 sticky bottom-4 bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+        <div className="flex gap-4 sticky bottom-4 bg-white dark:bg-surface-1 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-zinc-800">
           <Button type="submit" className="flex-1 bg-amber-600 hover:bg-amber-700" disabled={loading}>
             {loading ? (
               <>

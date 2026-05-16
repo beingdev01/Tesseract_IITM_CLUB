@@ -33,11 +33,18 @@ export interface TriviaRoomState extends BaseRoomState {
   questions: TriviaQuestionState[];
   participants: Map<string, TriviaParticipant>;
   sessionsRecorded: boolean;
+  finalizingPromise?: Promise<void>;
 }
 
 export const triviaRooms = new RoomStore<TriviaRoomState>({
   gameId: TRIVIA_TOWER_GAME_ID,
   maxPlayersPerRoom: 20,
+  onEvict: (room) => {
+    if (room.questionTimer) {
+      clearTimeout(room.questionTimer);
+      room.questionTimer = null;
+    }
+  },
 });
 
 function shuffle<T>(items: T[]): T[] {
@@ -172,9 +179,99 @@ export async function getTriviaRoom(code: string): Promise<TriviaRoomState | nul
   if (room) return room;
   const run = await withRetry(() => prisma.triviaTowerRun.findUnique({
     where: { code: code.toUpperCase() },
-    select: { id: true, code: true, hostId: true, status: true, totalFloors: true, createdAt: true },
+    select: {
+      id: true,
+      code: true,
+      hostId: true,
+      status: true,
+      totalFloors: true,
+      createdAt: true,
+      answers: {
+        select: {
+          userId: true,
+          floor: true,
+          correct: true,
+          pointsAwarded: true,
+          user: { select: { id: true, name: true, avatar: true } },
+        },
+      },
+    },
   }));
   if (!run) return null;
+
+  // Rebuild participants from persisted answers. Streak is best-effort: derive
+  // by replaying answers in floor order, since DB doesn't persist streak state.
+  const participantMap = new Map<string, TriviaParticipant>();
+  const participantAnswers = new Map<string, typeof run.answers>();
+  for (const answer of run.answers) {
+    if (!answer.user) continue;
+    const bucket = participantAnswers.get(answer.userId) ?? [];
+    bucket.push(answer);
+    participantAnswers.set(answer.userId, bucket);
+    if (!participantMap.has(answer.userId)) {
+      participantMap.set(answer.userId, {
+        userId: answer.userId,
+        name: answer.user.name,
+        avatar: answer.user.avatar,
+        score: 0,
+        streak: 0,
+        active: false,
+        answeredFloors: new Set<number>(),
+      });
+    }
+  }
+  for (const [userId, answers] of participantAnswers) {
+    const participant = participantMap.get(userId);
+    if (!participant) continue;
+    const sorted = [...answers].sort((a, b) => a.floor - b.floor);
+    let streak = 0;
+    for (const a of sorted) {
+      participant.answeredFloors.add(a.floor);
+      participant.score += a.pointsAwarded;
+      streak = a.correct ? streak + 1 : 0;
+    }
+    participant.streak = streak;
+  }
+
+  // Always include the host (even if they have no answers yet).
+  if (!participantMap.has(run.hostId)) {
+    const hostUser = await withRetry(() => prisma.user.findUnique({
+      where: { id: run.hostId },
+      select: { id: true, name: true, avatar: true },
+    }));
+    if (hostUser) {
+      participantMap.set(hostUser.id, {
+        userId: hostUser.id,
+        name: hostUser.name,
+        avatar: hostUser.avatar,
+        score: 0,
+        streak: 0,
+        active: false,
+        answeredFloors: new Set<number>(),
+      });
+    }
+  }
+
+  // Reload questions only if room is still active (so reconnects can continue).
+  let questions: TriviaQuestionState[] = [];
+  if (run.status === 'ACTIVE' || run.status === 'LOBBY') {
+    const dbQuestions = await withRetry(() => prisma.triviaQuestion.findMany({
+      where: { active: true },
+      orderBy: [{ floor: 'asc' }, { difficulty: 'asc' }],
+      take: Math.max(run.totalFloors * 3, run.totalFloors),
+    }));
+    questions = shuffle(dbQuestions).slice(0, run.totalFloors).map((q, index) => {
+      const shuffled = shuffleOptions(optionsArray(q.options), q.correctIndex);
+      return {
+        id: q.id,
+        floor: index + 1,
+        prompt: q.prompt,
+        options: shuffled.options,
+        correctIndex: shuffled.correctIndex,
+      };
+    });
+  }
+
   const loaded: TriviaRoomState = {
     code: run.code,
     gameId: TRIVIA_TOWER_GAME_ID,
@@ -187,8 +284,8 @@ export async function getTriviaRoom(code: string): Promise<TriviaRoomState | nul
     currentFloor: 0,
     currentQuestionStartedAt: null,
     questionTimer: null,
-    questions: [],
-    participants: new Map(),
+    questions,
+    participants: participantMap,
     sessionsRecorded: run.status === 'FINISHED',
   };
   triviaRooms.set(run.code, loaded);
@@ -217,8 +314,14 @@ export async function joinTriviaRoom(input: {
   return room;
 }
 
-export async function finishTriviaRoom(room: TriviaRoomState): Promise<void> {
-  if (room.status === 'FINISHED') return;
+export function finishTriviaRoom(room: TriviaRoomState): Promise<void> {
+  if (room.status === 'FINISHED') return Promise.resolve();
+  if (room.finalizingPromise) return room.finalizingPromise;
+  room.finalizingPromise = doFinishTriviaRoom(room);
+  return room.finalizingPromise;
+}
+
+async function doFinishTriviaRoom(room: TriviaRoomState): Promise<void> {
   room.status = 'FINISHED';
   if (room.questionTimer) {
     clearTimeout(room.questionTimer);

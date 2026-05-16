@@ -45,13 +45,13 @@ export function AchievementsShowcase() {
           viewport={{ once: true }}
           className="text-center mb-8 sm:mb-12"
         >
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-zinc-100 mb-3 sm:mb-4">
             Our{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">
               Achievements
             </span>
           </h2>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-zinc-400 max-w-2xl mx-auto px-2">
             Celebrating the success and accomplishments of our talented community members
           </p>
         </motion.div>
@@ -70,8 +70,8 @@ export function AchievementsShowcase() {
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-200 mb-6">
               <Trophy className="h-10 w-10 text-amber-600" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Achievements coming soon!</h3>
-            <p className="text-gray-500">Stay tuned for our community's accomplishments</p>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-zinc-100 mb-2">Achievements coming soon!</h3>
+            <p className="text-gray-500 dark:text-zinc-400">Stay tuned for our community's accomplishments</p>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -86,7 +86,7 @@ export function AchievementsShowcase() {
                 className="group h-full"
               >
                 <Link to={`/achievements/${achievement.slug || achievement.id}`} className="block h-full">
-                <div className="h-full bg-white rounded-3xl shadow-lg overflow-hidden border border-amber-100/50 hover:shadow-2xl hover:border-amber-200 transition-all duration-500">
+                <div className="h-full bg-white dark:bg-surface-1 rounded-3xl shadow-lg overflow-hidden border border-amber-100/50 hover:shadow-2xl hover:border-amber-200 transition-all duration-500">
                   {/* Image with premium overlay */}
                   <div className="relative h-48 overflow-hidden">
                     {achievement.imageUrl ? (
@@ -103,8 +103,8 @@ export function AchievementsShowcase() {
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 flex items-center justify-center relative overflow-hidden">
                         <div className="absolute inset-0">
-                          <div className="absolute top-4 left-4 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
-                          <div className="absolute bottom-4 right-4 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                          <div className="absolute top-4 left-4 w-24 h-24 bg-white dark:bg-surface-1/10 rounded-full blur-2xl" />
+                          <div className="absolute bottom-4 right-4 w-32 h-32 bg-white dark:bg-surface-1/10 rounded-full blur-2xl" />
                         </div>
                         <Trophy className="h-16 w-16 text-white/30" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -124,7 +124,7 @@ export function AchievementsShowcase() {
                     {/* Gallery count - Glassmorphism */}
                     {achievement.imageGallery && achievement.imageGallery.length > 0 && (
                       <div className="absolute top-4 right-4 z-10">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-surface-1/20 backdrop-blur-md rounded-full border border-white/30">
                           <ImageIcon className="h-3 w-3 text-white" />
                           <span className="text-white text-xs font-semibold">{achievement.imageGallery.length}</span>
                         </div>
@@ -137,7 +137,7 @@ export function AchievementsShowcase() {
                       className="absolute top-4 right-4 z-10"
                       whileHover={!isMobile ? { rotate: 15, scale: 1.1 } : undefined}
                     >
-                      <div className="p-2 bg-white/90 rounded-full shadow-lg backdrop-blur-sm">
+                      <div className="p-2 bg-white dark:bg-surface-1/90 rounded-full shadow-lg backdrop-blur-sm">
                         <Medal className="h-5 w-5 text-amber-600" />
                       </div>
                     </motion.div>
@@ -158,7 +158,7 @@ export function AchievementsShowcase() {
                     <div className="absolute top-0 left-5 right-5 h-px bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
                     
                     {/* Description with markdown */}
-                    <div className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+                    <div className="text-gray-600 dark:text-zinc-400 text-sm mb-4 line-clamp-2 leading-relaxed">
                       <InlineMarkdown>{achievement.shortDescription || achievement.description}</InlineMarkdown>
                     </div>
                     
@@ -174,10 +174,10 @@ export function AchievementsShowcase() {
                           </div>
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-900 line-clamp-1">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-zinc-100 line-clamp-1">
                             {achievement.achievedBy}
                           </p>
-                          <div className="flex items-center gap-1 text-gray-500">
+                          <div className="flex items-center gap-1 text-gray-500 dark:text-zinc-400">
                             <Calendar className="h-3 w-3" />
                             <span className="text-xs">{formatDate(achievement.date)}</span>
                           </div>

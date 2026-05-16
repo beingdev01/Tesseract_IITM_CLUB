@@ -45,6 +45,10 @@ services:
         sync: false
       - key: BREVO_API_KEY
         sync: false
+      # Required for Puzzle Run / Brain Teasers daily decks + Cipher Lab rotation
+      # to actually generate content. Without this, those games have no playable rounds.
+      - key: ENABLE_BACKGROUND_SCHEDULERS
+        value: "true"
 
   # Frontend Static Site
   - type: web

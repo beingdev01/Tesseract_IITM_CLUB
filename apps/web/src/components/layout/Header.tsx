@@ -85,17 +85,20 @@ export function Header() {
             <span className="lb-status-dot" />
             <span className="lb-mono" style={{ fontSize: '11px' }}>{online} online</span>
           </div>
+          <Link to="/join" className="lb-btn-primary" style={{ textDecoration: 'none', fontSize: '12px', padding: '8px 14px' }}>
+            JOIN TESSERACT ▶
+          </Link>
           {user ? (
             <>
               <Link to="/dashboard" className="lb-btn-ghost" style={{ fontSize: '12px', padding: '8px 14px', textDecoration: 'none' }}>
-                DASHBOARD
+                DASHBOARD ▶
               </Link>
-              <button className="lb-btn-primary" onClick={logout} style={{ fontSize: '12px', padding: '8px 14px' }}>
+              <button className="lb-btn-ghost" onClick={logout} style={{ fontSize: '12px', padding: '8px 14px' }}>
                 SIGN OUT
               </button>
             </>
           ) : (
-            <Link to="/signin" className="lb-btn-primary" style={{ textDecoration: 'none', fontSize: '12px', padding: '8px 14px' }}>
+            <Link to="/signin" className="lb-btn-ghost" style={{ textDecoration: 'none', fontSize: '12px', padding: '8px 14px' }}>
               INSERT COIN ▶
             </Link>
           )}
@@ -162,17 +165,20 @@ export function Header() {
               ))}
 
               <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <Link to="/join" className="lb-btn-primary" style={{ textAlign: 'center', textDecoration: 'none', display: 'block', padding: '12px', fontSize: '12px' }}>
+                  JOIN TESSERACT ▶
+                </Link>
                 {user ? (
                   <>
                     <Link to="/dashboard" className="lb-btn-ghost" style={{ textAlign: 'center', textDecoration: 'none', display: 'block', padding: '12px', fontSize: '12px' }}>
-                      DASHBOARD
+                      DASHBOARD ▶
                     </Link>
-                    <button className="lb-btn-primary" onClick={logout} style={{ width: '100%', fontSize: '12px' }}>
+                    <button className="lb-btn-ghost" onClick={logout} style={{ width: '100%', fontSize: '12px' }}>
                       SIGN OUT
                     </button>
                   </>
                 ) : (
-                  <Link to="/signin" className="lb-btn-primary" style={{ textAlign: 'center', textDecoration: 'none', display: 'block', padding: '12px', fontSize: '12px' }}>
+                  <Link to="/signin" className="lb-btn-ghost" style={{ textAlign: 'center', textDecoration: 'none', display: 'block', padding: '12px', fontSize: '12px' }}>
                     INSERT COIN ▶
                   </Link>
                 )}

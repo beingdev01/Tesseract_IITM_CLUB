@@ -257,8 +257,8 @@ export default function DashboardEvents() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Events</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage your event registrations</p>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-zinc-100">Events</h1>
+          <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">Manage your event registrations</p>
         </div>
         {isCoreMember && (
           <Link to="/dashboard/events/new">
@@ -280,11 +280,11 @@ export default function DashboardEvents() {
         {/* Tab 1: My Events — card grid */}
         <TabsContent value="my-events">
           {registrations.length === 0 ? (
-            <Card className="border-gray-100 shadow-sm">
+            <Card className="border-gray-100 dark:border-zinc-800 shadow-sm">
               <CardContent className="py-16 text-center">
-                <Calendar className="h-10 w-10 mx-auto mb-3 text-gray-300" />
-                <p className="text-gray-500 font-medium">No registered events yet</p>
-                <p className="text-sm text-gray-400 mt-1 mb-4">Browse available events to get started.</p>
+                <Calendar className="h-10 w-10 mx-auto mb-3 text-gray-300 dark:text-zinc-600" />
+                <p className="text-gray-500 dark:text-zinc-400 font-medium">No registered events yet</p>
+                <p className="text-sm text-gray-400 dark:text-zinc-500 mt-1 mb-4">Browse available events to get started.</p>
                 <Button variant="outline" size="sm" onClick={() => setActiveTab('browse')}>
                   Browse Events
                 </Button>
@@ -303,14 +303,14 @@ export default function DashboardEvents() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05, duration: 0.3 }}
                   >
-                    <div className="rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                    <div className="rounded-xl bg-white dark:bg-surface-1 shadow-sm border border-gray-100 dark:border-zinc-800 hover:shadow-md transition-shadow duration-200 overflow-hidden">
                       {/* Card content */}
                       <div className="p-5">
                         {/* Title row */}
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="font-semibold text-gray-900 break-words text-[15px]">
+                              <h3 className="font-semibold text-gray-900 dark:text-zinc-100 break-words text-[15px]">
                                 {reg.event.title}
                               </h3>
                               <Badge
@@ -325,7 +325,7 @@ export default function DashboardEvents() {
                             </div>
 
                             {/* Date & location */}
-                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1.5 text-sm text-gray-500">
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1.5 text-sm text-gray-500 dark:text-zinc-400">
                               <span className="flex items-center gap-1 min-w-0">
                                 <Clock className="h-3.5 w-3.5" />
                                 {formatDate(reg.event.startDate)} at {formatTime(reg.event.startDate)}
@@ -342,16 +342,16 @@ export default function DashboardEvents() {
                             {reg.event.teamRegistration && (
                               <div className="mt-2">
                                 {teamLoading ? (
-                                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                                  <span className="text-xs text-gray-400 dark:text-zinc-500 flex items-center gap-1">
                                     <Loader2 className="h-3 w-3 animate-spin" /> Loading team...
                                   </span>
                                 ) : team ? (
-                                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
+                                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
                                     <Users className="h-3 w-3" />
                                     {team.teamName} — {team.members?.length || 1}/{reg.event.teamMaxSize || 4}
                                   </div>
                                 ) : (
-                                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">
+                                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-gray-100 dark:bg-surface-2 text-gray-600 dark:text-zinc-400 rounded-full text-xs font-medium">
                                     <Users className="h-3 w-3" />
                                     Team Event — No team yet
                                   </div>
@@ -366,7 +366,7 @@ export default function DashboardEvents() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 shrink-0 text-gray-400 hover:text-gray-600"
+                                className="h-8 w-8 shrink-0 text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:text-zinc-400"
                                 aria-label={`Open actions for ${reg.event.title}`}
                               >
                                 <MoreVertical className="h-4 w-4" />
@@ -381,7 +381,7 @@ export default function DashboardEvents() {
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
-                                className="text-red-600 focus:text-red-700 focus:bg-red-50"
+                                className="text-red-600 dark:text-red-400 focus:text-red-700 dark:text-red-300 focus:bg-red-50 dark:bg-red-950/30"
                                 disabled={cancelingId === reg.eventId}
                                 onClick={() => handleCancel(reg.eventId)}
                               >
@@ -398,7 +398,7 @@ export default function DashboardEvents() {
                       {/* Action buttons */}
                       <div className="px-5 pb-4 flex items-center gap-2 flex-wrap">
                         <Link to={`/events/${reg.event.slug || reg.event.id}`} className="w-full sm:w-auto">
-                          <Button variant="outline" size="sm" className="h-8 w-full sm:w-auto text-xs border-gray-200 text-gray-700 hover:bg-gray-50">
+                          <Button variant="outline" size="sm" className="h-8 w-full sm:w-auto text-xs border-gray-200 dark:border-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:bg-surface-1">
                             View Event
                           </Button>
                         </Link>
@@ -406,7 +406,7 @@ export default function DashboardEvents() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="h-8 w-full sm:w-auto text-xs border-gray-200 text-gray-700 hover:bg-gray-50"
+                          className="h-8 w-full sm:w-auto text-xs border-gray-200 dark:border-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:bg-surface-1"
                           onClick={() => {
                             void openQrDialog(reg);
                           }}
@@ -418,7 +418,7 @@ export default function DashboardEvents() {
                         {reg.event.teamRegistration && (
                           <Button
                             size="sm"
-                            className="h-8 w-full sm:w-auto text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 shadow-none"
+                            className="h-8 w-full sm:w-auto text-xs bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-900/40 shadow-none"
                             onClick={() => setTeamDialogEventId(reg.eventId)}
                           >
                             <Users className="h-3.5 w-3.5 mr-1.5" />
@@ -437,11 +437,11 @@ export default function DashboardEvents() {
         {/* Tab 2: Browse Events */}
         <TabsContent value="browse">
           {availableEvents.length === 0 ? (
-            <Card className="border-gray-100 shadow-sm">
+            <Card className="border-gray-100 dark:border-zinc-800 shadow-sm">
               <CardContent className="py-16 text-center">
-                <Calendar className="h-10 w-10 mx-auto mb-3 text-gray-300" />
-                <p className="text-gray-500 font-medium">No available events right now</p>
-                <p className="text-sm text-gray-400 mt-1">Check back later for new events!</p>
+                <Calendar className="h-10 w-10 mx-auto mb-3 text-gray-300 dark:text-zinc-600" />
+                <p className="text-gray-500 dark:text-zinc-400 font-medium">No available events right now</p>
+                <p className="text-sm text-gray-400 dark:text-zinc-500 mt-1">Check back later for new events!</p>
               </CardContent>
             </Card>
           ) : (
@@ -518,7 +518,7 @@ export default function DashboardEvents() {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-600" />
+              <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               My Team
             </DialogTitle>
             {teamDialogEventId && (
@@ -530,8 +530,8 @@ export default function DashboardEvents() {
           {teamDialogEventId && (
             teamsLoading.get(teamDialogEventId) ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-                <span className="ml-2 text-sm text-gray-500">Loading team...</span>
+                <Loader2 className="h-6 w-6 animate-spin text-gray-400 dark:text-zinc-500" />
+                <span className="ml-2 text-sm text-gray-500 dark:text-zinc-400">Loading team...</span>
               </div>
             ) : myTeams.get(teamDialogEventId) ? (
               <TeamDashboard
@@ -541,9 +541,9 @@ export default function DashboardEvents() {
               />
             ) : (
               <div className="text-center py-8">
-                <Users className="h-10 w-10 mx-auto mb-3 text-gray-300" />
-                <p className="text-gray-600 font-medium">You're not in a team yet</p>
-                <p className="text-sm text-gray-400 mt-1 mb-4">Join or create a team from the event page.</p>
+                <Users className="h-10 w-10 mx-auto mb-3 text-gray-300 dark:text-zinc-600" />
+                <p className="text-gray-600 dark:text-zinc-400 font-medium">You're not in a team yet</p>
+                <p className="text-sm text-gray-400 dark:text-zinc-500 mt-1 mb-4">Join or create a team from the event page.</p>
                 <Link to={`/events/${registrations.find(r => r.eventId === teamDialogEventId)?.event.slug || teamDialogEventId}`}>
                   <Button size="sm" onClick={() => setTeamDialogEventId(null)}>
                     Go to Event Page

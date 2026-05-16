@@ -350,7 +350,7 @@ export function Hero() {
               transition={{ type: 'spring', stiffness: 300 }}
             >
               <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/30 via-orange-500/30 to-amber-500/30 rounded-3xl blur-2xl" />
-              <div className="relative h-28 w-28 md:h-32 md:w-32 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl overflow-hidden">
+              <div className="relative h-28 w-28 md:h-32 md:w-32 rounded-2xl bg-white dark:bg-surface-1/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl overflow-hidden">
                 <img 
                   src="/logo.jpeg" 
                   alt="Tesseract" 
@@ -414,7 +414,7 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center pt-4 px-4 sm:px-0"
           >
             {canRenderHiringCta && hiringEnabled === true && (
-              <Link to="/join-us" className="w-full sm:w-auto">
+              <Link to="/join" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
                   className="relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-400 hover:to-orange-400 shadow-xl shadow-amber-500/25 h-12 sm:h-14 px-6 sm:px-8 text-base font-semibold group border-0 w-full sm:w-auto"
@@ -448,7 +448,7 @@ export function Hero() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 h-12 sm:h-14 px-6 sm:px-8 text-base backdrop-blur-sm bg-white/5 w-full sm:w-auto"
+                  className="border-2 border-white/20 text-white hover:bg-white dark:bg-surface-1/10 hover:border-white/40 h-12 sm:h-14 px-6 sm:px-8 text-base backdrop-blur-sm bg-white dark:bg-surface-1/5 w-full sm:w-auto"
                 >
                   <LayoutDashboard className="h-5 w-5 mr-2" />
                   Dashboard
@@ -459,7 +459,7 @@ export function Hero() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 h-12 sm:h-14 px-6 sm:px-8 text-base backdrop-blur-sm bg-white/5 w-full sm:w-auto"
+                  className="border-2 border-white/20 text-white hover:bg-white dark:bg-surface-1/10 hover:border-white/40 h-12 sm:h-14 px-6 sm:px-8 text-base backdrop-blur-sm bg-white dark:bg-surface-1/5 w-full sm:w-auto"
                 >
                   <Users className="h-5 w-5 mr-2" />
                   Sign In / Register
@@ -483,7 +483,7 @@ export function Hero() {
                 {stat.valueKey === 'events' ? (
                   <Link to="/events" className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 rounded-2xl sm:rounded-3xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
-                    <div className="relative bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 transition-all duration-300 group-hover:bg-white/10 group-hover:border-white/20 cursor-pointer">
+                    <div className="relative bg-white dark:bg-surface-1/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 transition-all duration-300 group-hover:bg-white dark:bg-surface-1/10 group-hover:border-white/20 cursor-pointer">
                       <div className={`inline-flex p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br ${stat.color} mb-3 sm:mb-6 shadow-2xl`}>
                         <stat.icon className="h-5 w-5 sm:h-8 sm:w-8 text-white" />
                       </div>
@@ -496,7 +496,7 @@ export function Hero() {
                 ) : (
                   <>
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
-                    <div className="relative bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 transition-all duration-300 group-hover:bg-white/10 group-hover:border-white/20">
+                    <div className="relative bg-white dark:bg-surface-1/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 transition-all duration-300 group-hover:bg-white dark:bg-surface-1/10 group-hover:border-white/20">
                       <div className={`inline-flex p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br ${stat.color} mb-3 sm:mb-6 shadow-2xl`}>
                         <stat.icon className="h-5 w-5 sm:h-8 sm:w-8 text-white" />
                       </div>

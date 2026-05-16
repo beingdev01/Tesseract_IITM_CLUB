@@ -153,7 +153,7 @@ export function TeamCreateModal({ open, onOpenChange, event, onSuccess }: TeamCr
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-green-600">
+            <DialogTitle className="flex items-center gap-2 text-green-600 dark:text-green-400">
               <Check className="h-5 w-5" />
               Team Created!
             </DialogTitle>
@@ -175,7 +175,7 @@ export function TeamCreateModal({ open, onOpenChange, event, onSuccess }: TeamCr
                   {createdTeam.inviteCode}
                 </code>
                 <Button variant="outline" size="icon" onClick={handleCopyCode}>
-                  {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                  {copied ? <Check className="h-4 w-4 text-green-600 dark:text-green-400" /> : <Copy className="h-4 w-4" />}
                 </Button>
               </div>
             </div>

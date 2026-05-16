@@ -13,7 +13,6 @@ export default function AttendancePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // TODO(backend): add attendanceEnabled to Settings model — for now always on
   const enabled = true;
 
   useEffect(() => {

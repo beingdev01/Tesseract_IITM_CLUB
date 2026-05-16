@@ -13,11 +13,17 @@ export interface BaseRoomState {
   lastActivityAt: number;
 }
 
-export interface RoomStoreOptions {
+export interface RoomStoreOptions<T extends BaseRoomState = BaseRoomState> {
   gameId: string;
   maxRooms?: number;
   maxPlayersPerRoom?: number;
   idleTtlMs?: number;
+  /**
+   * Called when a room is evicted from memory (either idle sweep or aggressive
+   * sweep). Use to clear timers, abort pending async work, or persist final
+   * state to the DB. Errors are caught and logged.
+   */
+  onEvict?: (room: T) => void | Promise<void>;
 }
 
 export class RoomStore<T extends BaseRoomState> {
@@ -25,14 +31,16 @@ export class RoomStore<T extends BaseRoomState> {
   readonly maxRooms: number;
   readonly maxPlayersPerRoom: number;
   readonly idleTtlMs: number;
+  private readonly onEvict: ((room: T) => void | Promise<void>) | undefined;
   private rooms = new Map<string, T>();
   private sweepHandle: ReturnType<typeof setInterval> | null = null;
 
-  constructor(options: RoomStoreOptions) {
+  constructor(options: RoomStoreOptions<T>) {
     this.gameId = options.gameId;
     this.maxRooms = options.maxRooms ?? 50;
     this.maxPlayersPerRoom = options.maxPlayersPerRoom ?? 16;
     this.idleTtlMs = options.idleTtlMs ?? 10 * 60 * 1000;
+    this.onEvict = options.onEvict;
 
     this.sweepHandle = setInterval(() => this.sweepIdle(), Math.min(this.idleTtlMs, 60_000));
     this.sweepHandle.unref?.();
@@ -86,9 +94,36 @@ export class RoomStore<T extends BaseRoomState> {
   }
 
   delete(code: string): boolean {
-    const deleted = this.rooms.delete(code.toUpperCase());
-    if (deleted) logger.debug('Game room deleted', { gameId: this.gameId, code });
+    const normalized = code.toUpperCase();
+    const room = this.rooms.get(normalized);
+    const deleted = this.rooms.delete(normalized);
+    if (deleted) {
+      logger.debug('Game room deleted', { gameId: this.gameId, code: normalized });
+      this.runEvict(room);
+    }
     return deleted;
+  }
+
+  private runEvict(room: T | undefined): void {
+    if (!room || !this.onEvict) return;
+    try {
+      const result = this.onEvict(room);
+      if (result && typeof (result as Promise<void>).then === 'function') {
+        (result as Promise<void>).catch((error) => {
+          logger.warn('RoomStore onEvict handler rejected', {
+            gameId: this.gameId,
+            code: room.code,
+            error: error instanceof Error ? error.message : String(error),
+          });
+        });
+      }
+    } catch (error) {
+      logger.warn('RoomStore onEvict handler threw', {
+        gameId: this.gameId,
+        code: room.code,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
 
   private sweepIdle(aggressive = false): void {
@@ -97,6 +132,7 @@ export class RoomStore<T extends BaseRoomState> {
       if (room.lastActivityAt < cutoff) {
         this.rooms.delete(code);
         logger.info('Game room evicted (idle)', { gameId: this.gameId, code });
+        this.runEvict(room);
       }
     }
   }

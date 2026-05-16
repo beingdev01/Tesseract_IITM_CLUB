@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import type { EventGuestSummary } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -51,14 +50,7 @@ export default function ChiefGuestsStrip({ guests }: ChiefGuestsStripProps) {
             </Card>
           );
 
-          if (guest.networkSlug) {
-            return (
-              <Link key={`${guest.name}-${guest.networkSlug}`} to={`/network/${guest.networkSlug}`}>
-                {content}
-              </Link>
-            );
-          }
-
+          // /network/:slug isn't a real route yet — render the card without a link.
           return <div key={`${guest.name}-${guest.role}`}>{content}</div>;
         })}
       </div>

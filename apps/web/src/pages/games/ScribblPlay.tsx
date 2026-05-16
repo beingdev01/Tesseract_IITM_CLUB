@@ -82,7 +82,7 @@ export default function ScribblPlay() {
   const connect = (roomCode: string) => {
     if (!token) return;
     socketRef.current?.disconnect();
-    const socket = io(`${SOCKET_URL}/games/scribbl`, { transports: ['websocket'], auth: { token } });
+    const socket = io(`${SOCKET_URL}/games/scribbl`, { transports: ['polling', 'websocket'], auth: { token } });
     socketRef.current = socket;
     socket.on('connect', () => socket.emit('room:join', { code: roomCode }));
     socket.on('room:state', (nextRoom: ScribblRoom) => setRoom(nextRoom));

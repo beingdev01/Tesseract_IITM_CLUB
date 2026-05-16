@@ -121,10 +121,10 @@ function formatCooldown(remainingMs: number): string {
 function StatusChip({ status }: { status: EventInvitation['status'] }) {
   const className: Record<EventInvitation['status'], string> = {
     PENDING: 'border-amber-200 bg-amber-100 text-amber-800',
-    ACCEPTED: 'border-green-200 bg-green-100 text-green-800',
-    DECLINED: 'border-slate-200 bg-slate-100 text-slate-700',
-    REVOKED: 'border-red-200 bg-red-100 text-red-700',
-    EXPIRED: 'border-slate-200 bg-slate-100 italic text-slate-600',
+    ACCEPTED: 'border-green-200 dark:border-green-900/40 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+    DECLINED: 'border-slate-200 dark:border-zinc-800 bg-slate-100 text-slate-700',
+    REVOKED: 'border-red-200 dark:border-red-900/40 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+    EXPIRED: 'border-slate-200 dark:border-zinc-800 bg-slate-100 italic text-slate-600',
   };
 
   return (
@@ -388,7 +388,7 @@ export default function AdminEventInvitations({
           <div className="space-y-3">
             <Label htmlFor={`invitee-search-${eventId}`}>Search verified network members</Label>
             <div className="relative">
-              <Search className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-3.5 h-4 w-4 text-gray-400 dark:text-zinc-500" />
               <Input
                 id={`invitee-search-${eventId}`}
                 value={searchInput}
@@ -399,14 +399,14 @@ export default function AdminEventInvitations({
             </div>
 
             {debouncedSearch.length >= 2 && (
-              <div className="rounded-xl border border-slate-200 bg-white">
+              <div className="rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-surface-1">
                 {searchQuery.isLoading ? (
-                  <div className="flex items-center gap-2 px-4 py-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-2 px-4 py-4 text-sm text-gray-500 dark:text-zinc-400">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Searching invitees...
                   </div>
                 ) : visibleSearchResults.length === 0 ? (
-                  <div className="px-4 py-4 text-sm text-gray-500">No matching verified invitees found.</div>
+                  <div className="px-4 py-4 text-sm text-gray-500 dark:text-zinc-400">No matching verified invitees found.</div>
                 ) : (
                   visibleSearchResults.map((result) => (
                     <button
@@ -423,8 +423,8 @@ export default function AdminEventInvitations({
                         </div>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-gray-900">{result.name}</p>
-                        <p className="truncate text-sm text-gray-500">
+                        <p className="truncate font-medium text-gray-900 dark:text-zinc-100">{result.name}</p>
+                        <p className="truncate text-sm text-gray-500 dark:text-zinc-400">
                           {[result.designation, result.company].filter(Boolean).join(' @ ')}
                         </p>
                       </div>
@@ -491,22 +491,22 @@ export default function AdminEventInvitations({
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-medium text-gray-900">Staged invitees</h3>
+              <h3 className="font-medium text-gray-900 dark:text-zinc-100">Staged invitees</h3>
               <Badge variant="outline">{stagedInvitees.length}</Badge>
             </div>
 
             {stagedInvitees.length === 0 ? (
-              <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-5 text-sm text-gray-500">
+              <div className="rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-surface-1 px-4 py-5 text-sm text-gray-500 dark:text-zinc-400">
                 Add verified profiles or email addresses above to prepare a batch.
               </div>
             ) : (
               <div className="space-y-3">
                 {stagedInvitees.map((invitee) => (
-                  <div key={invitee.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div key={invitee.id} className="rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-surface-1 p-4 shadow-sm">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                       <div className="min-w-0">
-                        <p className="font-medium text-gray-900">{invitee.name}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-gray-900 dark:text-zinc-100">{invitee.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-zinc-400">
                           {[invitee.designation, invitee.company].filter(Boolean).join(' @ ') || invitee.email}
                         </p>
                       </div>
@@ -548,7 +548,7 @@ export default function AdminEventInvitations({
                           </div>
                         </div>
                         <div className="flex items-end justify-end">
-                          <Button type="button" variant="ghost" className="text-red-600 hover:text-red-700" onClick={() => removeStagedInvitee(invitee.id)}>
+                          <Button type="button" variant="ghost" className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300" onClick={() => removeStagedInvitee(invitee.id)}>
                             <X className="mr-2 h-4 w-4" />
                             Remove
                           </Button>
@@ -602,19 +602,19 @@ export default function AdminEventInvitations({
         </CardHeader>
         <CardContent>
           {invitationsQuery.isLoading ? (
-            <div className="flex items-center gap-2 py-6 text-sm text-gray-500">
+            <div className="flex items-center gap-2 py-6 text-sm text-gray-500 dark:text-zinc-400">
               <Loader2 className="h-4 w-4 animate-spin" />
               Loading invitations...
             </div>
           ) : invitationRows.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-sm text-gray-500">
+            <div className="rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-surface-1 px-4 py-6 text-sm text-gray-500 dark:text-zinc-400">
               No invitations have been created for this event yet.
             </div>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-slate-200">
+            <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-zinc-800">
               <div className="overflow-x-auto">
                 <table className="min-w-[980px] w-full text-sm">
-                  <thead className="bg-slate-50 text-left text-slate-600">
+                  <thead className="bg-slate-50 dark:bg-surface-1 text-left text-slate-600">
                     <tr>
                       <th className="px-4 py-3 font-medium">Invitee</th>
                       <th className="px-4 py-3 font-medium">Role</th>
@@ -625,7 +625,7 @@ export default function AdminEventInvitations({
                       <th className="px-4 py-3 font-medium">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white">
+                  <tbody className="divide-y divide-slate-100 bg-white dark:bg-surface-1">
                     {invitationRows.map((invitation) => {
                       const needsResend = !invitation.emailSent;
                       const canResend = invitation.status === 'PENDING' || invitation.status === 'ACCEPTED';
@@ -638,8 +638,8 @@ export default function AdminEventInvitations({
                         <tr key={invitation.id}>
                           <td className="px-4 py-4 align-top">
                             <div>
-                              <p className="font-medium text-gray-900">{getInvitationDisplayName(invitation)}</p>
-                              <p className="mt-1 text-xs text-gray-500">{getInvitationSubtitle(invitation)}</p>
+                              <p className="font-medium text-gray-900 dark:text-zinc-100">{getInvitationDisplayName(invitation)}</p>
+                              <p className="mt-1 text-xs text-gray-500 dark:text-zinc-400">{getInvitationSubtitle(invitation)}</p>
                             </div>
                           </td>
                           <td className="px-4 py-4 align-top">
@@ -656,8 +656,8 @@ export default function AdminEventInvitations({
                                 onCheckedChange={(checked) => void updateCertificateToggle(invitation, checked)}
                               />
                               <div>
-                                <p className="text-sm font-medium text-gray-900">{invitation.certificateType}</p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-sm font-medium text-gray-900 dark:text-zinc-100">{invitation.certificateType}</p>
+                                <p className="text-xs text-gray-500 dark:text-zinc-400">
                                   {invitation.certificateEnabled ? 'Enabled' : 'Disabled'}
                                 </p>
                               </div>
@@ -666,15 +666,15 @@ export default function AdminEventInvitations({
                           <td className="px-4 py-4 align-top">
                             <div className="flex items-center gap-2">
                               {invitation.emailSent ? (
-                                <MailCheck className="h-4 w-4 text-green-600" />
+                                <MailCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
                               ) : (
                                 <AlertCircle className="h-4 w-4 text-amber-600" />
                               )}
                               <div>
-                                <p className="text-sm text-gray-900">
+                                <p className="text-sm text-gray-900 dark:text-zinc-100">
                                   {invitation.emailSent ? 'Sent' : 'Needs resend'}
                                 </p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-500 dark:text-zinc-400">
                                   {invitation.emailSentAt ? formatDateTime(invitation.emailSentAt) : 'Not delivered yet'}
                                 </p>
                               </div>
@@ -686,7 +686,7 @@ export default function AdminEventInvitations({
                               <p className="mt-1 text-xs text-slate-600">Resend available in {formatCooldown(cooldownRemainingMs)}.</p>
                             )}
                           </td>
-                          <td className="px-4 py-4 align-top text-xs text-gray-500">
+                          <td className="px-4 py-4 align-top text-xs text-gray-500 dark:text-zinc-400">
                             {formatDateTime(invitation.updatedAt || invitation.invitedAt)}
                           </td>
                           <td className="px-4 py-4 align-top">
@@ -702,7 +702,7 @@ export default function AdminEventInvitations({
                                 </Button>
                               )}
                               {invitation.status !== 'REVOKED' && (
-                                <Button type="button" size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => void revokeInvitation(invitation.id)} disabled={rowBusy}>
+                                <Button type="button" size="sm" variant="outline" className="text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300" onClick={() => void revokeInvitation(invitation.id)} disabled={rowBusy}>
                                   <Trash2 className="mr-2 h-3.5 w-3.5" />
                                   Revoke
                                 </Button>
@@ -775,10 +775,10 @@ export default function AdminEventInvitations({
                 </div>
               )}
 
-              <div className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3">
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-zinc-800 px-4 py-3">
                 <div>
-                  <p className="font-medium text-gray-900">Certificate eligibility</p>
-                  <p className="text-sm text-gray-500">Control whether this invitee appears by default in the guest certificate workflow.</p>
+                  <p className="font-medium text-gray-900 dark:text-zinc-100">Certificate eligibility</p>
+                  <p className="text-sm text-gray-500 dark:text-zinc-400">Control whether this invitee appears by default in the guest certificate workflow.</p>
                 </div>
                 <Switch
                   checked={editDraft.certificateEnabled}

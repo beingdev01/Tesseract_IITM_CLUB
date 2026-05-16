@@ -567,8 +567,8 @@ export default function AdminPublicView() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-950">Public View</h1>
-          <p className="text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-gray-950 dark:text-zinc-100">Public View</h1>
+          <p className="text-sm text-gray-600 dark:text-zinc-400">
             Manage async polls, inspect responses, review feedback, and export the full data trail.
           </p>
         </div>
@@ -585,21 +585,21 @@ export default function AdminPublicView() {
       </div>
 
       {error && (
-        <Card className="border-red-200 shadow-sm">
-          <CardContent className="px-5 py-4 text-sm text-red-700">{error}</CardContent>
+        <Card className="border-red-200 dark:border-red-900/40 shadow-sm">
+          <CardContent className="px-5 py-4 text-sm text-red-700 dark:text-red-300">{error}</CardContent>
         </Card>
       )}
 
       <div className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
         <div className="space-y-4">
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-gray-200 dark:border-zinc-800 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg text-gray-950">Find polls</CardTitle>
+              <CardTitle className="text-lg text-gray-950 dark:text-zinc-100">Find polls</CardTitle>
               <CardDescription>Filter by state, anonymity, or text inside the question.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-500" />
                 <Input
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
@@ -644,14 +644,14 @@ export default function AdminPublicView() {
 
           <div className="space-y-3">
             {loadingList ? (
-              <Card className="border-gray-200 shadow-sm">
+              <Card className="border-gray-200 dark:border-zinc-800 shadow-sm">
                 <CardContent className="flex items-center justify-center py-12">
                   <Loader2 className="h-6 w-6 animate-spin text-amber-600" />
                 </CardContent>
               </Card>
             ) : polls.length === 0 ? (
-              <Card className="border-gray-200 shadow-sm">
-                <CardContent className="py-10 text-center text-sm text-gray-500">
+              <Card className="border-gray-200 dark:border-zinc-800 shadow-sm">
+                <CardContent className="py-10 text-center text-sm text-gray-500 dark:text-zinc-400">
                   No polls matched the current filters.
                 </CardContent>
               </Card>
@@ -666,8 +666,8 @@ export default function AdminPublicView() {
                     setDetailTab('overview');
                   }}
                   className={cn(
-                    'w-full rounded-xl border bg-white p-4 text-left shadow-sm transition-colors hover:border-amber-300',
-                    selectedPollId === poll.id ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200',
+                    'w-full rounded-xl border bg-white dark:bg-surface-1 p-4 text-left shadow-sm transition-colors hover:border-amber-300',
+                    selectedPollId === poll.id ? 'border-amber-400 ring-2 ring-amber-100' : 'border-gray-200 dark:border-zinc-800',
                   )}
                 >
                   <div className="flex flex-wrap items-center gap-2">
@@ -679,13 +679,13 @@ export default function AdminPublicView() {
                     <Badge variant="outline">{poll.isAnonymous ? 'Anonymous' : 'Named'}</Badge>
                   </div>
                   <div className="mt-3 space-y-2">
-                    <div className="font-semibold text-gray-950">{poll.question}</div>
-                    <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
+                    <div className="font-semibold text-gray-950 dark:text-zinc-100">{poll.question}</div>
+                    <div className="grid grid-cols-3 gap-2 text-xs text-gray-500 dark:text-zinc-400">
                       <div>{poll.totalVotes} votes</div>
                       <div>{poll.totalFeedback} feedback</div>
                       <div>{poll.optionCount} options</div>
                     </div>
-                    <div className="text-xs text-gray-500">Updated {formatDateTime(poll.updatedAt)}</div>
+                    <div className="text-xs text-gray-500 dark:text-zinc-400">Updated {formatDateTime(poll.updatedAt)}</div>
                   </div>
                 </button>
               ))
@@ -695,7 +695,7 @@ export default function AdminPublicView() {
 
         <div className="space-y-4">
           {loadingDetail && selectedPollId ? (
-            <Card className="border-gray-200 shadow-sm">
+            <Card className="border-gray-200 dark:border-zinc-800 shadow-sm">
               <CardContent className="flex items-center justify-center py-16">
                 <Loader2 className="h-6 w-6 animate-spin text-amber-600" />
               </CardContent>
@@ -716,8 +716,8 @@ export default function AdminPublicView() {
               description="Publish a new async poll to the dashboard, announcement surfaces, and share link."
             />
           ) : selectedPoll ? (
-            <Card className="border-gray-200 shadow-sm">
-              <CardHeader className="border-b border-gray-100">
+            <Card className="border-gray-200 dark:border-zinc-800 shadow-sm">
+              <CardHeader className="border-b border-gray-100 dark:border-zinc-800">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
@@ -732,8 +732,8 @@ export default function AdminPublicView() {
                       <Badge variant="outline">{selectedPoll.isAnonymous ? 'Anonymous' : 'Named'}</Badge>
                     </div>
                     <div>
-                      <CardTitle className="text-2xl text-gray-950">{selectedPoll.question}</CardTitle>
-                      <CardDescription className="mt-1 max-w-3xl text-sm leading-6 text-gray-600">
+                      <CardTitle className="text-2xl text-gray-950 dark:text-zinc-100">{selectedPoll.question}</CardTitle>
+                      <CardDescription className="mt-1 max-w-3xl text-sm leading-6 text-gray-600 dark:text-zinc-400">
                         {selectedPoll.description || 'No description added.'}
                       </CardDescription>
                     </div>
@@ -781,22 +781,22 @@ export default function AdminPublicView() {
                     </div>
 
                     {selectedPoll.options.length === 0 ? (
-                      <Card className="border-gray-200 shadow-none">
-                        <CardContent className="py-8 text-sm text-gray-600">
+                      <Card className="border-gray-200 dark:border-zinc-800 shadow-none">
+                        <CardContent className="py-8 text-sm text-gray-600 dark:text-zinc-400">
                           This is a question-type poll. Participants submit free-text questions in the feedback area, and no option voting is collected.
                         </CardContent>
                       </Card>
                     ) : (
                       <div className="space-y-3">
                         {selectedPoll.options.map((option) => (
-                          <div key={option.id} className="rounded-xl border border-gray-200 bg-white px-4 py-4">
+                          <div key={option.id} className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-1 px-4 py-4">
                             <div className="flex items-center justify-between gap-3">
-                              <div className="font-medium text-gray-900">{option.text}</div>
-                              <div className="text-sm text-gray-500">
+                              <div className="font-medium text-gray-900 dark:text-zinc-100">{option.text}</div>
+                              <div className="text-sm text-gray-500 dark:text-zinc-400">
                                 {option.voteCount} votes · {option.percentage}%
                               </div>
                             </div>
-                            <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100">
+                            <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-surface-2">
                               <div
                                 className="h-full rounded-full bg-amber-500"
                                 style={{ width: `${Math.max(option.percentage, option.voteCount > 0 ? 4 : 0)}%` }}
@@ -817,23 +817,23 @@ export default function AdminPublicView() {
 
                   <TabsContent value="responses" className="space-y-4">
                     {selectedPoll.options.length === 0 ? (
-                      <Card className="border-gray-200 shadow-none">
-                        <CardContent className="py-10 text-center text-sm text-gray-500">
+                      <Card className="border-gray-200 dark:border-zinc-800 shadow-none">
+                        <CardContent className="py-10 text-center text-sm text-gray-500 dark:text-zinc-400">
                           Question-type polls do not collect option votes. Use the Feedback tab to review submitted questions.
                         </CardContent>
                       </Card>
                     ) : selectedPoll.isAnonymous ? (
-                      <Card className="border-gray-200 shadow-none">
-                        <CardContent className="py-10 text-center text-sm text-gray-500">
+                      <Card className="border-gray-200 dark:border-zinc-800 shadow-none">
+                        <CardContent className="py-10 text-center text-sm text-gray-500 dark:text-zinc-400">
                           This poll is anonymous. Individual voter identities are intentionally hidden here and in exports.
                         </CardContent>
                       </Card>
                     ) : (
                       <>
-                        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                        <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 p-4">
                           <div className="grid gap-3 lg:grid-cols-4">
                             <div className="relative lg:col-span-2">
-                              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-500" />
                               <Input
                                 value={responseSearch}
                                 onChange={(event) => setResponseSearch(event.target.value)}
@@ -867,7 +867,7 @@ export default function AdminPublicView() {
 
                           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                              <Label htmlFor="responses-sort" className="text-xs text-gray-600">Sort</Label>
+                              <Label htmlFor="responses-sort" className="text-xs text-gray-600 dark:text-zinc-400">Sort</Label>
                               <select
                                 id="responses-sort"
                                 value={responseSort}
@@ -880,7 +880,7 @@ export default function AdminPublicView() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                              <span className="text-xs text-gray-600">
+                              <span className="text-xs text-gray-600 dark:text-zinc-400">
                                 Showing {filteredResponses.length} of {selectedPoll.responses.length} responses
                               </span>
                               <Button type="button" variant="outline" size="sm" onClick={clearResponseFilters}>
@@ -889,8 +889,8 @@ export default function AdminPublicView() {
                             </div>
                           </div>
 
-                          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-3">
-                            <span className="text-xs text-gray-600">{selectedResponseIds.length} selected</span>
+                          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 dark:border-zinc-800 pt-3">
+                            <span className="text-xs text-gray-600 dark:text-zinc-400">{selectedResponseIds.length} selected</span>
                             <div className="flex flex-wrap gap-2">
                               <Button type="button" variant="outline" size="sm" onClick={selectFilteredResponses}>
                                 Select filtered
@@ -937,18 +937,18 @@ export default function AdminPublicView() {
 
                         <div className="space-y-3">
                           {filteredResponses.length === 0 ? (
-                            <Card className="border-gray-200 shadow-none">
-                              <CardContent className="py-10 text-center text-sm text-gray-500">
+                            <Card className="border-gray-200 dark:border-zinc-800 shadow-none">
+                              <CardContent className="py-10 text-center text-sm text-gray-500 dark:text-zinc-400">
                                 No responses matched that search.
                               </CardContent>
                             </Card>
                           ) : (
                             filteredResponses.map((response) => (
-                              <div key={response.id} className="rounded-xl border border-gray-200 bg-white px-4 py-4">
+                              <div key={response.id} className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-1 px-4 py-4">
                                 <div className="flex items-start gap-3">
                                   <input
                                     type="checkbox"
-                                    className="mt-1 h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                                    className="mt-1 h-4 w-4 rounded border-gray-300 dark:border-zinc-700 text-amber-600 focus:ring-amber-500"
                                     checked={selectedResponseIds.includes(response.id)}
                                     onChange={() => toggleResponseSelection(response.id)}
                                     aria-label={`Select response from ${response.user.name}`}
@@ -956,11 +956,11 @@ export default function AdminPublicView() {
                                   <div className="min-w-0 flex-1">
                                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                       <div>
-                                        <div className="font-medium text-gray-950">{response.user.name}</div>
-                                        <div className="text-sm text-gray-500">{response.user.email}</div>
-                                        <div className="mt-1 text-xs text-gray-500">{response.user.role.replace(/_/g, ' ')}</div>
+                                        <div className="font-medium text-gray-950 dark:text-zinc-100">{response.user.name}</div>
+                                        <div className="text-sm text-gray-500 dark:text-zinc-400">{response.user.email}</div>
+                                        <div className="mt-1 text-xs text-gray-500 dark:text-zinc-400">{response.user.role.replace(/_/g, ' ')}</div>
                                       </div>
-                                      <div className="text-xs text-gray-500">
+                                      <div className="text-xs text-gray-500 dark:text-zinc-400">
                                         Updated {formatDateTime(response.updatedAt)}
                                       </div>
                                     </div>
@@ -982,10 +982,10 @@ export default function AdminPublicView() {
                   </TabsContent>
 
                   <TabsContent value="feedback" className="space-y-4">
-                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 p-4">
                       <div className="grid gap-3 lg:grid-cols-4">
                         <div className="relative lg:col-span-2">
-                          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-zinc-500" />
                           <Input
                             value={feedbackSearch}
                             onChange={(event) => setFeedbackSearch(event.target.value)}
@@ -1019,7 +1019,7 @@ export default function AdminPublicView() {
 
                       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <Label htmlFor="feedback-sort" className="text-xs text-gray-600">Sort</Label>
+                          <Label htmlFor="feedback-sort" className="text-xs text-gray-600 dark:text-zinc-400">Sort</Label>
                           <select
                             id="feedback-sort"
                             value={feedbackSort}
@@ -1033,7 +1033,7 @@ export default function AdminPublicView() {
                         </div>
 
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-gray-600">
+                          <span className="text-xs text-gray-600 dark:text-zinc-400">
                             Showing {filteredFeedback.length} of {selectedPoll.feedback.length} entries
                           </span>
                           <Button type="button" variant="outline" size="sm" onClick={clearFeedbackFilters}>
@@ -1042,8 +1042,8 @@ export default function AdminPublicView() {
                         </div>
                       </div>
 
-                      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 pt-3">
-                        <span className="text-xs text-gray-600">{selectedFeedbackIds.length} selected</span>
+                      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 dark:border-zinc-800 pt-3">
+                        <span className="text-xs text-gray-600 dark:text-zinc-400">{selectedFeedbackIds.length} selected</span>
                         <div className="flex flex-wrap gap-2">
                           <Button type="button" variant="outline" size="sm" onClick={selectFilteredFeedback}>
                             Select filtered
@@ -1090,21 +1090,21 @@ export default function AdminPublicView() {
 
                     <div className="space-y-3">
                       {filteredFeedback.length === 0 ? (
-                        <Card className="border-gray-200 shadow-none">
-                          <CardContent className="py-10 text-center text-sm text-gray-500">
+                        <Card className="border-gray-200 dark:border-zinc-800 shadow-none">
+                          <CardContent className="py-10 text-center text-sm text-gray-500 dark:text-zinc-400">
                             No feedback matched that search.
                           </CardContent>
                         </Card>
                       ) : (
                         filteredFeedback.map((entry) => (
-                          <div key={entry.id} className="rounded-xl border border-gray-200 bg-white px-4 py-4">
-                            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[15px] leading-7 text-gray-900">
+                          <div key={entry.id} className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-1 px-4 py-4">
+                            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[15px] leading-7 text-gray-900 dark:text-zinc-100">
                               {entry.message}
                             </div>
                             <div className="mt-3 flex items-start gap-3">
                               <input
                                 type="checkbox"
-                                className="mt-1 h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                                className="mt-1 h-4 w-4 rounded border-gray-300 dark:border-zinc-700 text-amber-600 focus:ring-amber-500"
                                 checked={selectedFeedbackIds.includes(entry.id)}
                                 onChange={() => toggleFeedbackSelection(entry.id)}
                                 aria-label={`Select feedback from ${entry.user.name}`}
@@ -1112,11 +1112,11 @@ export default function AdminPublicView() {
                               <div className="min-w-0 flex-1">
                                 <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                   <div>
-                                    <div className="font-medium text-gray-950">{entry.user.name}</div>
-                                    <div className="text-sm text-gray-500">{entry.user.email}</div>
-                                    <div className="mt-1 text-xs text-gray-500">{entry.user.role.replace(/_/g, ' ')}</div>
+                                    <div className="font-medium text-gray-950 dark:text-zinc-100">{entry.user.name}</div>
+                                    <div className="text-sm text-gray-500 dark:text-zinc-400">{entry.user.email}</div>
+                                    <div className="mt-1 text-xs text-gray-500 dark:text-zinc-400">{entry.user.role.replace(/_/g, ' ')}</div>
                                   </div>
-                                  <div className="text-xs text-gray-500">
+                                  <div className="text-xs text-gray-500 dark:text-zinc-400">
                                     Updated {formatDateTime(entry.updatedAt)}
                                   </div>
                                 </div>
@@ -1152,11 +1152,11 @@ export default function AdminPublicView() {
               </CardContent>
             </Card>
           ) : (
-            <Card className="border-gray-200 shadow-sm">
+            <Card className="border-gray-200 dark:border-zinc-800 shadow-sm">
               <CardContent className="py-14 text-center">
                 <div className="mx-auto max-w-md space-y-3">
-                  <h2 className="text-xl font-semibold text-gray-950">No poll selected</h2>
-                  <p className="text-sm leading-6 text-gray-600">
+                  <h2 className="text-xl font-semibold text-gray-950 dark:text-zinc-100">No poll selected</h2>
+                  <p className="text-sm leading-6 text-gray-600 dark:text-zinc-400">
                     Pick a poll from the left to inspect its public performance, or create a fresh one.
                   </p>
                   <Button onClick={resetCreateForm}>
@@ -1185,14 +1185,14 @@ function StatTile({
   icon: ComponentType<{ className?: string }>;
 }) {
   return (
-    <Card className="border-gray-200 shadow-none">
+    <Card className="border-gray-200 dark:border-zinc-800 shadow-none">
       <CardContent className="flex items-center gap-3 pt-6">
         <div className="rounded-lg bg-amber-50 p-2">
           <Icon className="h-4 w-4 text-amber-600" />
         </div>
         <div>
-          <div className="text-xs font-medium uppercase tracking-wide text-gray-500">{label}</div>
-          <div className="mt-1 text-2xl font-semibold text-gray-950">
+          <div className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-zinc-400">{label}</div>
+          <div className="mt-1 text-2xl font-semibold text-gray-950 dark:text-zinc-100">
             {value !== undefined ? value : valueText}
           </div>
         </div>
@@ -1203,9 +1203,9 @@ function StatTile({
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white px-4 py-4">
-      <div className="text-xs font-medium uppercase tracking-wide text-gray-500">{label}</div>
-      <div className="mt-1 text-sm leading-6 text-gray-900">{value}</div>
+    <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-1 px-4 py-4">
+      <div className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-zinc-400">{label}</div>
+      <div className="mt-1 text-sm leading-6 text-gray-900 dark:text-zinc-100">{value}</div>
     </div>
   );
 }
@@ -1238,9 +1238,9 @@ function PollEditor({
   description: string;
 }) {
   return (
-    <Card className="border-gray-200 shadow-none">
+    <Card className="border-gray-200 dark:border-zinc-800 shadow-none">
       <CardHeader>
-        <CardTitle className="text-lg text-gray-950">{title}</CardTitle>
+        <CardTitle className="text-lg text-gray-950 dark:text-zinc-100">{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -1284,7 +1284,7 @@ function PollEditor({
               Question type
             </Button>
           </div>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-zinc-400">
             Normal polls use voting options. Question type shows only a free-text answer box on the public page.
           </p>
         </div>
@@ -1298,7 +1298,7 @@ function PollEditor({
             placeholder="Add context, instructions, or why this poll matters."
             rows={4}
           />
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-zinc-400">
             Normal polls show feedback below options. Question-type polls show the answer area immediately on the public page.
           </p>
         </div>
@@ -1340,7 +1340,7 @@ function PollEditor({
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600">
+          <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 px-4 py-3 text-sm text-gray-600 dark:text-zinc-400">
             Question-type polls skip option voting and show only the answer textbox on the public page.
           </div>
         )}
@@ -1355,7 +1355,7 @@ function PollEditor({
               onChange={(event) => setForm((current) => ({ ...current, deadline: event.target.value }))}
             />
           </div>
-          <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600">
+          <div className="rounded-xl border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-surface-1 px-4 py-3 text-sm text-gray-600 dark:text-zinc-400">
             Share URL becomes available after save and always points to the public poll page.
           </div>
         </div>
@@ -1415,10 +1415,10 @@ function SwitchRow({
   disabled?: boolean;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-200 bg-white px-4 py-4">
+    <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-surface-1 px-4 py-4">
       <div className="space-y-1">
-        <div className="text-sm font-medium text-gray-900">{label}</div>
-        <p className="text-xs leading-5 text-gray-500">{description}</p>
+        <div className="text-sm font-medium text-gray-900 dark:text-zinc-100">{label}</div>
+        <p className="text-xs leading-5 text-gray-500 dark:text-zinc-400">{description}</p>
       </div>
       <Switch checked={checked} onCheckedChange={onChange} disabled={disabled} />
     </div>

@@ -117,9 +117,7 @@ const exchangeCodeSchema = z.object({
 authRouter.get('/providers', (_req: Request, res: Response) => {
   res.json({
     google: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_ID !== 'your_google_client_id'),
-    github: false,
     devLogin: isDevLoginEnabled(),
-    emailPassword: false,
   });
 });
 

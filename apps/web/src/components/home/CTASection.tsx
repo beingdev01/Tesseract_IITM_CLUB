@@ -112,9 +112,9 @@ export function CTASection() {
             viewport={{ once: true, margin: '-50px' }}
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center px-4 sm:px-0"
           >
-            <Link to="/signin" className="w-full sm:w-auto">
-              <Button 
-                size="lg" 
+            <Link to="/join" className="w-full sm:w-auto">
+              <Button
+                size="lg"
                 className="relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-400 hover:to-orange-400 shadow-xl shadow-amber-500/25 h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold group border-0 w-full sm:w-auto"
               >
                 <span className="relative z-10 flex items-center">
@@ -138,7 +138,7 @@ export function CTASection() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg backdrop-blur-sm bg-white/5 w-full sm:w-auto"
+                className="border-2 border-white/20 text-white hover:bg-white dark:bg-surface-1/10 hover:border-white/40 h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg backdrop-blur-sm bg-white dark:bg-surface-1/5 w-full sm:w-auto"
               >
                 Learn More
               </Button>
@@ -157,12 +157,12 @@ export function CTASection() {
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               <span>500+ Active Members</span>
             </div>
-            <div className="hidden sm:block w-px h-4 bg-white/20" />
+            <div className="hidden sm:block w-px h-4 bg-white dark:bg-surface-1/20" />
             <div className="flex items-center gap-2">
               <Trophy className="h-4 w-4 text-amber-400" />
               <span>Weekly Contests</span>
             </div>
-            <div className="hidden sm:block w-px h-4 bg-white/20" />
+            <div className="hidden sm:block w-px h-4 bg-white dark:bg-surface-1/20" />
             <div className="flex items-center gap-2">
               <Lightbulb className="h-4 w-4 text-amber-400" />
               <span>Expert Mentorship</span>

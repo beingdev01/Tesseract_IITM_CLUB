@@ -72,7 +72,6 @@ export default function AdminUsers() {
     course: '',
     branch: '',
     year: '',
-    password: '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -238,7 +237,6 @@ export default function AdminUsers() {
       course: user.course || '',
       branch: user.branch || '',
       year: user.year || '',
-      password: '',
     });
   };
 
@@ -261,14 +259,12 @@ export default function AdminUsers() {
     try {
       setSaving(true);
       setError(null);
-      const password = editForm.password.trim();
       const payload = {
         name: editForm.name,
         phone: editForm.phone,
         course: editForm.course,
         branch: editForm.branch,
         year: editForm.year,
-        ...(password && { password }),
       };
 
       await api.updateUser(editingUser.id, payload, token);
@@ -285,11 +281,7 @@ export default function AdminUsers() {
     if (!token) return;
     try {
       setExporting(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}/users/export`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error('Export failed');
-      const blob = await response.blob();
+      const blob = await api.exportUsersExcel(token);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -384,7 +376,7 @@ export default function AdminUsers() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-amber-900">User Management</h1>
-          <p className="text-gray-600">Manage user roles and permissions</p>
+          <p className="text-gray-600 dark:text-zinc-400">Manage user roles and permissions</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {!includeAllUsers && usersMeta.hasMoreRegular && (
@@ -427,7 +419,7 @@ export default function AdminUsers() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-lg text-red-700 dark:text-red-300"
         >
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
@@ -445,7 +437,7 @@ export default function AdminUsers() {
               <p className="text-2xl font-bold text-amber-900">
                 {users.filter(u => u.role === 'USER').length}
               </p>
-              <p className="text-xs text-gray-500">Members</p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400">Members</p>
             </div>
           </CardContent>
         </Card>
@@ -458,7 +450,7 @@ export default function AdminUsers() {
               <p className="text-2xl font-bold text-amber-900">
                 {users.filter(u => u.role === 'CORE_MEMBER').length}
               </p>
-              <p className="text-xs text-gray-500">Core Members</p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400">Core Members</p>
             </div>
           </CardContent>
         </Card>
@@ -471,7 +463,7 @@ export default function AdminUsers() {
               <p className="text-2xl font-bold text-amber-900">
                 {users.filter(u => u.role === 'ADMIN').length}
               </p>
-              <p className="text-xs text-gray-500">Admins</p>
+              <p className="text-xs text-gray-500 dark:text-zinc-400">Admins</p>
             </div>
           </CardContent>
         </Card>
@@ -496,7 +488,7 @@ export default function AdminUsers() {
           ))}
         </div>
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-zinc-500" />
           <Input
             placeholder="Search by name, email, phone..."
             value={search}
@@ -505,7 +497,7 @@ export default function AdminUsers() {
           />
         </div>
       </div>
-      <p className="text-xs text-gray-600">
+      <p className="text-xs text-gray-600 dark:text-zinc-400">
         {usersMeta.includeAll
           ? `Viewing all ${usersMeta.totalUsers} users.`
           : `Viewing all admin/president accounts and ${usersMeta.regularUsersReturned} of ${usersMeta.regularUsersTotal} regular users.`}
@@ -526,8 +518,8 @@ export default function AdminUsers() {
         </CardHeader>
         <CardContent>
           {filteredUsers.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <div className="text-center py-8 text-gray-500 dark:text-zinc-400">
+              <Users className="h-12 w-12 mx-auto mb-4 text-gray-300 dark:text-zinc-600" />
               <p>No users found {search && 'matching your search'}.</p>
             </div>
           ) : (
@@ -558,18 +550,18 @@ export default function AdminUsers() {
                             <p className="font-semibold text-amber-900">{user.name}</p>
                             {user.profileCompleted ? (
                               <span title="Profile Completed">
-                                <CheckCircle className="h-4 w-4 text-green-500" />
+                                <CheckCircle className="h-4 w-4 text-green-500 dark:text-green-400" />
                               </span>
                             ) : (
                               <span title="Profile Incomplete">
-                                <XCircle className="h-4 w-4 text-red-500" />
+                                <XCircle className="h-4 w-4 text-red-500 dark:text-red-400" />
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">{user.email}</p>
+                          <p className="text-sm text-gray-600 dark:text-zinc-400 mb-2">{user.email}</p>
                           
                           {/* Academic Details */}
-                          <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                          <div className="flex flex-wrap gap-3 text-xs text-gray-600 dark:text-zinc-400">
                             {user.phone && (
                               <div className="flex items-center gap-1">
                                 <Phone className="h-3 w-3" />
@@ -653,7 +645,7 @@ export default function AdminUsers() {
 
               {totalPages > 1 && (
                 <div className="mt-6 flex flex-col gap-3 border-t border-amber-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-gray-600 dark:text-zinc-400">
                     Page {safeCurrentPage} of {totalPages}
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
@@ -671,7 +663,7 @@ export default function AdminUsers() {
                         <Button variant="outline" size="sm" onClick={() => setCurrentPage(1)}>
                           1
                         </Button>
-                        {visiblePageNumbers[0] > 2 && <span className="px-1 text-sm text-gray-500">...</span>}
+                        {visiblePageNumbers[0] > 2 && <span className="px-1 text-sm text-gray-500 dark:text-zinc-400">...</span>}
                       </>
                     )}
 
@@ -689,7 +681,7 @@ export default function AdminUsers() {
                     {visiblePageNumbers[visiblePageNumbers.length - 1] < totalPages && (
                       <>
                         {visiblePageNumbers[visiblePageNumbers.length - 1] < totalPages - 1 && (
-                          <span className="px-1 text-sm text-gray-500">...</span>
+                          <span className="px-1 text-sm text-gray-500 dark:text-zinc-400">...</span>
                         )}
                         <Button variant="outline" size="sm" onClick={() => setCurrentPage(totalPages)}>
                           {totalPages}
@@ -727,11 +719,11 @@ export default function AdminUsers() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
+              className="bg-white dark:bg-surface-1 rounded-xl shadow-2xl max-w-md w-full p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Edit User Profile</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-zinc-100">Edit User Profile</h2>
                 <Button variant="ghost" size="sm" onClick={() => setEditingUser(null)}>
                   <X className="h-4 w-4" />
                 </Button>
@@ -764,7 +756,7 @@ export default function AdminUsers() {
                     id="edit-course"
                     value={editForm.course}
                     onChange={(e) => setEditForm({ ...editForm, course: e.target.value, branch: '' })}
-                    className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm"
+                    className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-zinc-700 bg-white dark:bg-surface-1 text-sm"
                   >
                     <option value="">Select Course</option>
                     {COURSES.map(c => (
@@ -780,7 +772,7 @@ export default function AdminUsers() {
                     value={editForm.branch}
                     onChange={(e) => setEditForm({ ...editForm, branch: e.target.value })}
                     disabled={!editForm.course}
-                    className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm disabled:bg-gray-100"
+                    className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-zinc-700 bg-white dark:bg-surface-1 text-sm disabled:bg-gray-100 dark:bg-surface-2"
                   >
                     <option value="">Select Branch</option>
                     {availableBranches.map(b => (
@@ -795,27 +787,13 @@ export default function AdminUsers() {
                     id="edit-year"
                     value={editForm.year}
                     onChange={(e) => setEditForm({ ...editForm, year: e.target.value })}
-                    className="w-full h-10 px-3 rounded-md border border-gray-300 bg-white text-sm"
+                    className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-zinc-700 bg-white dark:bg-surface-1 text-sm"
                   >
                     <option value="">Select Year</option>
                     {YEARS.map(y => (
                       <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
-                </div>
-
-                <div className="pt-2 border-t border-gray-100">
-                  <Label htmlFor="edit-password">New Password (Optional)</Label>
-                  <Input
-                    id="edit-password"
-                    type="password"
-                    value={editForm.password || ''}
-                    onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-                    placeholder="Leave empty to keep current password"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Entering a value here will override the user's current password.
-                  </p>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4">
@@ -851,13 +829,13 @@ export default function AdminUsers() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white dark:bg-surface-1 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header with Avatar */}
               <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-6 rounded-t-xl">
                 <div className="flex items-center gap-4">
-                  <div className="h-20 w-20 rounded-full overflow-hidden bg-white/20 border-4 border-white/50 flex-shrink-0">
+                  <div className="h-20 w-20 rounded-full overflow-hidden bg-white dark:bg-surface-1/20 border-4 border-white/50 flex-shrink-0">
                     {viewingUser.avatar ? (
                       <img src={viewingUser.avatar} alt={viewingUser.name} className="w-full h-full object-cover" />
                     ) : (
@@ -872,7 +850,7 @@ export default function AdminUsers() {
                       <Mail className="h-4 w-4" />
                       {viewingUser.email}
                     </p>
-                    <Badge className="mt-2 bg-white/20 text-white border-white/30">
+                    <Badge className="mt-2 bg-white dark:bg-surface-1/20 text-white border-white/30">
                       {viewingUser.role}
                     </Badge>
                   </div>
@@ -880,7 +858,7 @@ export default function AdminUsers() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setViewingUser(null)}
-                    className="absolute top-4 right-4 text-white hover:bg-white/20"
+                    className="absolute top-4 right-4 text-white hover:bg-white dark:bg-surface-1/20"
                   >
                     <X className="h-5 w-5" />
                   </Button>
@@ -891,24 +869,24 @@ export default function AdminUsers() {
                 {/* Bio */}
                 {viewingUser.bio && (
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Bio</h3>
-                    <p className="text-gray-700">{viewingUser.bio}</p>
+                    <h3 className="text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase mb-2">Bio</h3>
+                    <p className="text-gray-700 dark:text-zinc-300">{viewingUser.bio}</p>
                   </div>
                 )}
 
                 {/* Academic & Contact Info */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Academic Info</h3>
-                    <div className="space-y-1 text-sm text-gray-700">
+                    <h3 className="text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase mb-2">Academic Info</h3>
+                    <div className="space-y-1 text-sm text-gray-700 dark:text-zinc-300">
                       <p><span className="font-medium">Course:</span> {viewingUser.course || 'N/A'}</p>
                       <p><span className="font-medium">Branch:</span> {viewingUser.branch || 'N/A'}</p>
                       <p><span className="font-medium">Year:</span> {viewingUser.year || 'N/A'}</p>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Contact</h3>
-                    <div className="space-y-1 text-sm text-gray-700">
+                    <h3 className="text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase mb-2">Contact</h3>
+                    <div className="space-y-1 text-sm text-gray-700 dark:text-zinc-300">
                       <p className="flex items-center gap-2"><Phone className="h-4 w-4" /> {viewingUser.phone || 'N/A'}</p>
                       <p><span className="font-medium">Joined:</span> {viewingUser.createdAt ? formatDate(viewingUser.createdAt, 'short') : 'N/A'}</p>
                       <p><span className="font-medium">Auth:</span> {viewingUser.oauthProvider || 'Email/Password'}</p>
@@ -919,15 +897,15 @@ export default function AdminUsers() {
                 {/* Social Links */}
                 {(viewingUser.githubUrl || viewingUser.linkedinUrl || viewingUser.twitterUrl || viewingUser.websiteUrl) && (
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Social Links</h3>
+                    <h3 className="text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase mb-2">Social Links</h3>
                     <div className="flex flex-wrap gap-2">
                       {viewingUser.githubUrl && (
-                        <a href={viewingUser.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 rounded-full text-sm hover:bg-gray-200 transition">
+                        <a href={viewingUser.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 dark:bg-surface-2 rounded-full text-sm hover:bg-gray-200 dark:bg-surface-3 transition">
                           <Github className="h-4 w-4" /> GitHub
                         </a>
                       )}
                       {viewingUser.linkedinUrl && (
-                        <a href={viewingUser.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 bg-blue-100 rounded-full text-sm text-blue-700 hover:bg-blue-200 transition">
+                        <a href={viewingUser.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full text-sm text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:bg-blue-900/40 transition">
                           <Linkedin className="h-4 w-4" /> LinkedIn
                         </a>
                       )}
@@ -937,7 +915,7 @@ export default function AdminUsers() {
                         </a>
                       )}
                       {viewingUser.websiteUrl && (
-                        <a href={viewingUser.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 bg-green-100 rounded-full text-sm text-green-700 hover:bg-green-200 transition">
+                        <a href={viewingUser.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 rounded-full text-sm text-green-700 dark:text-green-300 hover:bg-green-200 dark:bg-green-900/40 transition">
                           <Globe className="h-4 w-4" /> Website
                         </a>
                       )}
@@ -949,21 +927,21 @@ export default function AdminUsers() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="bg-amber-50 p-4 rounded-lg text-center">
                     <p className="text-3xl font-bold text-amber-600">{viewingUser._count?.registrations || 0}</p>
-                    <p className="text-sm text-gray-600">Events Registered</p>
+                    <p className="text-sm text-gray-600 dark:text-zinc-400">Events Registered</p>
                   </div>
-                  <div className="bg-blue-50 p-4 rounded-lg text-center">
-                    <p className="text-3xl font-bold text-blue-600">{viewingUser._count?.gameSessions || 0}</p>
-                    <p className="text-sm text-gray-600">Game Sessions</p>
+                  <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-lg text-center">
+                    <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{viewingUser._count?.gameSessions || 0}</p>
+                    <p className="text-sm text-gray-600 dark:text-zinc-400">Game Sessions</p>
                   </div>
                 </div>
 
                 {/* Event Registrations */}
                 {viewingUser.registrations && viewingUser.registrations.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Event Registrations</h3>
+                    <h3 className="text-sm font-semibold text-gray-500 dark:text-zinc-400 uppercase mb-2">Event Registrations</h3>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
                       {viewingUser.registrations.map(reg => (
-                        <div key={reg.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div key={reg.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-surface-1 rounded-lg">
                           <div className="h-10 w-10 rounded bg-amber-200 flex-shrink-0 overflow-hidden">
                             {reg.event.imageUrl ? (
                               <img src={reg.event.imageUrl} alt={reg.event.title} className="w-full h-full object-cover" />
@@ -974,8 +952,8 @@ export default function AdminUsers() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 truncate">{reg.event.title}</p>
-                            <p className="text-xs text-gray-500">
+                            <p className="font-medium text-gray-900 dark:text-zinc-100 truncate">{reg.event.title}</p>
+                            <p className="text-xs text-gray-500 dark:text-zinc-400">
                               {formatDate(reg.event.startDate, 'short')} • 
                               <Badge variant={reg.event.status === 'PAST' ? 'secondary' : reg.event.status === 'ONGOING' ? 'warning' : 'default'} className="ml-1 text-xs">
                                 {reg.event.status}

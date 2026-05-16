@@ -658,7 +658,7 @@ export default function AdminScanner({ eventId, token, onEndSession }: AdminScan
 
             {/* Camera error */}
             {cameraError && (
-              <div className="mt-3 rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/30 dark:border-red-800 p-3 text-sm text-red-700 dark:text-red-300 flex items-start gap-2">
+              <div className="mt-3 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 dark:border-red-800 p-3 text-sm text-red-700 dark:text-red-300 flex items-start gap-2">
                 <XCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>{cameraError}</span>
               </div>
@@ -766,7 +766,7 @@ export default function AdminScanner({ eventId, token, onEndSession }: AdminScan
                           <p className="text-xs text-muted-foreground truncate">{result.userEmail}</p>
                         </div>
                         {result.attended ? (
-                          <Badge variant="secondary" className="shrink-0 text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/40">
+                          <Badge variant="secondary" className="shrink-0 text-green-700 dark:text-green-300 bg-green-100 dark:text-green-300 dark:bg-green-900/40">
                             <CheckCircle className="h-3 w-3 mr-1" />
                             Attended
                           </Badge>
@@ -792,7 +792,7 @@ export default function AdminScanner({ eventId, token, onEndSession }: AdminScan
 
           <Button
             variant="outline"
-            className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+            className="flex-1 text-red-600 dark:text-red-400 hover:text-red-700 dark:text-red-300 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
             onClick={handleEndSession}
             disabled={ending}
           >
@@ -931,7 +931,7 @@ export default function AdminScanner({ eventId, token, onEndSession }: AdminScan
                         </p>
                       </div>
                       {scan.synced && scan.result !== 'error' && (
-                        <Badge variant="secondary" className="text-green-700 bg-green-100 dark:text-green-300 dark:bg-green-900/40 text-xs">
+                        <Badge variant="secondary" className="text-green-700 dark:text-green-300 bg-green-100 dark:text-green-300 dark:bg-green-900/40 text-xs">
                           <CheckCircle className="h-3 w-3 mr-1" />
                           Synced
                         </Badge>
@@ -943,7 +943,7 @@ export default function AdminScanner({ eventId, token, onEndSession }: AdminScan
                         </Badge>
                       )}
                       {scan.synced && scan.result === 'error' && (
-                        <Badge variant="secondary" className="text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/40 text-xs">
+                        <Badge variant="secondary" className="text-red-700 dark:text-red-300 bg-red-100 dark:text-red-300 dark:bg-red-900/40 text-xs">
                           <XCircle className="h-3 w-3 mr-1" />
                           Error
                         </Badge>

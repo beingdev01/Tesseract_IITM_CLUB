@@ -9,28 +9,28 @@ import { useHomePageData } from '@/hooks/useHomePageData';
 
 const priorityConfig = {
   LOW: { 
-    bg: 'bg-gray-50 border-gray-200', 
-    badge: 'bg-gray-100 text-gray-700',
+    bg: 'bg-gray-50 dark:bg-surface-1 border-gray-200 dark:border-zinc-800', 
+    badge: 'bg-gray-100 dark:bg-surface-2 text-gray-700 dark:text-zinc-300',
     icon: Info,
-    iconColor: 'text-gray-500'
+    iconColor: 'text-gray-500 dark:text-zinc-400'
   },
   MEDIUM: { 
-    bg: 'bg-blue-50 border-blue-200', 
-    badge: 'bg-blue-100 text-blue-700',
+    bg: 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/40', 
+    badge: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
     icon: CheckCircle,
     iconColor: 'text-blue-500'
   },
   HIGH: { 
     bg: 'bg-orange-50 border-orange-200', 
-    badge: 'bg-orange-100 text-orange-700',
+    badge: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
     icon: Bell,
     iconColor: 'text-orange-500'
   },
   URGENT: { 
-    bg: 'bg-red-50 border-red-200', 
-    badge: 'bg-red-100 text-red-700',
+    bg: 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/40', 
+    badge: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
     icon: AlertTriangle,
-    iconColor: 'text-red-500'
+    iconColor: 'text-red-500 dark:text-red-400'
   },
 };
 
@@ -56,7 +56,7 @@ export function LatestAnnouncements() {
   const staggerDelay = shouldReduceMotion ? 0.05 : 0.1;
 
   return (
-    <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
+    <section className="py-16 sm:py-24 bg-white dark:bg-surface-1 relative overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-amber-50 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 opacity-50" />
       
@@ -69,13 +69,13 @@ export function LatestAnnouncements() {
           viewport={{ once: true, margin: '-50px' }}
           className="text-center mb-8 sm:mb-12"
         >
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-zinc-100 mb-3 sm:mb-4">
             Latest{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-violet-600">
               Announcements
             </span>
           </h2>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-zinc-400 max-w-2xl mx-auto px-2">
             Stay informed with our latest updates, news, and important notices
           </p>
         </motion.div>
@@ -100,7 +100,7 @@ export function LatestAnnouncements() {
                   <div className={`h-full p-6 rounded-2xl border-2 transition-all duration-300 hover:shadow-lg ${config.bg}`}>
                     {/* Header */}
                     <div className="flex items-start justify-between mb-4">
-                      <div className={`p-2 rounded-lg bg-white shadow-sm ${config.iconColor}`}>
+                      <div className={`p-2 rounded-lg bg-white dark:bg-surface-1 shadow-sm ${config.iconColor}`}>
                         <Icon className="h-5 w-5" />
                       </div>
                       <Badge className={config.badge}>
@@ -109,22 +109,22 @@ export function LatestAnnouncements() {
                     </div>
                   
                     {/* Content */}
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-700 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-zinc-100 mb-2 line-clamp-2 group-hover:text-purple-700 transition-colors">
                       {announcement.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    <p className="text-gray-600 dark:text-zinc-400 text-sm mb-4 line-clamp-3">
                       {getAnnouncementPreview(announcement.shortDescription, announcement.body)}
                     </p>
                   
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200/50">
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-zinc-800/50">
+                      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-zinc-400">
                         <Calendar className="h-3 w-3" />
                         {formatDate(announcement.createdAt)}
                       </div>
                       {announcement.creator && (
-                        <p className="text-xs text-gray-500">
-                          by <span className="font-medium text-gray-700">{announcement.creator.name}</span>
+                        <p className="text-xs text-gray-500 dark:text-zinc-400">
+                          by <span className="font-medium text-gray-700 dark:text-zinc-300">{announcement.creator.name}</span>
                         </p>
                       )}
                     </div>
@@ -147,7 +147,7 @@ export function LatestAnnouncements() {
             <Button 
               variant="outline" 
               size="lg" 
-              className="group border-gray-300 hover:border-purple-500 hover:bg-purple-50"
+              className="group border-gray-300 dark:border-zinc-700 hover:border-purple-500 hover:bg-purple-50"
             >
               View All Announcements
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />

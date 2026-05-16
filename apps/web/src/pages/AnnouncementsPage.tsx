@@ -14,10 +14,10 @@ import { formatDate } from '@/lib/dateUtils';
 import { processImageUrl } from '@/lib/imageUtils';
 
 const priorityConfig = {
-  LOW: { color: 'bg-gray-100 text-gray-700 border-gray-300', icon: Info },
-  MEDIUM: { color: 'bg-blue-100 text-blue-700 border-blue-300', icon: Bell },
-  HIGH: { color: 'bg-orange-100 text-orange-700 border-orange-300', icon: AlertTriangle },
-  URGENT: { color: 'bg-red-100 text-red-700 border-red-300', icon: AlertCircle },
+  LOW: { color: 'bg-gray-100 dark:bg-surface-2 text-gray-700 dark:text-zinc-300 border-gray-300 dark:border-zinc-700', icon: Info },
+  MEDIUM: { color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300', icon: Bell },
+  HIGH: { color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-300', icon: AlertTriangle },
+  URGENT: { color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-300', icon: AlertCircle },
 };
 
 export default function AnnouncementsPage() {
@@ -97,7 +97,7 @@ export default function AnnouncementsPage() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-amber-900 mb-3 sm:mb-4">
               Announcements
             </h1>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
+            <p className="text-base sm:text-lg text-gray-600 dark:text-zinc-400 max-w-2xl mx-auto px-2">
               Stay updated with the latest news, events, and important information from Tesseract
             </p>
           </motion.div>
@@ -117,7 +117,7 @@ export default function AnnouncementsPage() {
                 className={`px-4 py-2 rounded-full font-medium transition-all ${
                   filter === priority
                     ? 'bg-amber-600 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-amber-100 border border-amber-200'
+                    : 'bg-white dark:bg-surface-1 text-gray-700 dark:text-zinc-300 hover:bg-amber-100 border border-amber-200'
                 }`}
               >
                 {priority}
@@ -129,17 +129,17 @@ export default function AnnouncementsPage() {
           {loading && (
             <div className="text-center py-12">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-amber-600 border-r-transparent"></div>
-              <p className="mt-4 text-gray-600">Loading announcements...</p>
+              <p className="mt-4 text-gray-600 dark:text-zinc-400">Loading announcements...</p>
             </div>
           )}
 
           {/* Error State */}
           {error && (
             <div className="text-center py-12">
-              <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-                <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-red-700 mb-2">Error Loading Announcements</h3>
-                <p className="text-red-600">{error}</p>
+              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-lg p-6 max-w-md mx-auto">
+                <AlertCircle className="h-12 w-12 text-red-500 dark:text-red-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-red-700 dark:text-red-300 mb-2">Error Loading Announcements</h3>
+                <p className="text-red-600 dark:text-red-400">{error}</p>
               </div>
             </div>
           )}
@@ -151,11 +151,11 @@ export default function AnnouncementsPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="text-center py-12"
             >
-              <Bell className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              <Bell className="h-16 w-16 text-gray-400 dark:text-zinc-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-700 dark:text-zinc-300 mb-2">
                 No announcements found
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-zinc-400">
                 {filter === 'ALL' 
                   ? 'Check back later for updates!' 
                   : `No ${filter.toLowerCase()} priority announcements at the moment.`}
@@ -173,7 +173,7 @@ export default function AnnouncementsPage() {
               <div className="mb-5 flex items-center justify-between gap-3">
                 <div>
                   <h2 className="text-2xl font-bold text-amber-900">Open Polls</h2>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-zinc-400">
                     Vote anytime, then leave feedback below each poll.
                   </p>
                 </div>
@@ -207,7 +207,7 @@ export default function AnnouncementsPage() {
                   whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 >
                   <Link to={`/announcements/${announcement.slug || announcement.id}`} className="block h-full">
-                    <Card className="h-full hover:shadow-xl transition-all duration-300 border-amber-200 bg-white/80 backdrop-blur-sm overflow-hidden group">
+                    <Card className="h-full hover:shadow-xl transition-all duration-300 border-amber-200 bg-white dark:bg-surface-1/80 backdrop-blur-sm overflow-hidden group">
                       {/* Image Header */}
                       {hasImage && (
                         <div className="relative h-40 overflow-hidden">
@@ -257,7 +257,7 @@ export default function AnnouncementsPage() {
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-1 text-xs text-gray-500 shrink-0">
+                          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-zinc-400 shrink-0">
                             <Calendar className="h-3.5 w-3.5" />
                             {formatDate(announcement.createdAt)}
                           </div>
@@ -267,7 +267,7 @@ export default function AnnouncementsPage() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                        <p className="text-gray-600 dark:text-zinc-400 text-sm leading-relaxed line-clamp-3">
                           {displayText.replace(/[#*_`~[\]]/g, '').slice(0, 150)}
                           {displayText.length > 150 ? '...' : ''}
                         </p>
@@ -281,7 +281,7 @@ export default function AnnouncementsPage() {
                               </span>
                             ))}
                             {announcement.tags.length > 3 && (
-                              <span className="text-xs text-gray-500">+{announcement.tags.length - 3} more</span>
+                              <span className="text-xs text-gray-500 dark:text-zinc-400">+{announcement.tags.length - 3} more</span>
                             )}
                           </div>
                         )}
@@ -289,7 +289,7 @@ export default function AnnouncementsPage() {
                         {/* Footer */}
                         <div className="mt-4 pt-3 border-t border-amber-100 flex items-center justify-between">
                           {announcement.creator && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-zinc-400">
                               By <span className="font-medium text-amber-700">{announcement.creator.name}</span>
                             </p>
                           )}

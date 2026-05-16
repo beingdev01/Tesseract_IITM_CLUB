@@ -40,11 +40,7 @@ export default function AdminSettings() {
     showAchievements: true,
     show_tech_blogs: true,
     hiringEnabled: false,
-    hiringTechnical: true,
-    hiringDsaChamps: true,
-    hiringDesigning: true,
-    hiringSocialMedia: true,
-    hiringManagement: true,
+    whatsappCommunityUrl: '',
     showNetwork: false,
     mailingEnabled: true,
     emailWelcomeEnabled: true,
@@ -88,26 +84,14 @@ export default function AdminSettings() {
     setLoading(true);
     setError(null);
     try {
-      if (token) {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/settings`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (response.ok) {
-          const json = await response.json();
-          if (json.success && json.data) {
-            setSettings({
-              ...json.data,
-              emailWelcomeBody: json.data.emailWelcomeBody ?? '',
-              emailAnnouncementBody: json.data.emailAnnouncementBody ?? '',
-              emailEventBody: json.data.emailEventBody ?? '',
-              emailFooterText: json.data.emailFooterText ?? '',
-            });
-            return;
-          }
-        }
-      }
-      const data = await api.getSettings();
-      setSettings(data);
+      const data = token ? await api.getAdminSettings(token) : await api.getSettings();
+      setSettings({
+        ...data,
+        emailWelcomeBody: data.emailWelcomeBody ?? '',
+        emailAnnouncementBody: data.emailAnnouncementBody ?? '',
+        emailEventBody: data.emailEventBody ?? '',
+        emailFooterText: data.emailFooterText ?? '',
+      });
     } catch {
       setError('Failed to load settings');
     } finally {
@@ -157,17 +141,12 @@ export default function AdminSettings() {
     try {
       const { id: _id, updatedAt: _u, emailWelcomeBody, emailAnnouncementBody, emailEventBody, emailFooterText, ...updateData } = settings;
       const updated = await api.updateSettings(updateData, token);
-      const emailResponse = await fetch(`${import.meta.env.VITE_API_URL}/settings/email-templates`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          emailWelcomeBody: emailWelcomeBody ?? '',
-          emailAnnouncementBody: emailAnnouncementBody ?? '',
-          emailEventBody: emailEventBody ?? '',
-          emailFooterText: emailFooterText ?? '',
-        }),
-      });
-      if (!emailResponse.ok) throw new Error('Failed to update email templates');
+      await api.updateEmailTemplates({
+        emailWelcomeBody: emailWelcomeBody ?? '',
+        emailAnnouncementBody: emailAnnouncementBody ?? '',
+        emailEventBody: emailEventBody ?? '',
+        emailFooterText: emailFooterText ?? '',
+      }, token);
       setSettings({ ...updated, emailWelcomeBody: emailWelcomeBody ?? '', emailAnnouncementBody: emailAnnouncementBody ?? '', emailEventBody: emailEventBody ?? '', emailFooterText: emailFooterText ?? '' });
       await refreshGlobalSettings();
       setSaved(true);
@@ -372,6 +351,17 @@ export default function AdminSettings() {
             <Field label="DISCORD">
               <input className="t-input" value={settings.discordUrl || ''} onChange={(e) => setSettings({ ...settings, discordUrl: e.target.value })} placeholder="https://discord.gg/invite-code" />
             </Field>
+            <Field label="WHATSAPP COMMUNITY INVITE">
+              <input
+                className="t-input"
+                value={settings.whatsappCommunityUrl || ''}
+                onChange={(e) => setSettings({ ...settings, whatsappCommunityUrl: e.target.value })}
+                placeholder="https://chat.whatsapp.com/…"
+              />
+              <p className="lb-mono text-[10px] mt-1" style={{ color: 'var(--fg-mute)', letterSpacing: '0.06em' }}>
+                // shown on the Join Tesseract success screen + dashboard tile for members
+              </p>
+            </Field>
           </div>
         </Brackets>
 
@@ -440,16 +430,15 @@ export default function AdminSettings() {
               setEventSyncSubmitting(true);
               setEventSyncResult(null);
               try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/settings/event-status/sync-now`, {
-                  method: 'POST',
-                  headers: { Authorization: `Bearer ${token}` },
-                  credentials: 'include',
+                const data = await api.syncEventStatus(token);
+                setEventSyncResult(data);
+              } catch (err) {
+                setEventSyncResult({
+                  toOngoing: 0,
+                  toPastFromOngoing: 0,
+                  toPastFromUpcoming: 0,
+                  error: err instanceof Error ? err.message : 'Sync failed',
                 });
-                const data = await res.json();
-                if (data.success && data.data) setEventSyncResult(data.data);
-                else setEventSyncResult({ toOngoing: 0, toPastFromOngoing: 0, toPastFromUpcoming: 0, error: data.error?.message || 'Sync failed' });
-              } catch {
-                setEventSyncResult({ toOngoing: 0, toPastFromOngoing: 0, toPastFromUpcoming: 0, error: 'Network error' });
               } finally {
                 setEventSyncSubmitting(false);
               }

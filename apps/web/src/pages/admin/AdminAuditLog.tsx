@@ -33,23 +33,23 @@ import { formatDate, formatDateTime } from '@/lib/dateUtils';
 
 // Friendly labels for action types
 const ACTION_LABELS: Record<string, { label: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
-  CREATE: { label: 'Created', color: 'bg-green-100 text-green-700', icon: Plus },
-  UPDATE: { label: 'Updated', color: 'bg-blue-100 text-blue-700', icon: PenLine },
-  DELETE: { label: 'Deleted', color: 'bg-red-100 text-red-700', icon: Trash2 },
+  CREATE: { label: 'Created', color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300', icon: Plus },
+  UPDATE: { label: 'Updated', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300', icon: PenLine },
+  DELETE: { label: 'Deleted', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', icon: Trash2 },
   REGISTER: { label: 'Registered', color: 'bg-emerald-100 text-emerald-700', icon: Plus },
-  UNREGISTER: { label: 'Unregistered', color: 'bg-orange-100 text-orange-700', icon: Trash2 },
+  UNREGISTER: { label: 'Unregistered', color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300', icon: Trash2 },
   UPDATE_ROLE: { label: 'Role Changed', color: 'bg-purple-100 text-purple-700', icon: Key },
   EXPORT: { label: 'Exported', color: 'bg-cyan-100 text-cyan-700', icon: Download },
-  HIRING_APPLICATION_SUBMITTED: { label: 'Applied', color: 'bg-green-100 text-green-700', icon: Plus },
-  HIRING_STATUS_UPDATED: { label: 'Status Changed', color: 'bg-blue-100 text-blue-700', icon: PenLine },
-  HIRING_APPLICATION_DELETED: { label: 'Deleted', color: 'bg-red-100 text-red-700', icon: Trash2 },
-  NETWORK_PROFILE_VERIFIED: { label: 'Verified', color: 'bg-green-100 text-green-700', icon: Eye },
-  NETWORK_PROFILE_REJECTED: { label: 'Rejected', color: 'bg-red-100 text-red-700', icon: Trash2 },
-  NETWORK_PROFILE_UPDATED: { label: 'Updated', color: 'bg-blue-100 text-blue-700', icon: PenLine },
-  NETWORK_PROFILE_DELETED: { label: 'Deleted', color: 'bg-red-100 text-red-700', icon: Trash2 },
+  HIRING_APPLICATION_SUBMITTED: { label: 'Applied', color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300', icon: Plus },
+  HIRING_STATUS_UPDATED: { label: 'Status Changed', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300', icon: PenLine },
+  HIRING_APPLICATION_DELETED: { label: 'Deleted', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', icon: Trash2 },
+  NETWORK_PROFILE_VERIFIED: { label: 'Verified', color: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300', icon: Eye },
+  NETWORK_PROFILE_REJECTED: { label: 'Rejected', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', icon: Trash2 },
+  NETWORK_PROFILE_UPDATED: { label: 'Updated', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300', icon: PenLine },
+  NETWORK_PROFILE_DELETED: { label: 'Deleted', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', icon: Trash2 },
   NETWORK_EXPORT: { label: 'Exported', color: 'bg-cyan-100 text-cyan-700', icon: Download },
-  NETWORK_PENDING_USER_REVERTED: { label: 'Reverted User', color: 'bg-orange-100 text-orange-700', icon: Users },
-  NETWORK_PENDING_USER_DELETED: { label: 'Deleted User', color: 'bg-red-100 text-red-700', icon: Trash2 },
+  NETWORK_PENDING_USER_REVERTED: { label: 'Reverted User', color: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300', icon: Users },
+  NETWORK_PENDING_USER_DELETED: { label: 'Deleted User', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300', icon: Trash2 },
 };
 
 // Friendly labels for entity types
@@ -189,7 +189,7 @@ export default function AdminAuditLog() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-amber-600 mx-auto mb-2" />
-          <p className="text-gray-600">Loading audit logs...</p>
+          <p className="text-gray-600 dark:text-zinc-400">Loading audit logs...</p>
         </div>
       </div>
     );
@@ -201,7 +201,7 @@ export default function AdminAuditLog() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-amber-900">Audit Log</h1>
-          <p className="text-gray-600">Track who changed what and when ({total} total entries)</p>
+          <p className="text-gray-600 dark:text-zinc-400">Track who changed what and when ({total} total entries)</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -224,7 +224,7 @@ export default function AdminAuditLog() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 rounded-lg text-red-700 dark:text-red-300"
         >
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
@@ -242,7 +242,7 @@ export default function AdminAuditLog() {
             <CardContent className="pt-4 pb-4">
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-1">
-                  <label htmlFor="audit-log-entity" className="text-xs font-medium text-gray-500 uppercase tracking-wider">Entity</label>
+                  <label htmlFor="audit-log-entity" className="text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Entity</label>
                   <select
                     id="audit-log-entity"
                     value={entityFilter}
@@ -256,7 +256,7 @@ export default function AdminAuditLog() {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="audit-log-action" className="text-xs font-medium text-gray-500 uppercase tracking-wider">Action</label>
+                  <label htmlFor="audit-log-action" className="text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Action</label>
                   <select
                     id="audit-log-action"
                     value={actionFilter}
@@ -270,9 +270,9 @@ export default function AdminAuditLog() {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="audit-log-search" className="text-xs font-medium text-gray-500 uppercase tracking-wider">Search</label>
+                  <label htmlFor="audit-log-search" className="text-xs font-medium text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Search</label>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-zinc-500" />
                     <Input
                       id="audit-log-search"
                       value={searchInput}
@@ -285,7 +285,7 @@ export default function AdminAuditLog() {
               </div>
               {(entityFilter || actionFilter || searchInput) && (
                 <div className="mt-3 flex items-center gap-2">
-                  <span className="text-xs text-gray-500">{total} results</span>
+                  <span className="text-xs text-gray-500 dark:text-zinc-400">{total} results</span>
                   <button
                     onClick={() => {
                       setEntityFilter('');
@@ -309,9 +309,9 @@ export default function AdminAuditLog() {
         <div className="divide-y divide-gray-100">
           {logs.length === 0 ? (
             <div className="p-12 text-center">
-              <ClipboardList className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">No audit logs found</p>
-              <p className="text-sm text-gray-400 mt-1">
+              <ClipboardList className="h-12 w-12 text-gray-300 dark:text-zinc-600 mx-auto mb-3" />
+              <p className="text-gray-500 dark:text-zinc-400 font-medium">No audit logs found</p>
+              <p className="text-sm text-gray-400 dark:text-zinc-500 mt-1">
                 {entityFilter || actionFilter || searchQuery
                   ? 'Try adjusting your filters'
                   : 'Actions will appear here as admins make changes'}
@@ -321,7 +321,7 @@ export default function AdminAuditLog() {
             logs.map((log, index) => {
               const actionInfo = ACTION_LABELS[log.action] || {
                 label: log.action,
-                color: 'bg-gray-100 text-gray-700',
+                color: 'bg-gray-100 dark:bg-surface-2 text-gray-700 dark:text-zinc-300',
                 icon: PenLine,
               };
               const ActionIcon = actionInfo.icon;
@@ -357,18 +357,18 @@ export default function AdminAuditLog() {
                         <ActionIcon className="h-3 w-3" />
                         {actionInfo.label}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-gray-600">
+                      <span className="inline-flex items-center gap-1 text-gray-600 dark:text-zinc-400">
                         <EntityIcon className="h-3.5 w-3.5" />
                         {entityLabel}
                       </span>
                       {log.entityId && log.entityId !== 'default' && log.entityId !== 'batch' && log.entityId !== 'bulk' && log.entityId !== 'config' && (
-                        <span className="text-xs text-gray-400 font-mono truncate max-w-[120px]" title={log.entityId}>
+                        <span className="text-xs text-gray-400 dark:text-zinc-500 font-mono truncate max-w-[120px]" title={log.entityId}>
                           ({log.entityId.slice(0, 8)}…)
                         </span>
                       )}
                     </div>
                     {metaStr && (
-                      <p className="text-xs text-gray-500 mt-0.5 truncate" title={metaStr}>
+                      <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5 truncate" title={metaStr}>
                         {metaStr}
                       </p>
                     )}
@@ -376,7 +376,7 @@ export default function AdminAuditLog() {
 
                   {/* Timestamp */}
                   <div className="text-right shrink-0">
-                    <p className="text-xs text-gray-500" title={time.full}>{time.relative}</p>
+                    <p className="text-xs text-gray-500 dark:text-zinc-400" title={time.full}>{time.relative}</p>
                   </div>
                 </motion.div>
               );
@@ -388,7 +388,7 @@ export default function AdminAuditLog() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-zinc-400">
             Page {page} of {totalPages}
           </p>
           <div className="flex gap-2">

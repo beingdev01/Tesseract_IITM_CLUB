@@ -43,10 +43,10 @@ const priorityColors = {
 } as const;
 
 const priorityBgColors = {
-  URGENT: 'bg-red-50 border-red-200',
+  URGENT: 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/40',
   HIGH: 'bg-orange-50 border-orange-200',
   MEDIUM: 'bg-amber-50 border-amber-200',
-  LOW: 'bg-gray-50 border-gray-200',
+  LOW: 'bg-gray-50 dark:bg-surface-1 border-gray-200 dark:border-zinc-800',
 };
 
 type AnnouncementPriority = Announcement['priority'];
@@ -177,7 +177,7 @@ export default function DashboardAnnouncements() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-amber-900">Announcements</h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-zinc-400">
             News, updates, and now async polls that members can vote on anytime.
           </p>
         </div>
@@ -203,7 +203,7 @@ export default function DashboardAnnouncements() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"
+          className="flex items-start gap-3 rounded-lg border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 p-4 text-red-700 dark:text-red-300"
         >
           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
           <p className="text-sm">{error}</p>
@@ -242,8 +242,8 @@ export default function DashboardAnnouncements() {
             </CardHeader>
             <CardContent>
               {filteredAnnouncements.length === 0 ? (
-                <div className="py-8 text-center text-gray-500">
-                  <Bell className="mx-auto mb-4 h-12 w-12 text-gray-300" />
+                <div className="py-8 text-center text-gray-500 dark:text-zinc-400">
+                  <Bell className="mx-auto mb-4 h-12 w-12 text-gray-300 dark:text-zinc-600" />
                   <p>No announcements found.</p>
                 </div>
               ) : (
@@ -259,7 +259,7 @@ export default function DashboardAnnouncements() {
                       {editingId === announcement.id ? (
                         <div className="space-y-4">
                           <div>
-                            <label htmlFor={`announcement-title-${announcement.id}`} className="mb-1 block text-sm font-medium text-gray-700">
+                            <label htmlFor={`announcement-title-${announcement.id}`} className="mb-1 block text-sm font-medium text-gray-700 dark:text-zinc-300">
                               Title
                             </label>
                             <Input
@@ -270,7 +270,7 @@ export default function DashboardAnnouncements() {
                             />
                           </div>
                           <div>
-                            <label htmlFor={`announcement-body-${announcement.id}`} className="mb-1 block text-sm font-medium text-gray-700">
+                            <label htmlFor={`announcement-body-${announcement.id}`} className="mb-1 block text-sm font-medium text-gray-700 dark:text-zinc-300">
                               Body
                             </label>
                             <textarea
@@ -278,18 +278,18 @@ export default function DashboardAnnouncements() {
                               value={editForm.body || ''}
                               onChange={(event) => setEditForm({ ...editForm, body: event.target.value })}
                               rows={4}
-                              className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-amber-500"
+                              className="w-full rounded-lg border border-gray-300 dark:border-zinc-700 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-amber-500"
                             />
                           </div>
                           <div>
-                            <label htmlFor={`announcement-priority-${announcement.id}`} className="mb-1 block text-sm font-medium text-gray-700">
+                            <label htmlFor={`announcement-priority-${announcement.id}`} className="mb-1 block text-sm font-medium text-gray-700 dark:text-zinc-300">
                               Priority
                             </label>
                             <select
                               id={`announcement-priority-${announcement.id}`}
                               value={editForm.priority || 'LOW'}
                               onChange={(event) => setEditForm({ ...editForm, priority: event.target.value as AnnouncementPriority })}
-                              className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-amber-500"
+                              className="w-full rounded-lg border border-gray-300 dark:border-zinc-700 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-amber-500"
                             >
                               <option value="LOW">Low</option>
                               <option value="MEDIUM">Medium</option>
@@ -351,7 +351,7 @@ export default function DashboardAnnouncements() {
                                   size="sm"
                                   onClick={() => setAnnouncementToDelete(announcement)}
                                   disabled={deleting === announcement.id}
-                                  className="h-8 w-8 p-0 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                  className="h-8 w-8 p-0 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-950/30 hover:text-red-700 dark:text-red-300"
                                   aria-label={`Delete ${announcement.title}`}
                                 >
                                   {deleting === announcement.id ? (
@@ -365,14 +365,14 @@ export default function DashboardAnnouncements() {
                           </div>
 
                           {announcement.shortDescription && (
-                            <p className="mb-2 text-sm italic text-gray-600">{announcement.shortDescription}</p>
+                            <p className="mb-2 text-sm italic text-gray-600 dark:text-zinc-400">{announcement.shortDescription}</p>
                           )}
-                          <p className="mb-4 line-clamp-3 text-gray-700">
+                          <p className="mb-4 line-clamp-3 text-gray-700 dark:text-zinc-300">
                             {getAnnouncementPreview(announcement.body)}
                             {announcement.body.length > 180 ? '...' : ''}
                           </p>
 
-                          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-zinc-400">
                             {announcement.creator && <span>{announcement.creator.name}</span>}
                             <span>{formatDate(announcement.createdAt)}</span>
                             {announcement.tags && announcement.tags.length > 0 && (
@@ -425,8 +425,8 @@ export default function DashboardAnnouncements() {
             </CardHeader>
             <CardContent>
               {filteredPolls.length === 0 ? (
-                <div className="py-10 text-center text-gray-500">
-                  <Vote className="mx-auto mb-4 h-12 w-12 text-gray-300" />
+                <div className="py-10 text-center text-gray-500 dark:text-zinc-400">
+                  <Vote className="mx-auto mb-4 h-12 w-12 text-gray-300 dark:text-zinc-600" />
                   <p>No polls found for this filter.</p>
                 </div>
               ) : (

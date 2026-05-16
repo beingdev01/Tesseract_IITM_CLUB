@@ -171,9 +171,7 @@ async function requestBlob(endpoint: string, options: RequestOptions = {}): Prom
 
 export interface AuthProviders {
   google: boolean;
-  github: boolean;
   devLogin: boolean;
-  emailPassword: boolean;
 }
 
 export type GameCategory = 'multiplayer' | 'party' | 'solo' | 'esports';
@@ -432,26 +430,23 @@ export interface Settings {
   showAchievements?: boolean;
   show_tech_blogs?: boolean;
   hiringEnabled?: boolean;
-  hiringTechnical?: boolean;
-  hiringDsaChamps?: boolean;
-  hiringDesigning?: boolean;
-  hiringSocialMedia?: boolean;
-  hiringManagement?: boolean;
+  whatsappCommunityUrl?: string | null;
   competitionEnabled?: boolean;
   showNetwork?: boolean;
   mailingEnabled?: boolean;
   certificatesEnabled?: boolean;
   attendanceEnabled?: boolean;
   // Social Links
-  githubUrl?: string;
-  linkedinUrl?: string;
-  twitterUrl?: string;
-  instagramUrl?: string;
-  discordUrl?: string;
+  githubUrl?: string | null;
+  linkedinUrl?: string | null;
+  twitterUrl?: string | null;
+  instagramUrl?: string | null;
+  discordUrl?: string | null;
   // Email Template Customization
   emailWelcomeBody?: string;
   emailAnnouncementBody?: string;
   emailEventBody?: string;
+  emailInterviewScheduledBody?: string;
   emailFooterText?: string;
   // Email Notification Controls
   emailWelcomeEnabled?: boolean;
@@ -483,6 +478,124 @@ export interface SecurityEnvStatus {
   runtimeOnlyMode?: boolean;
   runtimeOnlyApplied?: boolean;
   updatedAt: string | null;
+}
+
+export type HiringApplicationStatus = 'PENDING' | 'INTERVIEW_SCHEDULED' | 'SELECTED' | 'REJECTED';
+export type HiringApplicationType = 'MEMBER' | 'CORE';
+export type BsLevel = 'FOUNDATION' | 'DIPLOMA' | 'DEGREE';
+export type TesseractHouse =
+  | 'BANDIPUR' | 'CORBETT' | 'GIR' | 'KANHA' | 'KAZIRANGA' | 'NALLAMALA' | 'NAMDAPHA'
+  | 'NILGIRI' | 'PICHAVARAM' | 'SARANDA' | 'SUNDARBANS' | 'WAYANAD' | 'NOT_ALLOTED';
+export type TesseractRegion =
+  | 'BENGALURU' | 'CHANDIGARH' | 'CHENNAI' | 'DELHI' | 'HYDERABAD' | 'KOLKATA'
+  | 'LUCKNOW' | 'MUMBAI' | 'PATNA' | 'INTERNATIONAL' | 'NOT_ALLOTED';
+export type HiringGender = 'MALE' | 'FEMALE' | 'PREFER_NOT_TO_SAY';
+export type CoreInterest = 'YES' | 'MAYBE' | 'NO';
+export type WeeklyHours = 'LT_7' | 'H_7_15' | 'GT_15';
+export type CoreRole =
+  | 'MANAGEMENT' | 'CONTENT_CREATOR' | 'GRAPHIC_DESIGNER' | 'TECHNICAL_WEBOPS'
+  | 'MEMER' | 'PR_OUTREACH' | 'RESEARCH_SPONSORSHIP' | 'DOCUMENTATION' | 'STREAMER_SPEAKER';
+
+export interface HiringApplication {
+  id: string;
+  applicationType: HiringApplicationType;
+  name: string;
+  email: string;
+  phone: string;
+  house: TesseractHouse;
+  bsLevel: BsLevel;
+  crazyIdeas: string | null;
+  userId: string | null;
+
+  // Member-only
+  gender: HiringGender | null;
+  region: TesseractRegion | null;
+  coreInterest: CoreInterest | null;
+
+  // Core-only
+  weeklyHours: WeeklyHours | null;
+  rolesApplied: CoreRole[];
+  hasExperience: boolean | null;
+  experienceDesc: string | null;
+  resumeUrl: string | null;
+  confirmAccurate: boolean;
+
+  status: HiringApplicationStatus;
+  createdAt: string;
+  updatedAt: string;
+  user?: { id: string; name: string; email: string; avatar?: string | null; role?: string } | null;
+}
+
+export interface HiringStats {
+  total: number;
+  byStatus: Partial<Record<HiringApplicationStatus, number>>;
+  byType: Partial<Record<HiringApplicationType, number>>;
+}
+
+export type MemberSubmission = {
+  applicationType: 'MEMBER';
+  name: string;
+  email: string;
+  phone: string;
+  house: TesseractHouse;
+  bsLevel: BsLevel;
+  gender: HiringGender;
+  region: TesseractRegion;
+  coreInterest: CoreInterest;
+  crazyIdeas?: string | null;
+};
+
+export type CoreSubmission = {
+  applicationType: 'CORE';
+  name: string;
+  email: string;
+  phone: string;
+  house: Exclude<TesseractHouse, 'NOT_ALLOTED'>;
+  bsLevel: BsLevel;
+  weeklyHours: WeeklyHours;
+  rolesApplied: CoreRole[];
+  hasExperience: boolean;
+  experienceDesc?: string | null;
+  resumeUrl: string;
+  crazyIdeas: string;
+  confirmAccurate: true;
+};
+
+export type HiringSubmission = MemberSubmission | CoreSubmission;
+
+export interface MyHiringApplications {
+  member: HiringApplication | null;
+  core: HiringApplication | null;
+  whatsappCommunityUrl: string | null;
+}
+
+export interface SubmitHiringResponse {
+  message: string;
+  whatsappCommunityUrl?: string | null;
+  application: {
+    id: string;
+    applicationType: HiringApplicationType;
+    status: HiringApplicationStatus;
+    coreInterest?: CoreInterest | null;
+    rolesApplied?: CoreRole[];
+  };
+}
+
+export interface MailRecipient {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+}
+
+export interface MailSendPayload {
+  audience: 'all_users' | 'all_network' | 'specific';
+  emails?: string[];
+  cc?: string[];
+  bcc?: string[];
+  subject: string;
+  body: string;
+  bodyType?: 'markdown' | 'html';
 }
 
 // Extended types for event details
@@ -1517,6 +1630,7 @@ export interface HomePageData {
 export const api = {
   // Auth
   getProviders: () => request<AuthProviders>('/auth/providers'),
+  getGoogleOAuthUrl: () => `${API_BASE_URL}/auth/google`,
   getMe: (token: string) => request<User>('/auth/me', { token }),
   getMeWithToken: async (token?: string | null) => {
     const response = await requestEnvelope<User>('/auth/me', token ? { token } : {});
@@ -1802,10 +1916,96 @@ export const api = {
   
   // Settings
   getSettings: () => request<Settings>('/settings/public'),
+  getAdminSettings: (token: string) => request<Settings>('/settings', { token }),
   updateSettings: (data: Partial<Settings>, token: string) =>
     request<Settings>('/settings', { method: 'PUT', body: JSON.stringify(data), token }),
   patchSetting: (key: string, value: boolean | string | number, token: string) =>
     request<Settings>(`/settings/${key}`, { method: 'PATCH', body: JSON.stringify({ value }), token }),
+  updateEmailTemplates: (
+    data: { emailWelcomeBody?: string; emailAnnouncementBody?: string; emailEventBody?: string; emailFooterText?: string },
+    token: string,
+  ) => request<Settings>('/settings/email-templates', { method: 'PATCH', body: JSON.stringify(data), token }),
+  syncEventStatus: (token: string) =>
+    request<{ toOngoing: number; toPastFromOngoing: number; toPastFromUpcoming: number }>(
+      '/settings/event-status/sync-now',
+      { method: 'POST', token },
+    ),
+  resetSettings: (token: string) =>
+    request<Settings>('/settings/reset', { method: 'POST', token }),
+
+  // Mail (admin)
+  getMailRecipients: (search: string, type: 'users' | 'network', token: string) =>
+    request<MailRecipient[]>(
+      `/mail/recipients?search=${encodeURIComponent(search)}&type=${encodeURIComponent(type)}`,
+      { token },
+    ),
+  sendMail: (payload: MailSendPayload, token: string) =>
+    request<{ recipientCount: number; message?: string }>('/mail/send', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      token,
+    }),
+
+  // Hiring (admin)
+  getHiringApplications: async (
+    params: {
+      status?: HiringApplicationStatus;
+      type?: HiringApplicationType | 'ALL';
+      role?: CoreRole;
+      search?: string;
+      page?: number;
+      limit?: number;
+    },
+    token: string,
+  ) => {
+    const qs = new URLSearchParams();
+    if (params.status) qs.set('status', params.status);
+    if (params.type && params.type !== 'ALL') qs.set('type', params.type);
+    if (params.role) qs.set('role', params.role);
+    if (params.search) qs.set('search', params.search);
+    if (params.page) qs.set('page', String(params.page));
+    if (params.limit) qs.set('limit', String(params.limit));
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    const envelope = await requestEnvelope<HiringApplication[]>(
+      `/hiring/applications${query}`,
+      { token },
+    );
+    const meta = (envelope.meta as { total?: number; page?: number; limit?: number; totalPages?: number; hasMore?: boolean } | undefined) ?? {};
+    return {
+      applications: Array.isArray(envelope.data) ? envelope.data : [],
+      total: meta.total ?? 0,
+      page: meta.page ?? 1,
+      limit: meta.limit ?? 20,
+      totalPages: meta.totalPages ?? 0,
+      hasMore: meta.hasMore ?? false,
+    };
+  },
+  getHiringApplication: (id: string, token: string) =>
+    request<HiringApplication>(`/hiring/applications/${id}`, { token }),
+  updateHiringStatus: (id: string, status: HiringApplicationStatus, token: string) =>
+    request<{ message: string; application: HiringApplication }>(
+      `/hiring/applications/${id}/status`,
+      { method: 'PATCH', body: JSON.stringify({ status }), token },
+    ),
+  deleteHiringApplication: (id: string, token: string) =>
+    request<{ message: string }>(`/hiring/applications/${id}`, { method: 'DELETE', token }),
+  getHiringStats: (token: string) =>
+    request<HiringStats>('/hiring/stats', { token }),
+  exportHiringApplications: (
+    filters: { status?: HiringApplicationStatus; type?: HiringApplicationType | 'ALL'; role?: CoreRole } | undefined,
+    token: string,
+  ) => {
+    const qs = new URLSearchParams();
+    if (filters?.status) qs.set('status', filters.status);
+    if (filters?.type && filters.type !== 'ALL') qs.set('type', filters.type);
+    if (filters?.role) qs.set('role', filters.role);
+    const query = qs.toString() ? `?${qs.toString()}` : '';
+    return requestBlob(`/hiring/export${query}`, { token });
+  },
+
+  // Users export
+  exportUsersExcel: (token: string) =>
+    requestBlob('/users/export', { token }),
   getSecurityEnvStatus: (token: string) =>
     request<SecurityEnvStatus>('/settings/security-env', { token }),
   updateSecurityEnvSettings: (
@@ -1853,30 +2053,11 @@ export const api = {
   }, token: string) =>
     request<User>('/users/me', { method: 'PUT', body: JSON.stringify(data), token }),
 
-  // Hiring
+  // Hiring (user)
   getMyHiringApplication: (token: string) =>
-    request<{
-      hasApplied: boolean;
-      application?: {
-        id: string;
-        applyingRole: string;
-        status: string;
-        createdAt: string;
-      };
-    } | null>('/hiring/my-application', { token }),
-  submitHiringApplication: (
-    data: {
-      name: string;
-      email: string;
-      phone?: string;
-      department: string;
-      year: string;
-      skills?: string;
-      applyingRole: string;
-    },
-    token?: string
-  ) =>
-    request<{ message?: string }>('/hiring/apply', {
+    request<MyHiringApplications>('/hiring/my-application', { token }),
+  submitHiringApplication: (data: HiringSubmission, token?: string) =>
+    request<SubmitHiringResponse>('/hiring/apply', {
       method: 'POST',
       body: JSON.stringify(data),
       token,
@@ -2010,8 +2191,7 @@ export const api = {
   uploadImage: async (file: File, token: string): Promise<string> => {
     const formData = new FormData();
     formData.append('image', file);
-    const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:5001/api';
-    const res = await fetch(`${BASE_URL}/upload/image`, {
+    const res = await fetch(`${API_BASE_URL}/upload/image`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
@@ -2360,9 +2540,11 @@ export const api = {
   getMyTeam: async (eventId: string, token: string): Promise<EventTeam | null> => {
     try {
       return await request<EventTeam>(`/teams/my-team/${eventId}`, { token });
-    } catch {
-      // 404 means no team - return null instead of throwing
-      return null;
+    } catch (err) {
+      // 404 means no team — return null. Bubble everything else so the UI can
+      // distinguish "no team" from "server unreachable" / "auth expired".
+      if (err instanceof Error && /404|not.?found|no team/i.test(err.message)) return null;
+      throw err;
     }
   },
 

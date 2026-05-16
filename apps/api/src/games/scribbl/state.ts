@@ -27,20 +27,41 @@ export interface ScribblRoomState extends BaseRoomState {
   roundDurationSeconds: number;
   currentRound: number;
   drawerIndex: number;
+  currentDrawerId: string | null;
   promptWord: string | null;
   roundStartedAt: number | null;
   roundTimer: ReturnType<typeof setTimeout> | null;
   strokeWindowStartedAt: number;
   strokeCount: number;
+  strokeBudget: number;
+  strokeBudgetUpdatedAt: number;
   solvedThisRound: Set<string>;
   guessesThisRound: ScribblGuessRecord[];
   members: ScribblMember[];
   sessionsRecorded: boolean;
+  finalizingPromise?: Promise<void>;
 }
 
 export const scribblRooms = new RoomStore<ScribblRoomState>({
   gameId: SCRIBBL_GAME_ID,
   maxPlayersPerRoom: 16,
+  onEvict: async (room) => {
+    if (room.roundTimer) {
+      clearTimeout(room.roundTimer);
+      room.roundTimer = null;
+    }
+    if (room.status === 'LOBBY' || room.status === 'ACTIVE') {
+      try {
+        await withRetry(() => prisma.scribblRoom.update({
+          where: { id: room.roomId },
+          data: { status: 'ABORTED', endedAt: new Date() },
+          select: { id: true },
+        }));
+      } catch {
+        // best effort
+      }
+    }
+  },
 });
 
 async function createUniqueCode(): Promise<string> {
@@ -56,6 +77,9 @@ async function createUniqueCode(): Promise<string> {
 }
 
 export function publicScribblRoom(room: ScribblRoomState) {
+  const drawer = room.currentDrawerId
+    ? room.members.find((m) => m.userId === room.currentDrawerId) ?? null
+    : null;
   return {
     code: room.code,
     status: room.status,
@@ -63,8 +87,8 @@ export function publicScribblRoom(room: ScribblRoomState) {
     roundCount: room.roundCount,
     roundDurationSeconds: room.roundDurationSeconds,
     currentRound: room.currentRound,
-    drawerId: room.members[room.drawerIndex]?.userId ?? null,
-    drawerName: room.members[room.drawerIndex]?.name ?? null,
+    drawerId: drawer?.userId ?? null,
+    drawerName: drawer?.name ?? null,
     members: room.members.map((member) => ({
       userId: member.userId,
       name: member.name,
@@ -102,11 +126,14 @@ export async function createScribblRoom(input: {
     roundDurationSeconds: roomRow.roundDurationSeconds,
     currentRound: 0,
     drawerIndex: 0,
+    currentDrawerId: null,
     promptWord: null,
     roundStartedAt: null,
     roundTimer: null,
     strokeWindowStartedAt: 0,
     strokeCount: 0,
+    strokeBudget: 90,
+    strokeBudgetUpdatedAt: Date.now(),
     solvedThisRound: new Set<string>(),
     guessesThisRound: [],
     members: [{
@@ -127,9 +154,62 @@ export async function getScribblRoom(code: string): Promise<ScribblRoomState | n
   if (existing) return existing;
   const roomRow = await withRetry(() => prisma.scribblRoom.findUnique({
     where: { code: code.toUpperCase() },
-    include: { host: { select: { id: true, name: true, avatar: true } } },
+    include: {
+      host: { select: { id: true, name: true, avatar: true } },
+      rounds: {
+        select: {
+          drawerId: true,
+          drawer: { select: { id: true, name: true, avatar: true } },
+          guesses: {
+            select: {
+              guesserId: true,
+              guesser: { select: { id: true, name: true, avatar: true } },
+              pointsAwarded: true,
+            },
+          },
+        },
+      },
+    },
   }));
   if (!roomRow) return null;
+
+  // Scribbl has no ScribblRoomMember table. Rebuild members from anyone who
+  // has appeared as drawer or guesser in this room's persisted rounds, plus
+  // the host. Scores are reconstructed by summing guess.pointsAwarded.
+  const memberMap = new Map<string, { userId: string; name: string; avatar: string | null; score: number; active: boolean }>();
+  memberMap.set(roomRow.host.id, {
+    userId: roomRow.host.id,
+    name: roomRow.host.name,
+    avatar: roomRow.host.avatar,
+    score: 0,
+    active: false,
+  });
+  for (const round of roomRow.rounds) {
+    if (round.drawer && !memberMap.has(round.drawer.id)) {
+      memberMap.set(round.drawer.id, {
+        userId: round.drawer.id,
+        name: round.drawer.name,
+        avatar: round.drawer.avatar,
+        score: 0,
+        active: false,
+      });
+    }
+    for (const guess of round.guesses) {
+      const existingMember = memberMap.get(guess.guesserId);
+      if (existingMember) {
+        existingMember.score += guess.pointsAwarded;
+      } else if (guess.guesser) {
+        memberMap.set(guess.guesserId, {
+          userId: guess.guesserId,
+          name: guess.guesser.name,
+          avatar: guess.guesser.avatar,
+          score: guess.pointsAwarded,
+          active: false,
+        });
+      }
+    }
+  }
+
   const room: ScribblRoomState = {
     code: roomRow.code,
     gameId: SCRIBBL_GAME_ID,
@@ -142,20 +222,17 @@ export async function getScribblRoom(code: string): Promise<ScribblRoomState | n
     roundDurationSeconds: roomRow.roundDurationSeconds,
     currentRound: 0,
     drawerIndex: 0,
+    currentDrawerId: null,
     promptWord: null,
     roundStartedAt: null,
     roundTimer: null,
     strokeWindowStartedAt: 0,
     strokeCount: 0,
+    strokeBudget: 90,
+    strokeBudgetUpdatedAt: Date.now(),
     solvedThisRound: new Set<string>(),
     guessesThisRound: [],
-    members: [{
-      userId: roomRow.host.id,
-      name: roomRow.host.name,
-      avatar: roomRow.host.avatar,
-      score: 0,
-      active: false,
-    }],
+    members: Array.from(memberMap.values()),
     sessionsRecorded: roomRow.status === 'FINISHED',
   };
   scribblRooms.set(room.code, room);
@@ -195,9 +272,19 @@ export async function randomScribblPrompt(): Promise<string> {
   return prompts[Math.floor(Math.random() * prompts.length)].word;
 }
 
-export async function completeScribblGame(room: ScribblRoomState): Promise<void> {
-  if (room.status === 'FINISHED') return;
+export function completeScribblGame(room: ScribblRoomState): Promise<void> {
+  if (room.status === 'FINISHED') return Promise.resolve();
+  if (room.finalizingPromise) return room.finalizingPromise;
+  room.finalizingPromise = doCompleteScribblGame(room);
+  return room.finalizingPromise;
+}
+
+async function doCompleteScribblGame(room: ScribblRoomState): Promise<void> {
   room.status = 'FINISHED';
+  if (room.roundTimer) {
+    clearTimeout(room.roundTimer);
+    room.roundTimer = null;
+  }
   await withRetry(() => prisma.scribblRoom.update({
     where: { id: room.roomId },
     data: { status: 'FINISHED', endedAt: new Date() },
