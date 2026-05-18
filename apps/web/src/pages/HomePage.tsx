@@ -84,7 +84,7 @@ export default function HomePage() {
             <span className="lb-h-line">AND BELONG.</span>
           </h1>
           <p className="lb-sub">
-            A student-built community for IITM BS. Mini-games, movie nights, esports ladders,
+            A student-built community for IITM BS. Puzzles, Mind games, fun, movie nights,
             and the people who make assignments bearable.
           </p>
 
