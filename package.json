@@ -6,7 +6,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "bash ./scripts/free-dev-ports.sh && concurrently -n \"API,WEB\" -c \"blue,green\" \"npm run dev --workspace=apps/api\" \"npm run dev --workspace=apps/web\"",
+    "dev": "concurrently -n \"API,WEB\" -c \"blue,green\" \"npm run dev --workspace=apps/api\" \"npm run dev --workspace=apps/web\"",
     "start": "npm run build && npm run start:prod",
     "start:prod": "NODE_ENV=production npm run start --workspace=apps/api",
     "build": "npm run build --workspace=apps/web && npm run build --workspace=apps/api",
