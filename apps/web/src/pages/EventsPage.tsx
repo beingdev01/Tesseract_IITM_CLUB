@@ -41,6 +41,32 @@ export default function EventsPage() {
   const [registering, setRegistering] = useState<string | null>(null);
   const [registeredEventIds, setRegisteredEventIds] = useState<Set<string>>(new Set());
 
+  // Frontend-only mock events for UI demonstration
+  const SPECIAL_EVENTS = [
+    {
+      id: 's1',
+      title: 'Escape Room',
+      desc: 'A high-intensity, multi-stage puzzle and escape challenge where teams solve riddles, decode hidden clues, and complete tasks under pressure to unlock their way to victory. Combining logic, teamwork, and creativity, the event progresses from mind games to a real-time escape room experience, testing both intelligence and execution.',
+      imageUrl: '/images/events/escaperoom.jpg',
+      regUrl: 'https://www.iitmparadox.org/events/sports/86'
+    },
+    {
+      id: 's2',
+      title: 'Paradox Got Talent 2.0',
+      desc: 'Take the stage, turn the page! Show off your talents and compete against the best in our flagship variety show.',
+      imageUrl: '/images/events/gottalent.jpg',
+      regUrl: 'https://www.iitmparadox.org/events/cultural/42'
+    },
+    {
+      id: 's3',
+      title: 'RAPadox 2.0',
+      desc: 'Where beats blend & bars ascend. Showcase your rhythm, flow, and lyrical prowess in this ultimate rap face-off.',
+      imageUrl: '/images/events/rapadox.jpg',
+      regUrl: 'https://www.iitmparadox.org/events/cultural/47'
+    },
+  ];
+
+
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
@@ -153,11 +179,151 @@ export default function EventsPage() {
         </div>
       </section>
 
+      {/* Special Frontend Events Section */}
+      <section className="events-special mt-16 mb-12">
+        <div className="lb-sect-head mb-8 border-b border-[var(--line-sub)] pb-4 flex justify-between items-end">
+          <div>
+            <div className="lb-kicker">// flagship · showcase</div>
+            <h2 className="lb-section-title text-3xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-amber-300">
+              PARADOX SPECIALS
+            </h2>
+          </div>
+          <div className="lb-kicker-right font-mono text-[10px] opacity-60">
+            [3 ACTIVE EVENTS]
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {SPECIAL_EVENTS.map((se) => {
+            // Curated, beautiful harmonizing theme styles for each event
+            const themes: Record<string, { accent: string; glow: string; badge: string; kicker: string; bgSoft: string }> = {
+              s1: { 
+                accent: '#ef4444', // Red
+                glow: 'rgba(239, 68, 68, 0.25)', 
+                badge: '#clues_and_riddles', 
+                kicker: '▶ escape room',
+                bgSoft: 'rgba(239, 68, 68, 0.05)'
+              },
+              s2: { 
+                accent: '#a855f7', // Purple
+                glow: 'rgba(168, 85, 247, 0.25)', 
+                badge: '#stage_talent', 
+                kicker: '▶ paradox got talent',
+                bgSoft: 'rgba(168, 85, 247, 0.05)'
+              },
+              s3: { 
+                accent: '#3bb0ff', // Blue
+                glow: 'rgba(59, 176, 255, 0.25)', 
+                badge: '#rap_faceoff', 
+                kicker: '▶ rapbattle',
+                bgSoft: 'rgba(59, 176, 255, 0.05)'
+              },
+            };
+
+            const theme = themes[se.id] || { 
+              accent: 'var(--c-yellow)', 
+              glow: 'rgba(255, 217, 59, 0.2)', 
+              badge: '#special', 
+              kicker: '▶ event',
+              bgSoft: 'rgba(255, 217, 59, 0.05)'
+            };
+
+            return (
+              <motion.div
+                key={se.id}
+                whileHover={{ y: -6, scale: 1.015 }}
+                whileTap={{ scale: 0.985 }}
+                onClick={() => window.open(se.regUrl, '_blank', 'noopener,noreferrer')}
+                className="group relative flex flex-col cursor-pointer overflow-hidden transition-all duration-500 border border-white/10 hover:border-[var(--hover-color)] bg-black/40 backdrop-blur-md hover:shadow-[0_10px_30px_-5px_var(--hover-glow)]"
+                style={{ 
+                  borderRadius: '16px',
+                  ...({
+                    '--hover-color': theme.accent,
+                    '--hover-glow': theme.glow,
+                  } as React.CSSProperties)
+                }}
+              >
+                {/* Glow Backdrop Hover Effect */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at 50% -20%, ${theme.glow}, transparent 60%)`
+                  }}
+                />
+
+                {/* Card Header telemetries */}
+                <div className="px-5 py-4 flex justify-between items-center border-b border-[var(--line-sub)] bg-white/[0.02] z-10">
+                  <span className="font-mono text-[10px] tracking-widest uppercase font-bold" style={{ color: theme.accent }}>
+                    {theme.kicker}
+                  </span>
+                  <span className="font-mono text-[9px] px-2 py-0.5 rounded bg-white/5 border border-white/10 opacity-70 tracking-tight text-white">
+                    {theme.badge}
+                  </span>
+                </div>
+
+                {/* Taller Image Banner with subtle zoom and overlay - aligned to top */}
+                <div className="relative w-full overflow-hidden bg-zinc-950/80 aspect-[3/4] max-h-[380px] border-b border-[var(--line-sub)]">
+                  <img 
+                    src={se.imageUrl} 
+                    alt={se.title} 
+                    className="w-full h-full object-cover object-top opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+                  />
+                  {/* Premium Ambient Dark Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
+                  
+                  {/* Subtle color highlight flare */}
+                  <div 
+                    className="absolute bottom-0 inset-x-0 h-16 opacity-30 blur-md pointer-events-none transition-opacity group-hover:opacity-60 duration-500" 
+                    style={{ background: `linear-gradient(to top, ${theme.accent}, transparent)` }}
+                  />
+                </div>
+
+                {/* Card Body */}
+                <div className="p-6 flex-1 flex flex-col justify-between relative z-10 bg-gradient-to-b from-transparent to-black/20">
+                  <div className="mb-6">
+                    <h3 
+                      className="font-display text-xl tracking-wide font-extrabold uppercase mb-3 transition-colors duration-300 group-hover:text-[var(--hover-color)] text-white"
+                    >
+                      {se.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed font-sans font-normal" style={{ color: 'var(--fg-mute)' }}>
+                      {se.desc}
+                    </p>
+                  </div>
+
+                  {/* Beautiful custom-themed registration button */}
+                  <div className="mt-auto pt-4 border-t border-white/5">
+                    <a
+                      href={se.regUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3 block text-center font-mono text-xs font-bold tracking-widest transition-all duration-300 flex items-center justify-center gap-1 cursor-pointer bg-[var(--btn-bg)] hover:bg-white text-black active:scale-[0.98]"
+                      style={{
+                        clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))',
+                        boxShadow: `0 0 10px var(--btn-glow)`,
+                        ...({
+                          '--btn-bg': theme.accent,
+                          '--btn-glow': theme.glow,
+                        } as React.CSSProperties)
+                      }}
+                      onClick={(e) => e.stopPropagation()} // Prevent card click conflict
+                    >
+                      REGISTER NOW →
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </section>
+
       {loading ? (
         <div className="flex items-center justify-center py-32">
           <Loader2 className="h-6 w-6 animate-spin" style={{ color: 'var(--c-yellow)' }} />
         </div>
       ) : error ? (
+        /* Hiding error visibility as per request — keeping the code commented out
         <div className="events-list-section">
           <div className="events-list">
             <Brackets tag="error" accent="red">
@@ -165,6 +331,8 @@ export default function EventsPage() {
             </Brackets>
           </div>
         </div>
+        */
+        null
       ) : (
         <>
           {/* Featured */}
