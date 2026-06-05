@@ -57,6 +57,11 @@ services:
     buildCommand: npm install && npm run build --workspace=apps/web
     staticPublishPath: ./apps/web/dist
     routes:
+      # External campaign redirect — Escape Room prelims (Unstop).
+      # Must precede the SPA catch-all so it is matched first.
+      - type: redirect
+        source: /escape_room_prelims
+        destination: "https://unstop.com/o/o5p1i0t?utm_medium=Share&utm_source=aryangoy25916&utm_campaign=Quizzes"
       - type: rewrite
         source: /*
         destination: /index.html
