@@ -34,6 +34,16 @@ function wrap(element: ReactNode) {
   return <RouteBoundary>{element}</RouteBoundary>;
 }
 
+// Hard redirect to an external URL. Used as an SPA-side fallback for campaign
+// links that are also redirected at the static host (see render.yaml). Returns
+// the loader while the browser navigates away.
+function ExternalRedirect({ to }: { to: string }) {
+  useEffect(() => {
+    window.location.replace(to);
+  }, [to]);
+  return <PageLoader />;
+}
+
 function ScrollToTop() {
   const location = useLocation();
   useEffect(() => {
@@ -155,6 +165,12 @@ function App() {
                 <Route path="/join/core"     element={wrap(<JoinCorePage />)} />
                 <Route path="/join-us"       element={<Navigate to="/join" replace />} />
                 <Route path="/polls/:slug"   element={wrap(<PollDetailPage />)} />
+
+                {/* ── External campaign redirects ───────────────────────── */}
+                <Route
+                  path="/escape_room_prelims"
+                  element={<ExternalRedirect to="https://unstop.com/o/o5p1i0t?utm_medium=Share&utm_source=aryangoy25916&utm_campaign=Quizzes" />}
+                />
 
                 {/* ── Protected user ────────────────────────────────────── */}
                 <Route element={<ProtectedRoute minRole="USER" />}>
