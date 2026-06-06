@@ -171,6 +171,10 @@ function App() {
                   path="/escape_room_prelims"
                   element={<ExternalRedirect to="https://unstop.com/o/o5p1i0t?utm_medium=Share&utm_source=aryangoy25916&utm_campaign=Quizzes" />}
                 />
+                <Route
+                  path="/hustlepreneurs"
+                  element={<ExternalRedirect to="https://www.iitmparadox.org/events/sports/122" />}
+                />
 
                 {/* ── Protected user ────────────────────────────────────── */}
                 <Route element={<ProtectedRoute minRole="USER" />}>
