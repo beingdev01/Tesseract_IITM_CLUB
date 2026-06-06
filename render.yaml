@@ -67,6 +67,15 @@ services:
         source: /escape_room_prelims/
         destination: "https://unstop.com/o/o5p1i0t?utm_medium=Share&utm_source=aryangoy25916&utm_campaign=Quizzes"
         statusCode: 302
+      # External campaign redirect — Hustlepreneurs (IITM Paradox).
+      - type: redirect
+        source: /hustlepreneurs
+        destination: "https://www.iitmparadox.org/events/sports/122"
+        statusCode: 302
+      - type: redirect
+        source: /hustlepreneurs/
+        destination: "https://www.iitmparadox.org/events/sports/122"
+        statusCode: 302
       - type: rewrite
         source: /*
         destination: /index.html
