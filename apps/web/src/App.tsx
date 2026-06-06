@@ -173,7 +173,7 @@ function App() {
                 />
                 <Route
                   path="/hustlepreneurs"
-                  element={<ExternalRedirect to="https://www.iitmparadox.org/events/sports/122" />}
+                  element={<ExternalRedirect to="https://iitmparadox.org/events/technicals/122" />}
                 />
 
                 {/* ── Protected user ────────────────────────────────────── */}
