@@ -18,6 +18,7 @@ import { achievementsRouter } from './routes/achievements.js';
 import { usersRouter } from './routes/users.js';
 import { statsRouter } from './routes/stats.js';
 import { settingsRouter } from './routes/settings.js';
+import { redirectsRouter } from './routes/redirects.js';
 import { hiringRouter } from './routes/hiring.js';
 import { certificatesRouter } from './routes/certificates.js';
 import { signatoriesRouter } from './routes/signatories.js';
@@ -36,7 +37,7 @@ import { initializeAttendanceSocket } from './attendance/attendanceSocket.js';
 import { setupPassport } from './config/passport.js';
 import { requestLogger, logger } from './utils/logger.js';
 import { ApiResponse, ErrorCodes } from './utils/response.js';
-import { initializeDatabase, populateAnnouncementSlugs, populateProfileSlugs } from './utils/init.js';
+import { initializeDatabase, populateAnnouncementSlugs, populateProfileSlugs, backfillRedirects } from './utils/init.js';
 import { initializeSocket } from './utils/socket.js';
 import { authMiddleware, getAuthUser } from './middleware/auth.js';
 import { requireRole } from './middleware/role.js';
@@ -389,6 +390,7 @@ app.use('/api/achievements', achievementsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/stats', statsRouter);
 app.use('/api/settings', settingsRouter);
+app.use('/api/redirects', redirectsRouter);
 app.use('/api/hiring', hiringRouter);
 app.use('/api/certificates', certificatesRouter);
 app.use('/api/signatories', signatoriesRouter);
@@ -563,6 +565,7 @@ initializeDatabase()
   .then(() => hydrateRuntimeSecurityEnvFromSettings())
   .then(() => populateAnnouncementSlugs())
   .then(() => populateProfileSlugs())
+  .then(() => backfillRedirects())
   .then(() => {
     // Keep DB asleep when idle by default. Enable only if explicitly configured.
     if (ENABLE_BACKGROUND_SCHEDULERS) {

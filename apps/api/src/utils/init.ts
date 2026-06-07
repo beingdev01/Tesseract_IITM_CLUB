@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { logger } from './logger.js';
 import { generateSlug, generateUniqueSlug } from './slug.js';
 import { getBranchFromEmail } from './iitmDomain.js';
+import { DEFAULT_REDIRECTS } from './redirectDefaults.js';
 
 const prisma = new PrismaClient();
 
@@ -219,5 +220,26 @@ export async function populateProfileSlugs() {
     }
   } catch (error) {
     logger.error('❌ Failed to normalize profile slugs:', error instanceof Error ? { message: error.message, stack: error.stack } : { error });
+  }
+}
+
+/**
+ * Ensure the render.yaml-pinned campaign links exist as DB rows so they are
+ * visible/editable in the admin Redirects manager and resolvable client-side
+ * even when the static render.yaml tier is not authoritative. Idempotent and
+ * non-clobbering: existing rows (including admin edits) are left untouched.
+ * Defensive — tolerates the table not existing yet on a fresh, pre-migration boot.
+ */
+export async function backfillRedirects() {
+  try {
+    for (const redirect of DEFAULT_REDIRECTS) {
+      await prisma.redirect.upsert({
+        where: { slug: redirect.slug },
+        update: {}, // never overwrite admin edits
+        create: redirect,
+      });
+    }
+  } catch (error) {
+    logger.error('❌ Failed to backfill default redirects:', error instanceof Error ? { message: error.message, stack: error.stack } : { error });
   }
 }

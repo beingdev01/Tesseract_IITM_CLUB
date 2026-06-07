@@ -138,6 +138,25 @@ model Settings {
   @@map("settings")
 }
 
+// Admin-managed short links: /<slug> on the public site redirects to destinationUrl.
+// Resolved client-side by the SPA catch-all (see web App.tsx RedirectGate) since the
+// apex domain serves the static SPA. High-value links may also be pinned in render.yaml
+// for an instant server-side 302.
+model Redirect {
+  id             String    @id @default(uuid())
+  slug           String    @unique
+  destinationUrl String    @map("destination_url")
+  enabled        Boolean   @default(true)
+  hits           Int       @default(0)
+  lastUsedAt     DateTime? @map("last_used_at")
+  note           String?
+  createdBy      String?   @map("created_by")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@map("redirects")
+}
+
 model Event {
   id                    String      @id @default(uuid())
   title                 String
