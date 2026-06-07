@@ -70,11 +70,11 @@ services:
       # External campaign redirect — Hustlepreneurs (IITM Paradox).
       - type: redirect
         source: /hustlepreneurs
-        destination: "https://www.iitmparadox.org/events/sports/122"
+        destination: "https://iitmparadox.org/events/technicals/122"
         statusCode: 302
       - type: redirect
         source: /hustlepreneurs/
-        destination: "https://www.iitmparadox.org/events/sports/122"
+        destination: "https://iitmparadox.org/events/technicals/122"
         statusCode: 302
       - type: rewrite
         source: /*

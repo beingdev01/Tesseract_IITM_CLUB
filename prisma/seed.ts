@@ -8,6 +8,7 @@ import { seedBrainTeasersContent } from '../apps/api/src/games/brain-teasers/see
 import { seedCipherLabContent } from '../apps/api/src/games/cipher-lab/seed.js';
 import { seedRiddleRoomContent } from '../apps/api/src/games/riddle-room/seed.js';
 import { seedScribblContent } from '../apps/api/src/games/scribbl/seed.js';
+import { DEFAULT_REDIRECTS } from '../apps/api/src/utils/redirectDefaults.js';
 
 dotenv.config();
 
@@ -64,6 +65,17 @@ async function main() {
       clubDescription: 'The IIT Madras BS Degree coding community — building, learning, and shipping together.',
     },
   });
+
+  // Admin-managed short links (shared with the boot-time backfill). These two
+  // campaign links are also pinned in render.yaml for an instant server-side 302;
+  // the rows make them visible and editable in the admin Redirects manager.
+  for (const redirect of DEFAULT_REDIRECTS) {
+    await prisma.redirect.upsert({
+      where: { slug: redirect.slug },
+      update: {},
+      create: redirect,
+    });
+  }
 
   await seedTypeWarsContent(prisma);
   await seedTriviaTowerContent(prisma);

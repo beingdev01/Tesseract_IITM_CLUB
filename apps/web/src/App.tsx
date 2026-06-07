@@ -1,7 +1,8 @@
 import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
+import { api } from '@/lib/api';
 import { AuthProvider } from '@/context/AuthContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -34,14 +35,41 @@ function wrap(element: ReactNode) {
   return <RouteBoundary>{element}</RouteBoundary>;
 }
 
-// Hard redirect to an external URL. Used as an SPA-side fallback for campaign
-// links that are also redirected at the static host (see render.yaml). Returns
-// the loader while the browser navigates away.
-function ExternalRedirect({ to }: { to: string }) {
+const REDIRECT_SLUG_PATTERN = /^[a-z0-9][a-z0-9_-]*$/;
+
+// Catch-all for unmatched routes. Single-segment paths (e.g. /hustlepreneurs) are
+// resolved against admin-managed redirects (api.resolveRedirect) and, if found,
+// the browser is sent to the external destination. Everything else is a 404.
+// Static/high-value links are additionally pinned in render.yaml for an instant
+// server-side 302 that fires before this code ever runs.
+function RedirectGate() {
+  const location = useLocation();
+  const slug = location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').toLowerCase();
+  const isCandidate = REDIRECT_SLUG_PATTERN.test(slug);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['redirect', slug],
+    queryFn: () => api.resolveRedirect(slug),
+    enabled: isCandidate,
+    retry: false,
+    staleTime: 0,
+  });
+
+  // Defensive: only ever navigate to an absolute http(s) URL. The API validates
+  // this on write, but never trust a stored value with `window.location.replace`
+  // (a javascript:/data: URL would otherwise execute in this origin).
+  const dest = data?.destinationUrl;
+  const safeDest = dest && /^https?:\/\//i.test(dest) ? dest : null;
+
   useEffect(() => {
-    window.location.replace(to);
-  }, [to]);
-  return <PageLoader />;
+    if (safeDest) {
+      window.location.replace(safeDest);
+    }
+  }, [safeDest]);
+
+  if (!isCandidate || isError) return <NotFound />;
+  if (safeDest) return <PageLoader />;
+  return isLoading ? <PageLoader /> : <NotFound />;
 }
 
 function ScrollToTop() {
@@ -109,6 +137,7 @@ const AdminMail              = lazy(() => import('@/pages/admin/AdminMail'));
 const AdminPublicView        = lazy(() => import('@/pages/admin/AdminPublicView'));
 const AdminGameContent       = lazy(() => import('@/pages/admin/AdminGameContent'));
 const AdminHiring            = lazy(() => import('@/pages/admin/AdminHiring'));
+const AdminRedirects         = lazy(() => import('@/pages/admin/AdminRedirects'));
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { SuperAdminOrPresidentRoute } from '@/components/auth/SuperAdminOrPresidentRoute';
@@ -166,16 +195,6 @@ function App() {
                 <Route path="/join-us"       element={<Navigate to="/join" replace />} />
                 <Route path="/polls/:slug"   element={wrap(<PollDetailPage />)} />
 
-                {/* ── External campaign redirects ───────────────────────── */}
-                <Route
-                  path="/escape_room_prelims"
-                  element={<ExternalRedirect to="https://unstop.com/o/o5p1i0t?utm_medium=Share&utm_source=aryangoy25916&utm_campaign=Quizzes" />}
-                />
-                <Route
-                  path="/hustlepreneurs"
-                  element={<ExternalRedirect to="https://iitmparadox.org/events/technicals/122" />}
-                />
-
                 {/* ── Protected user ────────────────────────────────────── */}
                 <Route element={<ProtectedRoute minRole="USER" />}>
                   <Route path="/games/:id/play" element={wrap(<GamePlayRouter />)} />
@@ -211,6 +230,7 @@ function App() {
                     <Route path="public-view"        element={wrap(<AdminPublicView />)} />
                     <Route path="game-content"       element={wrap(<AdminGameContent />)} />
                     <Route path="hiring"             element={wrap(<AdminHiring />)} />
+                    <Route path="redirects"          element={wrap(<AdminRedirects />)} />
                     <Route path="events/:eventId/attendance" element={wrap(<EventAdminHub />)} />
                     <Route element={<SuperAdminOrPresidentRoute />}>
                       <Route path="settings" element={wrap(<AdminSettings />)} />
@@ -218,8 +238,8 @@ function App() {
                   </Route>
                 </Route>
 
-                {/* ── 404 ──────────────────────────────────────────────── */}
-                <Route path="*" element={<NotFound />} />
+                {/* ── 404 + admin-managed redirects ────────────────────── */}
+                <Route path="*" element={wrap(<RedirectGate />)} />
               </Routes>
             </Router>
           </ErrorBoundary>
