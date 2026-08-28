@@ -494,7 +494,9 @@ export type CoreInterest = 'YES' | 'MAYBE' | 'NO';
 export type WeeklyHours = 'LT_7' | 'H_7_15' | 'GT_15';
 export type CoreRole =
   | 'MANAGEMENT' | 'CONTENT_CREATOR' | 'GRAPHIC_DESIGNER' | 'TECHNICAL_WEBOPS'
-  | 'MEMER' | 'PR_OUTREACH' | 'RESEARCH_SPONSORSHIP' | 'DOCUMENTATION' | 'STREAMER_SPEAKER';
+  | 'MEMER' | 'PR_OUTREACH' | 'RESEARCH_SPONSORSHIP' | 'DOCUMENTATION' | 'STREAMER_SPEAKER'
+  | 'GAME_WING' | 'ESCAPE_WING';
+export type WingPosition = 'HEAD' | 'CO_HEAD' | 'EXECUTIVE' | 'VOLUNTEER' | 'ANY';
 
 export interface HiringApplication {
   id: string;
@@ -515,6 +517,7 @@ export interface HiringApplication {
   // Core-only
   weeklyHours: WeeklyHours | null;
   rolesApplied: CoreRole[];
+  positionPreference: WingPosition | null;
   hasExperience: boolean | null;
   experienceDesc: string | null;
   resumeUrl: string | null;
@@ -554,6 +557,7 @@ export type CoreSubmission = {
   bsLevel: BsLevel;
   weeklyHours: WeeklyHours;
   rolesApplied: CoreRole[];
+  positionPreference?: WingPosition | null;
   hasExperience: boolean;
   experienceDesc?: string | null;
   resumeUrl: string;
@@ -578,6 +582,7 @@ export interface SubmitHiringResponse {
     status: HiringApplicationStatus;
     coreInterest?: CoreInterest | null;
     rolesApplied?: CoreRole[];
+    positionPreference?: WingPosition | null;
   };
 }
 

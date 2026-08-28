@@ -17,7 +17,7 @@ const RESERVED_SLUGS = new Set([
   // Top-level SPA routes (apps/web/src/App.tsx)
   'about', 'achievements', 'admin', 'announcements', 'auth', 'dashboard',
   'events', 'games', 'join', 'join-us', 'leaderboard', 'members', 'onboarding',
-  'polls', 'privacy-policy', 'signin', 'signup', 'team', 'verify',
+  'polls', 'privacy-policy', 'recruitment', 'signin', 'signup', 'team', 'verify',
   // API / infra / crawler paths
   'api', 'health', 'ping', 'assets', 'sitemap.xml', 'robots.txt', 'favicon.ico',
 ]);

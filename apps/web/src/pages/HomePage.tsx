@@ -84,8 +84,8 @@ export default function HomePage() {
             <span className="lb-h-line">AND BELONG.</span>
           </h1>
           <p className="lb-sub">
-            A student-built community for IITM BS. Puzzles, Mind games, fun, movie nights,
-            and the people who make assignments bearable.
+            The official Esports Society of the IIT Madras BS Program. Competitive esports,
+            casual gaming, mind games, puzzles, and the community that brings it all together.
           </p>
 
           <div className="lb-cta-row">

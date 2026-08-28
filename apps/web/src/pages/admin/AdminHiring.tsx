@@ -44,6 +44,7 @@ import { formatDate } from '@/lib/dateUtils';
 import {
   CORE_ROLE_LABEL,
   CORE_ROLE_OPTIONS,
+  WING_POSITION_LABEL,
   HOUSE_LABEL,
 } from '@/pages/join/_shared';
 
@@ -648,6 +649,12 @@ function CoreDetails({ app }: { app: HiringApplication }) {
         </div>
       </section>
       <section className="grid grid-cols-2 gap-3">
+        <div>
+          <h3 className="text-xs uppercase tracking-wide text-fg-mute mb-1">Position preference</h3>
+          <p className="text-sm text-fg-dim">
+            {app.positionPreference ? WING_POSITION_LABEL[app.positionPreference] ?? app.positionPreference : '—'}
+          </p>
+        </div>
         <div>
           <h3 className="text-xs uppercase tracking-wide text-fg-mute mb-1">Weekly commitment</h3>
           <p className="text-sm text-fg-dim">{app.weeklyHours ?? '—'}</p>

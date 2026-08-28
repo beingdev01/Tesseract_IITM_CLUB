@@ -626,6 +626,7 @@ model HiringApplication {
 
   weeklyHours     WeeklyHours?      @map("weekly_hours")
   rolesApplied    CoreRole[]        @map("roles_applied")
+  positionPreference WingPosition?  @map("position_preference")
   hasExperience   Boolean?          @map("has_experience")
   experienceDesc  String?           @map("experience_desc")
   resumeUrl       String?           @map("resume_url")
@@ -753,6 +754,17 @@ enum CoreRole {
   RESEARCH_SPONSORSHIP
   DOCUMENTATION
   STREAMER_SPEAKER
+  GAME_WING
+  ESCAPE_WING
+}
+
+/// Seniority an applicant is aiming for within the wing(s) they picked.
+enum WingPosition {
+  HEAD
+  CO_HEAD
+  EXECUTIVE
+  VOLUNTEER
+  ANY
 }
 
 enum ApplicationStatus {

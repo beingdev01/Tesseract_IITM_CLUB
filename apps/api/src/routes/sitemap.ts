@@ -76,6 +76,7 @@ sitemapRouter.get('/', async (_req: Request, res: Response) => {
       { path: '/team', priority: '0.7', changefreq: 'monthly' },
       { path: '/about', priority: '0.7', changefreq: 'monthly' },
       { path: '/join-us', priority: '0.8', changefreq: 'weekly' },
+      { path: '/recruitment', priority: '0.8', changefreq: 'weekly' },
       { path: '/join-our-network', priority: '0.7', changefreq: 'weekly' },
     ];
 
@@ -197,6 +198,7 @@ robotsRouter.get('/', (_req: Request, res: Response) => {
   robots += 'Allow: /network\n';
   robots += 'Allow: /about\n';
   robots += 'Allow: /join-us\n';
+  robots += 'Allow: /recruitment\n';
   robots += '\n';
   robots += '# Disallow admin and auth areas\n';
   robots += 'Disallow: /admin\n';
