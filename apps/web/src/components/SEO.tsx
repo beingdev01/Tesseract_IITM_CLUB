@@ -11,7 +11,7 @@ interface SEOProps {
 
 const BASE_URL = 'https://tesseract.iitm.ac.in';
 const DEFAULT_TITLE = 'Tesseract — IITM BS Community';
-const DEFAULT_DESCRIPTION = 'Tesseract is the student-built community for IITM BS. Mini-games, movie nights, esports ladders, and the people who make assignments bearable.';
+const DEFAULT_DESCRIPTION = 'Tesseract is the official Esports Society of the IIT Madras BS Program. Competitive esports, casual gaming, mind games, puzzles, and the community that brings it all together.';
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.jpg`;
 
 /**

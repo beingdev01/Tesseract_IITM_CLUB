@@ -223,7 +223,7 @@ export default function AdminSettings() {
                 style={{ minHeight: 80 }}
                 value={settings.clubDescription}
                 onChange={(e) => setSettings({ ...settings, clubDescription: e.target.value })}
-                placeholder="A student-built community for IITM BS…"
+                placeholder="The official Esports Society of the IIT Madras BS Program…"
               />
             </Field>
             <Field label="MAX EVENTS PER USER">

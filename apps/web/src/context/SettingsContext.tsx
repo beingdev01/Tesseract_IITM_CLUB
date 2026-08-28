@@ -13,7 +13,7 @@ const defaultSettings: Settings = {
   id: 'default',
   clubName: 'Tesseract',
   clubEmail: 'contact@tesseract.iitm.ac.in',
-  clubDescription: 'A student-built community for IITM BS. Mini-games, movie nights, esports ladders, and the people who make assignments bearable.',
+  clubDescription: 'The official Esports Society of the IIT Madras BS Program. Competitive esports, casual gaming, mind games, puzzles, and the community that brings it all together.',
   registrationOpen: true,
   maxEventsPerUser: 5,
   announcementsEnabled: true,

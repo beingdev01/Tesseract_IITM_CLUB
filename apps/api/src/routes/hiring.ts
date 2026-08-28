@@ -30,7 +30,9 @@ const weeklyHoursValues = ['LT_7', 'H_7_15', 'GT_15'] as const;
 const coreRoles = [
   'MANAGEMENT', 'CONTENT_CREATOR', 'GRAPHIC_DESIGNER', 'TECHNICAL_WEBOPS',
   'MEMER', 'PR_OUTREACH', 'RESEARCH_SPONSORSHIP', 'DOCUMENTATION', 'STREAMER_SPEAKER',
+  'GAME_WING', 'ESCAPE_WING',
 ] as const;
+const wingPositions = ['HEAD', 'CO_HEAD', 'EXECUTIVE', 'VOLUNTEER', 'ANY'] as const;
 
 const coreHouses = [
   'BANDIPUR', 'CORBETT', 'GIR', 'KANHA', 'KAZIRANGA', 'NALLAMALA', 'NAMDAPHA',
@@ -47,6 +49,16 @@ const CORE_ROLE_LABELS: Record<(typeof coreRoles)[number], string> = {
   RESEARCH_SPONSORSHIP: 'Research & Sponsorship',
   DOCUMENTATION: 'Documentation',
   STREAMER_SPEAKER: 'Streamer & Speaker',
+  GAME_WING: 'Game Wing',
+  ESCAPE_WING: 'Escape Wing',
+};
+
+const WING_POSITION_LABELS: Record<(typeof wingPositions)[number], string> = {
+  HEAD: 'Wing Head',
+  CO_HEAD: 'Wing Co-Head',
+  EXECUTIVE: 'Executive',
+  VOLUNTEER: 'Volunteer',
+  ANY: 'Open to any position',
 };
 
 const labelFromCoreRoles = (rolesApplied: readonly string[]): string =>
@@ -80,6 +92,7 @@ const coreSchema = z.object({
   }),
   weeklyHours: z.enum(weeklyHoursValues, { errorMap: () => ({ message: 'Pick your weekly time commitment' }) }),
   rolesApplied: z.array(z.enum(coreRoles)).min(1, 'Pick at least one role'),
+  positionPreference: z.enum(wingPositions).optional().nullable(),
   hasExperience: z.boolean({ errorMap: () => ({ message: 'Tell us if you have prior experience' }) }),
   experienceDesc: z.string().trim().max(4000).optional().nullable(),
   resumeUrl: z.string().trim().url('Resume / LinkedIn URL must be a valid URL'),
@@ -244,6 +257,7 @@ hiringRouter.post('/apply', optionalAuthMiddleware, async (req: Request, res: Re
         bsLevel: coreData.bsLevel,
         weeklyHours: coreData.weeklyHours,
         rolesApplied: coreData.rolesApplied,
+        positionPreference: coreData.positionPreference ?? null,
         hasExperience: coreData.hasExperience,
         experienceDesc: coreData.experienceDesc ?? null,
         resumeUrl: coreData.resumeUrl,
@@ -268,6 +282,7 @@ hiringRouter.post('/apply', optionalAuthMiddleware, async (req: Request, res: Re
       await auditLog(userId, 'HIRING_APPLICATION_SUBMITTED', 'HiringApplication', application.id, {
         email: coreData.email,
         rolesApplied: coreData.rolesApplied,
+        positionPreference: coreData.positionPreference ?? null,
       });
     }
 
@@ -278,6 +293,7 @@ hiringRouter.post('/apply', optionalAuthMiddleware, async (req: Request, res: Re
         applicationType: application.applicationType,
         status: application.status,
         rolesApplied: application.rolesApplied,
+        positionPreference: application.positionPreference,
       },
     });
   } catch (error) {
@@ -580,6 +596,7 @@ hiringRouter.get('/export', authMiddleware, requireRole('ADMIN'), async (req: Re
       { header: 'BS Level', key: 'bsLevel', width: 14 },
       { header: 'Weekly Hours', key: 'weeklyHours', width: 14 },
       { header: 'Roles Applied', key: 'rolesApplied', width: 42 },
+      { header: 'Position Preference', key: 'positionPreference', width: 22 },
       { header: 'Has Experience', key: 'hasExperience', width: 14 },
       { header: 'Experience', key: 'experienceDesc', width: 50 },
       { header: 'Resume / LinkedIn', key: 'resumeUrl', width: 50 },
@@ -599,6 +616,7 @@ hiringRouter.get('/export', authMiddleware, requireRole('ADMIN'), async (req: Re
         bsLevel: a.bsLevel,
         weeklyHours: a.weeklyHours ?? '-',
         rolesApplied: a.rolesApplied.map((r) => CORE_ROLE_LABELS[r] ?? r).join(' / '),
+        positionPreference: a.positionPreference ? WING_POSITION_LABELS[a.positionPreference] : '-',
         hasExperience: a.hasExperience === true ? 'Yes' : a.hasExperience === false ? 'No' : '-',
         experienceDesc: a.experienceDesc ?? '',
         resumeUrl: a.resumeUrl ?? '',

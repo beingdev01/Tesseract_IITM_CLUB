@@ -223,7 +223,7 @@ export function Footer() {
             <img src="/tesseract-logo.png" alt="Tesseract" className="tf-logo" />
             <div className="tf-brand-text">
               <div className="tf-wordmark">TESSERACT</div>
-              <div className="tf-tag">// a student-built corner of IITM BS</div>
+              <div className="tf-tag">// official esports society · IITM BS</div>
               <div className="tf-blurb">skip the lecture loop. play, pause, belong.</div>
             </div>
           </div>
@@ -239,6 +239,7 @@ export function Footer() {
             <div className="tf-col">
               <h4>RESOURCES</h4>
               <Link to="/join">Join Us</Link>
+              <Link to="/recruitment">Recruitment</Link>
               <Link to="/verify">Verify Certificate</Link>
               <Link to="/privacy-policy">Privacy Policy</Link>
             </div>

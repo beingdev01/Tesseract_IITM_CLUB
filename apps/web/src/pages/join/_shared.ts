@@ -2,6 +2,7 @@ import type {
   BsLevel,
   CoreInterest,
   CoreRole,
+  WingPosition,
   HiringApplicationStatus,
   HiringGender,
   TesseractHouse,
@@ -80,6 +81,8 @@ export const WEEKLY_HOURS_OPTIONS: { value: WeeklyHours; label: string }[] = [
 ];
 
 export const CORE_ROLE_OPTIONS: { value: CoreRole; label: string; icon: string }[] = [
+  { value: 'GAME_WING', label: 'Game Wing', icon: '⚔️' },
+  { value: 'ESCAPE_WING', label: 'Escape Wing', icon: '🧩' },
   { value: 'MANAGEMENT', label: 'Management', icon: '🔥' },
   { value: 'CONTENT_CREATOR', label: 'Content Creator / Video Editor', icon: '🎬' },
   { value: 'GRAPHIC_DESIGNER', label: 'Graphic Designer', icon: '🎨' },
@@ -93,6 +96,18 @@ export const CORE_ROLE_OPTIONS: { value: CoreRole; label: string; icon: string }
 
 export const CORE_ROLE_LABEL: Record<CoreRole, string> =
   Object.fromEntries(CORE_ROLE_OPTIONS.map((r) => [r.value, r.label])) as Record<CoreRole, string>;
+
+/** Seniority an applicant is aiming for inside the wing(s) they picked. */
+export const WING_POSITION_OPTIONS: { value: WingPosition; label: string; hint: string }[] = [
+  { value: 'HEAD', label: 'Wing Head', hint: 'Own the wing end to end' },
+  { value: 'CO_HEAD', label: 'Wing Co-Head', hint: 'Second in command, share the load' },
+  { value: 'EXECUTIVE', label: 'Executive', hint: 'Run initiatives inside the wing' },
+  { value: 'VOLUNTEER', label: 'Volunteer', hint: 'Learn on the job, help ship things' },
+  { value: 'ANY', label: 'Open to any position', hint: 'Put me where I am useful' },
+];
+
+export const WING_POSITION_LABEL: Record<WingPosition, string> =
+  Object.fromEntries(WING_POSITION_OPTIONS.map((p) => [p.value, p.label])) as Record<WingPosition, string>;
 
 export const STATUS_LABEL: Record<HiringApplicationStatus, string> = {
   PENDING: 'Application under review',

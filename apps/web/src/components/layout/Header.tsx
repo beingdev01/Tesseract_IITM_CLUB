@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { label: '[02] events', href: '/events' },
   { label: '[03] ranks',  href: '/leaderboard' },
   { label: '[04] about',  href: '/about' },
+  { label: '[05] recruitment', href: '/recruitment' },
 ];
 
 export function Header() {

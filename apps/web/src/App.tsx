@@ -97,6 +97,7 @@ const OnboardingPage         = lazy(() => import('@/pages/OnboardingPage'));
 const PrivacyPolicyPage      = lazy(() => import('@/pages/PrivacyPolicyPage'));
 const VerifyCertificatePage  = lazy(() => import('@/pages/VerifyCertificatePage'));
 const JoinPage               = lazy(() => import('@/pages/JoinPage'));
+const RecruitmentPage        = lazy(() => import('@/pages/RecruitmentPage'));
 const JoinMemberPage         = lazy(() => import('@/pages/JoinMemberPage'));
 const JoinCorePage           = lazy(() => import('@/pages/JoinCorePage'));
 const PollDetailPage         = lazy(() => import('@/pages/PollDetailPage'));
@@ -189,6 +190,7 @@ function App() {
                 <Route path="/verify"        element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/verify/:certId" element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/privacy-policy" element={wrap(<PrivacyPolicyPage />)} />
+                <Route path="/recruitment"   element={wrap(<RecruitmentPage />)} />
                 <Route path="/join"          element={wrap(<JoinPage />)} />
                 <Route path="/join/member"   element={wrap(<JoinMemberPage />)} />
                 <Route path="/join/core"     element={wrap(<JoinCorePage />)} />

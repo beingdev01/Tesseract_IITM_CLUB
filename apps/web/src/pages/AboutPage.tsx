@@ -22,7 +22,7 @@ export default function AboutPage() {
     <Layout>
       <SEO
         title="About — Tesseract"
-        description="Tesseract is the student-built community for IITM BS. Mini-games, movie nights, esports ladders, and the people who make assignments bearable."
+        description="Tesseract is the official Esports Society of the IIT Madras BS Program. Competitive esports, casual gaming, mind games, puzzles, and the community that brings it all together."
         url="/about"
       />
 
