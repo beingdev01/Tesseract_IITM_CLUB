@@ -1,3 +1,20 @@
+/**
+ * PARKED — not currently routed.
+ *
+ * /recruitment is served as a standalone static page
+ * (apps/web/public/recruitment.html) while the API free tier is capped, so
+ * applications go to the Google Form and need no backend.
+ *
+ * This page is the in-app version: the same content wired to the real hiring
+ * flow, writing CORE applications to the database. It is kept here (and still
+ * type-checked) so recruitment can be handed back to it. To restore:
+ *   1. apps/web/src/App.tsx — re-add the lazy import and point the
+ *      /recruitment route at wrap(<RecruitmentPage />) instead of
+ *      StaticRecruitmentRedirect.
+ *   2. render.yaml — drop the two /recruitment rewrites.
+ *   3. apps/web/src/components/layout/Header.tsx — remove `static: true` from
+ *      the recruitment NAV_ITEMS entry; Footer.tsx — put the <Link> back.
+ */
 import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';

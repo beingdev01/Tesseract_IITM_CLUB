@@ -76,6 +76,17 @@ services:
         source: /hustlepreneurs/
         destination: "https://iitmparadox.org/events/technicals/122"
         statusCode: 302
+      # Static recruitment page. Served directly so Core Team recruitment keeps
+      # working while the API free tier is capped — the page collects applications
+      # through the Google Form and needs no backend. Must precede the SPA
+      # catch-all. To hand recruitment back to the in-app form, drop these two
+      # rules and restore the /recruitment route in apps/web/src/App.tsx.
+      - type: rewrite
+        source: /recruitment
+        destination: /recruitment.html
+      - type: rewrite
+        source: /recruitment/
+        destination: /recruitment.html
       - type: rewrite
         source: /*
         destination: /index.html
