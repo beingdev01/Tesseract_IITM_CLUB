@@ -4,12 +4,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
-const NAV_ITEMS = [
+// `static: true` means the path is served outside the SPA (see render.yaml), so it
+// needs a real navigation rather than a client-side route change.
+const NAV_ITEMS: { label: string; href: string; static?: boolean }[] = [
   { label: '[01] games',  href: '/games' },
   { label: '[02] events', href: '/events' },
   { label: '[03] ranks',  href: '/leaderboard' },
   { label: '[04] about',  href: '/about' },
-  { label: '[05] recruitment', href: '/recruitment' },
+  { label: '[05] recruitment', href: '/recruitment', static: true },
 ];
 
 export function Header() {
@@ -68,16 +70,23 @@ export function Header() {
 
         {/* Desktop nav links */}
         <div className="lb-nav-links" style={{ display: 'none' }} id="desktop-nav">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={isActive(item.href) ? 'active' : ''}
-              style={{ textDecoration: 'none', fontFamily: '"JetBrains Mono", monospace' }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const style = { textDecoration: 'none', fontFamily: '"JetBrains Mono", monospace' };
+            return item.static ? (
+              <a key={item.href} href={item.href} style={style}>
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.href}
+                to={item.href}
+                className={isActive(item.href) ? 'active' : ''}
+                style={style}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Desktop right side */}
@@ -147,23 +156,26 @@ export function Header() {
                 <div className="lb-wordmark-sub">// IITM_BS.community</div>
               </div>
 
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  style={{
-                    display: 'block', padding: '12px 16px', textDecoration: 'none',
-                    fontFamily: '"JetBrains Mono", monospace', fontSize: '12px',
-                    color: isActive(item.href) ? 'var(--c-yellow)' : 'rgba(255,255,255,0.6)',
-                    background: isActive(item.href) ? 'rgba(255,217,59,0.06)' : 'transparent',
-                    borderLeft: isActive(item.href) ? '2px solid var(--c-yellow)' : '2px solid transparent',
-                    transition: 'color 0.2s, border-color 0.2s',
-                    letterSpacing: '0.05em',
-                  }}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const style = {
+                  display: 'block', padding: '12px 16px', textDecoration: 'none',
+                  fontFamily: '"JetBrains Mono", monospace', fontSize: '12px',
+                  color: isActive(item.href) ? 'var(--c-yellow)' : 'rgba(255,255,255,0.6)',
+                  background: isActive(item.href) ? 'rgba(255,217,59,0.06)' : 'transparent',
+                  borderLeft: isActive(item.href) ? '2px solid var(--c-yellow)' : '2px solid transparent',
+                  transition: 'color 0.2s, border-color 0.2s',
+                  letterSpacing: '0.05em',
+                } as const;
+                return item.static ? (
+                  <a key={item.href} href={item.href} style={style}>
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link key={item.href} to={item.href} style={style}>
+                    {item.label}
+                  </Link>
+                );
+              })}
 
               <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <Link to="/join" className="lb-btn-primary" style={{ textAlign: 'center', textDecoration: 'none', display: 'block', padding: '12px', fontSize: '12px' }}>

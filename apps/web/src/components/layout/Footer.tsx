@@ -239,7 +239,8 @@ export function Footer() {
             <div className="tf-col">
               <h4>RESOURCES</h4>
               <Link to="/join">Join Us</Link>
-              <Link to="/recruitment">Recruitment</Link>
+              {/* Served as a static page outside the SPA — needs a real navigation. */}
+              <a href="/recruitment">Recruitment</a>
               <Link to="/verify">Verify Certificate</Link>
               <Link to="/privacy-policy">Privacy Policy</Link>
             </div>

@@ -72,6 +72,27 @@ function RedirectGate() {
   return isLoading ? <PageLoader /> : <NotFound />;
 }
 
+/**
+ * /recruitment is served as a standalone static page (apps/web/public/recruitment.html)
+ * so Core Team recruitment keeps working while the API free tier is capped — it
+ * collects applications through the Google Form and needs no backend.
+ *
+ * In production the render.yaml rewrite serves that file directly and this component
+ * never renders. It exists for local dev and any host without the rewrite, so every
+ * environment lands on the same page.
+ *
+ * To hand recruitment back to the in-app form: restore
+ *   const RecruitmentPage = lazy(() => import('@/pages/RecruitmentPage'));
+ * point the route at wrap(<RecruitmentPage />), and drop the /recruitment rewrites
+ * from render.yaml.
+ */
+function StaticRecruitmentRedirect() {
+  useEffect(() => {
+    window.location.replace('/recruitment.html');
+  }, []);
+  return <PageLoader />;
+}
+
 function ScrollToTop() {
   const location = useLocation();
   useEffect(() => {
@@ -97,7 +118,6 @@ const OnboardingPage         = lazy(() => import('@/pages/OnboardingPage'));
 const PrivacyPolicyPage      = lazy(() => import('@/pages/PrivacyPolicyPage'));
 const VerifyCertificatePage  = lazy(() => import('@/pages/VerifyCertificatePage'));
 const JoinPage               = lazy(() => import('@/pages/JoinPage'));
-const RecruitmentPage        = lazy(() => import('@/pages/RecruitmentPage'));
 const JoinMemberPage         = lazy(() => import('@/pages/JoinMemberPage'));
 const JoinCorePage           = lazy(() => import('@/pages/JoinCorePage'));
 const PollDetailPage         = lazy(() => import('@/pages/PollDetailPage'));
@@ -190,7 +210,7 @@ function App() {
                 <Route path="/verify"        element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/verify/:certId" element={wrap(<VerifyCertificatePage />)} />
                 <Route path="/privacy-policy" element={wrap(<PrivacyPolicyPage />)} />
-                <Route path="/recruitment"   element={wrap(<RecruitmentPage />)} />
+                <Route path="/recruitment"   element={<StaticRecruitmentRedirect />} />
                 <Route path="/join"          element={wrap(<JoinPage />)} />
                 <Route path="/join/member"   element={wrap(<JoinMemberPage />)} />
                 <Route path="/join/core"     element={wrap(<JoinCorePage />)} />

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roles & Responsibilities — Tesseract Esports Society</title>
+  <meta name="description" content="Explore wings, roles, and responsibilities at Tesseract Esports Society, the official Esports Society of the IIT Madras BS Program.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              crimson: '#ff2a4b',
+              ember: '#ff5c00',
+              cyan: '#00f0ff',
+              violet: '#7928ca',
+              gold: '#ffb800',
+              dark: '#07080d',
+              surface: '#0e101a',
+              card: '#131624',
+              border: '#1f243b',
+              muted: '#8b93b0'
+            }
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+            mono: ['Space Grotesk', 'monospace']
+          },
+          backgroundImage: {
+            'hero-glow': 'radial-gradient(circle at 50% -20%, rgba(255, 42, 75, 0.25) 0%, rgba(0, 240, 255, 0.1) 40%, rgba(7, 8, 13, 0) 75%)',
+            'cyber-gradient': 'linear-gradient(135deg, #ff2a4b 0%, #ff5c00 50%, #00f0ff 100%)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #07080d; }
+    ::-webkit-scrollbar-thumb { background: #1f243b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ff2a4b; }
+
+    /* Glow utilities */
+    .glow-crimson { box-shadow: 0 0 30px rgba(255, 42, 75, 0.35); }
+    .glow-cyan { box-shadow: 0 0 30px rgba(0, 240, 255, 0.3); }
+    .glass {
+      background: rgba(19, 22, 36, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-nav {
+      background: rgba(7, 8, 13, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 30%, #00f0ff 80%, #ff2a4b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .badge-gradient {
+      background: linear-gradient(90deg, rgba(255, 42, 75, 0.15), rgba(0, 240, 255, 0.15));
+      border: 1px solid rgba(255, 42, 75, 0.4);
+    }
+  </style>
+</head>
+
+<body class="bg-brand-dark text-slate-100 font-sans selection:bg-brand-crimson selection:text-white antialiased">
+
+  <!-- ============================================== -->
+  <!-- 1. STICKY TOP NAVBAR                           -->
+  <!-- ============================================== -->
+  <header class="sticky top-0 z-50 glass-nav transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- LOGO & SOCIETY BRAND -->
+      <a href="/" class="flex items-center gap-3.5 group">
+        <div class="relative w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-brand-crimson via-brand-gold to-brand-cyan shadow-lg shadow-brand-crimson/20 group-hover:scale-105 transition-transform">
+          <img src="https://res.cloudinary.com/da5r9juak/image/upload/v1780382748/PHOTO-2026-06-02-11-19-17_ehmpql.jpg" alt="Tesseract Esports Society Logo" class="w-full h-full object-cover rounded-full bg-black">
+        </div>
+        <div>
+          <span class="block font-extrabold text-lg tracking-wider text-white uppercase leading-none font-mono">TESSERACT</span>
+          <span class="block text-[11px] font-semibold text-brand-cyan tracking-widest uppercase mt-0.5">Esports Society &bull; IITM BS</span>
+        </div>
+      </a>
+
+      <!-- NAV SHORTCUTS (DESKTOP) -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+        <a href="#about" class="hover:text-brand-cyan transition-colors">What is Tesseract?</a>
+        <a href="#domains" class="hover:text-brand-cyan transition-colors">Domains</a>
+        <a href="#wings" class="hover:text-brand-cyan transition-colors">8 Wings</a>
+        <a href="#matcher" class="hover:text-brand-cyan transition-colors">Find Your Wing</a>
+      </nav>
+
+      <!-- TOP APPLY BUTTON -->
+      <div class="flex items-center gap-3">
+        <a href="https://forms.gle/JKpmoNJ7aKGEo1hj9" target="_blank" class="relative group overflow-hidden px-5 py-2.5 rounded-lg bg-brand-crimson text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:bg-brand-crimson/90 glow-crimson flex items-center gap-2">
+          <span>Join Now</span>
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================== -->
+  <!-- 2. HERO SECTION                                -->
+  <!-- ============================================== -->
+  <section class="relative pt-20 pb-28 px-4 sm:px-6 lg:px-8 bg-hero-glow overflow-hidden">
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      
+      <!-- BADGE -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full badge-gradient mb-8">
+        <span class="w-2 h-2 rounded-full bg-brand-crimson animate-ping"></span>
+        <span class="text-xs font-mono font-bold tracking-widest text-brand-cyan uppercase">Core Team Recruitment &bull; 2026</span>
+      </div>
+
+      <!-- MAIN HEADLINE -->
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] mb-6 uppercase">
+        Roles &amp; Responsibilities<br>
+        <span class="text-gradient">Tesseract Esports Society</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-brand-muted max-w-3xl mx-auto font-normal leading-relaxed mb-10">
+        The <strong class="text-white font-semibold">official Esports Society of the IIT Madras BS Program</strong>. We are assembling leaders, creators, casters, strategists, organizers, and developers to build the ultimate competitive &amp; gaming ecosystem.
+      </p>
+
+      <!-- CTA BUTTON MATRIX -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-crimson via-brand-ember to-brand-crimson text-white font-mono font-bold text-sm uppercase tracking-widest shadow-xl glow-crimson hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+          <span>🚀 Apply for Core Team</span>
+        </a>
+        <a href="#wings" class="w-full sm:w-auto px-8 py-4 rounded-xl glass text-brand-cyan font-mono font-bold text-sm uppercase tracking-widest hover:border-brand-cyan/60 hover:bg-brand-card transition-all flex items-center justify-center gap-2">
+          <span>Explore 8 Wings ↓</span>
+        </a>
+      </div>
+
+      <!-- METRIC CARDS / STATS -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto">
+        <div class="glass p-5 rounded-2xl border border-brand-border/60">
+          <span class="block text-3xl font-extrabold font-mono text-white mb-1">08</span>
+          <span class="text-xs font-medium text-brand-muted uppercase tracking-wider">Recruitment Wings</span>
+        </div>
+        <div class="glass p-5 rounded-2xl border border-brand-border/60">
+          <span class="block text-3xl font-extrabold font-mono text-brand-cyan mb-1">03</span>
+          <span class="text-xs font-medium text-brand-muted uppercase tracking-wider">Core Domains</span>
+        </div>
+        <div class="glass p-5 rounded-2xl border border-brand-border/60">
+          <span class="block text-3xl font-extrabold font-mono text-brand-gold mb-1">100%</span>
+          <span class="text-xs font-medium text-brand-muted uppercase tracking-wider">Open to All BS Students</span>
+        </div>
+        <div class="glass p-5 rounded-2xl border border-brand-border/60">
+          <span class="block text-3xl font-extrabold font-mono text-brand-crimson mb-1">365</span>
+          <span class="text-xs font-medium text-brand-muted uppercase tracking-wider">Year-Round Action</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- 3. ABOUT TESSERACT & THE 3 DOMAINS             -->
+  <!-- ============================================== -->
+  <section id="about" class="py-20 px-4 sm:px-6 lg:px-8 bg-brand-surface border-y border-brand-border/60">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="max-w-3xl mb-16">
+        <span class="font-mono text-xs font-bold tracking-widest text-brand-cyan uppercase">Foundation &amp; Identity</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 uppercase tracking-tight">What is Tesseract?</h2>
+        <p class="text-brand-muted text-base sm:text-lg mt-4 leading-relaxed">
+          Tesseract is the official Esports Society of the IIT Madras BS Program, built around competitive esports, casual gaming, mind games, puzzles, strategy, and community. What started as a small gaming community has grown into a recognized society focused on creating an active ecosystem where students can compete, create, organize, collaborate, and have fun.
+        </p>
+      </div>
+
+      <!-- 3 DOMAIN CARDS -->
+      <div id="domains" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- DOMAIN 1 -->
+        <div class="glass p-8 rounded-2xl border border-brand-border hover:border-brand-crimson transition-all duration-300 group">
+          <div class="w-14 h-14 rounded-xl bg-brand-crimson/10 border border-brand-crimson/30 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+            🎮
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Competitive Esports</h3>
+          <p class="text-brand-muted text-sm leading-relaxed mb-6">
+            Competitive gaming across major multiplayer titles such as Free Fire, BGMI, Valorant, Call of Duty: Mobile (CODM), Clash of Clans (COC), Minecraft, and other competitive PC/mobile titles.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Valorant</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">BGMI</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Free Fire</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">CODM</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">COC</span>
+          </div>
+        </div>
+
+        <!-- DOMAIN 2 -->
+        <div class="glass p-8 rounded-2xl border border-brand-border hover:border-brand-cyan transition-all duration-300 group">
+          <div class="w-14 h-14 rounded-xl bg-brand-cyan/10 border border-brand-cyan/30 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+            🕹️
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Casual &amp; Social Gaming</h3>
+          <p class="text-brand-muted text-sm leading-relaxed mb-6">
+            Fun and engaging games designed for recreation, social interaction, and high participation. Community game nights, friendly scrims, and lighthearted competitions.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Skribbl</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Among Us</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Smash Karts</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Subway Surfers</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">GeoGuessr</span>
+          </div>
+        </div>
+
+        <!-- DOMAIN 3 -->
+        <div class="glass p-8 rounded-2xl border border-brand-border hover:border-brand-gold transition-all duration-300 group">
+          <div class="w-14 h-14 rounded-xl bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+            🧩
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3 uppercase tracking-wide">Mind Games &amp; Strategy</h3>
+          <p class="text-brand-muted text-sm leading-relaxed mb-6">
+            Puzzles, riddles, logical challenges, escape-room-style events, gaming quizzes, and strategy competitions that challenge participants to think, solve, and outsmart.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Escape Rooms</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Logic Puzzles</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Riddles</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Gaming Quizzes</span>
+            <span class="px-2.5 py-1 rounded-md bg-brand-card text-[11px] font-mono text-slate-300 border border-brand-border">Tactical Games</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CORE FORMULA BANNER -->
+      <div class="mt-10 p-6 rounded-2xl bg-brand-card border border-brand-border flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <div>
+          <span class="text-xs font-mono font-bold tracking-widest text-brand-gold uppercase">The Tesseract Formula</span>
+          <p class="text-base sm:text-lg font-bold text-white mt-1">
+            ESPORTS + GAMING + MIND GAMES + PUZZLES + STRATEGY + COMMUNITY
+          </p>
+        </div>
+        <a href="#wings" class="px-6 py-2.5 rounded-lg bg-brand-border text-brand-cyan text-xs font-mono font-bold uppercase tracking-wider hover:bg-brand-cyan hover:text-black transition-all">
+          Explore Wings →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- 4. INTERACTIVE WINGS EXPLORER (THE 8 WINGS)    -->
+  <!-- ============================================== -->
+  <section id="wings" class="py-24 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- SECTION HEADER & FILTERS -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <span class="font-mono text-xs font-bold tracking-widest text-brand-crimson uppercase">Join The Team Behind Tesseract</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-white mt-2 uppercase tracking-tight">The 8 Recruitment Wings</h2>
+          <p class="text-brand-muted text-sm sm:text-base mt-2 max-w-2xl">
+            Tesseract's operations are divided across 8 wings. Choose the domain where you want to lead, create, manage, or learn.
+          </p>
+        </div>
+
+        <!-- SEARCH & FILTER TABS -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="filterWings('all')" class="filter-btn px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-wider uppercase transition-all bg-brand-crimson text-white active" data-filter="all">All Wings (8)</button>
+          <button onclick="filterWings('gaming')" class="filter-btn px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-wider uppercase transition-all bg-brand-card text-brand-muted hover:text-white border border-brand-border" data-filter="gaming">Gaming &amp; Mind</button>
+          <button onclick="filterWings('media')" class="filter-btn px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-wider uppercase transition-all bg-brand-card text-brand-muted hover:text-white border border-brand-border" data-filter="media">Media &amp; Creative</button>
+          <button onclick="filterWings('ops')" class="filter-btn px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-wider uppercase transition-all bg-brand-card text-brand-muted hover:text-white border border-brand-border" data-filter="ops">Tech &amp; Strategy</button>
+        </div>
+      </div>
+
+      <!-- 8 WINGS GRID -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="wings-container">
+
+        <!-- ==================== 01 GAME WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-brand-crimson/80 transition-all duration-300 flex flex-col justify-between" data-category="gaming" id="wing-game">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-brand-crimson px-3 py-1 rounded-full bg-brand-crimson/10 border border-brand-crimson/30 uppercase">
+                Wing 01 &bull; Competitive Esports
+              </span>
+              <span class="text-3xl">⚔️</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">GAME WING</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The Game Wing is at the heart of Tesseract's competitive esports ecosystem. It is responsible for building communities around individual titles, organizing tournaments, and managing competitive matches.
+            </p>
+
+            <!-- TITLES COVERED -->
+            <div class="mb-6 p-4 rounded-xl bg-brand-card/80 border border-brand-border">
+              <span class="text-[11px] font-mono font-bold text-brand-gold uppercase tracking-wider block mb-2">🎮 Games Covered</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-0.5 rounded bg-brand-border/60 text-xs text-white">Free Fire</span>
+                <span class="px-2.5 py-0.5 rounded bg-brand-border/60 text-xs text-white">BGMI</span>
+                <span class="px-2.5 py-0.5 rounded bg-brand-border/60 text-xs text-white">Valorant</span>
+                <span class="px-2.5 py-0.5 rounded bg-brand-border/60 text-xs text-white">CODM</span>
+                <span class="px-2.5 py-0.5 rounded bg-brand-border/60 text-xs text-white">Clash of Clans</span>
+                <span class="px-2.5 py-0.5 rounded bg-brand-border/60 text-xs text-white">Minecraft</span>
+                <span class="px-2.5 py-0.5 rounded bg-brand-border/60 text-xs text-white">PC &amp; Multiplayer</span>
+              </div>
+            </div>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-brand-cyan uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">Game Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">Game Co-Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">Game Volunteer</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-brand-crimson mt-0.5">▸</span> Organizes online tournaments, leagues, and competitive matches.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-crimson mt-0.5">▸</span> Manages players, teams, brackets, and tournament operations.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-crimson mt-0.5">▸</span> Develops rules, competitive formats, and tournament structures.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-crimson mt-0.5">▸</span> Builds and nurtures communities around individual game titles.</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-brand-crimson text-white font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-brand-crimson/90 transition-colors block">
+            Apply for Game Wing →
+          </a>
+        </div>
+
+        <!-- ==================== 02 ESCAPE WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-brand-gold/80 transition-all duration-300 flex flex-col justify-between" data-category="gaming" id="wing-escape">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-brand-gold px-3 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/30 uppercase">
+                Wing 02 &bull; Mind Games &amp; Puzzles
+              </span>
+              <span class="text-3xl">🧩</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">ESCAPE WING</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The Escape Wing is responsible for Tesseract's mind games, puzzles, recreational activities, and strategy-based experiences. It goes beyond traditional esports to challenge students to think, solve, and strategize.
+            </p>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-brand-gold uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-xs font-semibold">Escape Wing Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-xs font-semibold">Escape Wing Co-Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-xs font-semibold">Escape Wing Volunteer</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-brand-gold mt-0.5">▸</span> Designs and organizes puzzle challenges, riddles, and logical quests.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-gold mt-0.5">▸</span> Develops immersive escape-room-style events and strategy games.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-gold mt-0.5">▸</span> Creates gaming quizzes and runs weekly community game nights.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-gold mt-0.5">▸</span> Experiments with new creative-thinking and recreational formats.</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-brand-gold/20 border border-brand-gold/40 text-brand-gold font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-brand-gold hover:text-black transition-all block">
+            Apply for Escape Wing →
+          </a>
+        </div>
+
+        <!-- ==================== 03 PR & OUTREACH WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-brand-cyan/80 transition-all duration-300 flex flex-col justify-between" data-category="media" id="wing-pr">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-brand-cyan px-3 py-1 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 uppercase">
+                Wing 03 &bull; Communication &amp; Community
+              </span>
+              <span class="text-3xl">📢</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">PR &amp; OUTREACH WING</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The PR &amp; Outreach Wing builds Tesseract's presence across the BS Program. It drives student participation, coordinates major announcements, and fosters collaborations with other student bodies.
+            </p>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-brand-cyan uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">PR Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">PR Co-Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">Outreach Executive</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">PR Volunteer</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Promotes Tesseract events and drives student participation.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Builds collaborations with other IIT Madras BS societies and groups.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Coordinates high-impact outreach campaigns and announcements.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Strengthens community relationships and social communication.</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-brand-cyan/20 border border-brand-cyan/40 text-brand-cyan font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-brand-cyan hover:text-black transition-all block">
+            Apply for PR &amp; Outreach →
+          </a>
+        </div>
+
+        <!-- ==================== 04 SPONSORSHIP & RESEARCH WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-emerald-400/80 transition-all duration-300 flex flex-col justify-between" data-category="ops" id="wing-sponsorship">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-emerald-400 px-3 py-1 rounded-full bg-emerald-400/10 border border-emerald-400/30 uppercase">
+                Wing 04 &bull; Partnerships &amp; Strategy
+              </span>
+              <span class="text-3xl">💼</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">SPONSORSHIP &amp; RESEARCH</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The Sponsorship &amp; Research Wing drives strategic growth. It identifies brand sponsors, negotiates partnerships, researches esports industry trends, and supports large-scale tournament planning.
+            </p>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-xs font-semibold">Sponsorship Head</span>
+                <span class="px-3 py-1 rounded-lg bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-xs font-semibold">Research Head</span>
+                <span class="px-3 py-1 rounded-lg bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-xs font-semibold">Sponsorship Executive</span>
+                <span class="px-3 py-1 rounded-lg bg-emerald-400/10 border border-emerald-400/30 text-emerald-400 text-xs font-semibold">Research Executive</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-emerald-400 mt-0.5">▸</span> Identifies potential sponsors and prepares corporate pitch decks.</li>
+                <li class="flex items-start gap-2.5"><span class="text-emerald-400 mt-0.5">▸</span> Builds and maintains ongoing relationships with industry partners.</li>
+                <li class="flex items-start gap-2.5"><span class="text-emerald-400 mt-0.5">▸</span> Researches esports formats, market opportunities, and gaming trends.</li>
+                <li class="flex items-start gap-2.5"><span class="text-emerald-400 mt-0.5">▸</span> Contributes analytical insights to Tesseract's long-term roadmap.</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-emerald-400/20 border border-emerald-400/40 text-emerald-400 font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-emerald-400 hover:text-black transition-all block">
+            Apply for Sponsorship &amp; Research →
+          </a>
+        </div>
+
+        <!-- ==================== 05 STREAMER & CASTER WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-purple-400/80 transition-all duration-300 flex flex-col justify-between" data-category="media" id="wing-caster">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-purple-400 px-3 py-1 rounded-full bg-purple-400/10 border border-purple-400/30 uppercase">
+                Wing 05 &bull; Broadcast &amp; Hosting
+              </span>
+              <span class="text-3xl">🎙️</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">STREAMER &amp; CASTER WING</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The broadcast and live entertainment powerhouse of Tesseract. This wing brings the hype, shoutcasting live matches, hosting analyst desks, and producing high-voltage gaming broadcasts.
+            </p>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-purple-400 uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs font-semibold">Streaming Head</span>
+                <span class="px-3 py-1 rounded-lg bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs font-semibold">Casting Head</span>
+                <span class="px-3 py-1 rounded-lg bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs font-semibold">Caster / Commentator</span>
+                <span class="px-3 py-1 rounded-lg bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs font-semibold">Stream Host</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-purple-400 mt-0.5">▸</span> Provides live commentary and play-by-play shoutcasting.</li>
+                <li class="flex items-start gap-2.5"><span class="text-purple-400 mt-0.5">▸</span> Streams tournament matches and hosts interactive audience lobbies.</li>
+                <li class="flex items-start gap-2.5"><span class="text-purple-400 mt-0.5">▸</span> Moderates tournament analyst desks and on-camera interviews.</li>
+                <li class="flex items-start gap-2.5"><span class="text-purple-400 mt-0.5">▸</span> <em>No pro experience needed</em> — confidence &amp; passion matter most!</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-purple-400/20 border border-purple-400/40 text-purple-400 font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-purple-400 hover:text-black transition-all block">
+            Apply for Streamer &amp; Caster →
+          </a>
+        </div>
+
+        <!-- ==================== 06 GRAPHIC DESIGN WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-pink-400/80 transition-all duration-300 flex flex-col justify-between" data-category="media" id="wing-design">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-pink-400 px-3 py-1 rounded-full bg-pink-400/10 border border-pink-400/30 uppercase">
+                Wing 06 &bull; Visual Identity &amp; Branding
+              </span>
+              <span class="text-3xl">🎨</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">GRAPHIC DESIGN WING</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The Graphic Design Wing shapes Tesseract's visual language. From tournament posters and stream overlays to social media branding and jerseys, this wing makes Tesseract look world-class.
+            </p>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-pink-400 uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-pink-400/10 border border-pink-400/30 text-pink-400 text-xs font-semibold">Design Head</span>
+                <span class="px-3 py-1 rounded-lg bg-pink-400/10 border border-pink-400/30 text-pink-400 text-xs font-semibold">Design Co-Head</span>
+                <span class="px-3 py-1 rounded-lg bg-pink-400/10 border border-pink-400/30 text-pink-400 text-xs font-semibold">Graphic Designer</span>
+                <span class="px-3 py-1 rounded-lg bg-pink-400/10 border border-pink-400/30 text-pink-400 text-xs font-semibold">Creative Designer</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-pink-400 mt-0.5">▸</span> Creates tournament posters, branding kits, and social media posts.</li>
+                <li class="flex items-start gap-2.5"><span class="text-pink-400 mt-0.5">▸</span> Designs stream overlays, thumbnails, digital certificates, and assets.</li>
+                <li class="flex items-start gap-2.5"><span class="text-pink-400 mt-0.5">▸</span> Works with Figma, Photoshop, Illustrator, Canva, or other tools.</li>
+                <li class="flex items-start gap-2.5"><span class="text-pink-400 mt-0.5">▸</span> Maintains visual consistency across all society platforms.</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-pink-400/20 border border-pink-400/40 text-pink-400 font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-pink-400 hover:text-black transition-all block">
+            Apply for Graphic Design →
+          </a>
+        </div>
+
+        <!-- ==================== 07 VIDEO EDITING WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-amber-400/80 transition-all duration-300 flex flex-col justify-between" data-category="media" id="wing-video">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-amber-400 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 uppercase">
+                Wing 07 &bull; Content &amp; Storytelling
+              </span>
+              <span class="text-3xl">🎬</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">VIDEO EDITING WING</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The Video Editing Wing transforms gaming tournaments, epic plays, and community moments into viral reels, trailers, motion graphics, and cinematic event aftermovies.
+            </p>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-semibold">Video Editing Head</span>
+                <span class="px-3 py-1 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-semibold">Video Editing Co-Head</span>
+                <span class="px-3 py-1 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-semibold">Video Editor</span>
+                <span class="px-3 py-1 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-semibold">Motion Graphics Artist</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-amber-400 mt-0.5">▸</span> Edits high-energy tournament highlights and gameplay clips.</li>
+                <li class="flex items-start gap-2.5"><span class="text-amber-400 mt-0.5">▸</span> Produces viral Instagram reels, promotional videos, and YouTube content.</li>
+                <li class="flex items-start gap-2.5"><span class="text-amber-400 mt-0.5">▸</span> Crafts cinematic event aftermovies and motion graphics packages.</li>
+                <li class="flex items-start gap-2.5"><span class="text-amber-400 mt-0.5">▸</span> Tells engaging stories around Tesseract's community and winners.</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-amber-400/20 border border-amber-400/40 text-amber-400 font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-amber-400 hover:text-black transition-all block">
+            Apply for Video Editing →
+          </a>
+        </div>
+
+        <!-- ==================== 08 WEBOPS WING ==================== -->
+        <div class="wing-card glass rounded-3xl p-8 border border-brand-border hover:border-brand-cyan/80 transition-all duration-300 flex flex-col justify-between" data-category="ops" id="wing-webops">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-5">
+              <span class="font-mono text-xs font-extrabold tracking-widest text-brand-cyan px-3 py-1 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 uppercase">
+                Wing 08 &bull; Digital &amp; Tech Systems
+              </span>
+              <span class="text-3xl">💻</span>
+            </div>
+
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wide mb-3">WEBOPS WING</h3>
+            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+              The WebOps Wing powers Tesseract's digital infrastructure. It builds and maintains the official website, custom tournament microsites, automated registration engines, and internal community tools.
+            </p>
+
+            <!-- ROLES AVAILABLE -->
+            <div class="mb-6">
+              <span class="text-xs font-mono font-bold text-brand-cyan uppercase tracking-wider block mb-2">Available Roles</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">WebOps Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">WebOps Co-Head</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">Frontend / Backend Dev</span>
+                <span class="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold">UI/UX Designer</span>
+              </div>
+            </div>
+
+            <!-- RESPONSIBILITIES -->
+            <div class="space-y-2 mb-8">
+              <span class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider block mb-2">What You Will Do:</span>
+              <ul class="text-xs sm:text-sm text-brand-muted space-y-2 font-normal">
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Builds and maintains the official Tesseract website (<a href="https://tesseractiitm.in" target="_blank" class="text-brand-cyan underline">tesseractiitm.in</a>).</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Develops event registration portals and tournament microsites.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Builds automation bots, discord integrations, and internal society tools.</li>
+                <li class="flex items-start gap-2.5"><span class="text-brand-cyan mt-0.5">▸</span> Open to frontend, backend, fullstack, UI/UX, or automation enthusiasts!</li>
+              </ul>
+            </div>
+          </div>
+
+          <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full py-3 rounded-xl bg-brand-cyan/20 border border-brand-cyan/40 text-brand-cyan font-mono font-bold text-xs uppercase tracking-widest text-center hover:bg-brand-cyan hover:text-black transition-all block">
+            Apply for WebOps →
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- 5. INTERACTIVE "FIND YOUR WING" MATCHER        -->
+  <!-- ============================================== -->
+  <section id="matcher" class="py-20 px-4 sm:px-6 lg:px-8 bg-brand-surface border-y border-brand-border/60">
+    <div class="max-w-4xl mx-auto text-center">
+      
+      <span class="font-mono text-xs font-bold tracking-widest text-brand-gold uppercase">Quick Navigator</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 uppercase tracking-tight">Find Your Wing</h2>
+      <p class="text-brand-muted text-sm sm:text-base mt-2 mb-8">
+        Click your primary interest to instantly jump to your ideal wing:
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <a href="#wing-game" class="p-4 rounded-xl glass border border-brand-border hover:border-brand-crimson hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">🎮</span>
+          <span class="text-xs font-bold text-white uppercase block">Competitive Gaming</span>
+          <span class="text-[11px] font-mono text-brand-crimson mt-1 block">→ Game Wing</span>
+        </a>
+
+        <a href="#wing-escape" class="p-4 rounded-xl glass border border-brand-border hover:border-brand-gold hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">🧩</span>
+          <span class="text-xs font-bold text-white uppercase block">Puzzles &amp; Strategy</span>
+          <span class="text-[11px] font-mono text-brand-gold mt-1 block">→ Escape Wing</span>
+        </a>
+
+        <a href="#wing-pr" class="p-4 rounded-xl glass border border-brand-border hover:border-brand-cyan hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">📣</span>
+          <span class="text-xs font-bold text-white uppercase block">PR &amp; Outreach</span>
+          <span class="text-[11px] font-mono text-brand-cyan mt-1 block">→ PR Wing</span>
+        </a>
+
+        <a href="#wing-sponsorship" class="p-4 rounded-xl glass border border-brand-border hover:border-emerald-400 hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">🤝</span>
+          <span class="text-xs font-bold text-white uppercase block">Sponsorships</span>
+          <span class="text-[11px] font-mono text-emerald-400 mt-1 block">→ Sponsorship</span>
+        </a>
+
+        <a href="#wing-caster" class="p-4 rounded-xl glass border border-brand-border hover:border-purple-400 hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">🎙️</span>
+          <span class="text-xs font-bold text-white uppercase block">Casting &amp; Streaming</span>
+          <span class="text-[11px] font-mono text-purple-400 mt-1 block">→ Streamer Wing</span>
+        </a>
+
+        <a href="#wing-design" class="p-4 rounded-xl glass border border-brand-border hover:border-pink-400 hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">🎨</span>
+          <span class="text-xs font-bold text-white uppercase block">Graphic Design</span>
+          <span class="text-[11px] font-mono text-pink-400 mt-1 block">→ Design Wing</span>
+        </a>
+
+        <a href="#wing-video" class="p-4 rounded-xl glass border border-brand-border hover:border-amber-400 hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">🎬</span>
+          <span class="text-xs font-bold text-white uppercase block">Video Editing</span>
+          <span class="text-[11px] font-mono text-amber-400 mt-1 block">→ Video Wing</span>
+        </a>
+
+        <a href="#wing-webops" class="p-4 rounded-xl glass border border-brand-border hover:border-brand-cyan hover:bg-brand-card transition-all text-center group">
+          <span class="text-2xl block mb-1">💻</span>
+          <span class="text-xs font-bold text-white uppercase block">Web &amp; Tech Ops</span>
+          <span class="text-[11px] font-mono text-brand-cyan mt-1 block">→ WebOps Wing</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- 6. PHILOSOPHY / CULTURE SECTION                -->
+  <!-- ============================================== -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto glass p-8 sm:p-12 rounded-3xl border border-brand-border text-center">
+      
+      <span class="text-3xl mb-4 block">💡</span>
+      <h2 class="text-2xl sm:text-4xl font-extrabold text-white uppercase tracking-tight mb-4">
+        You Don't Have to Be an Expert
+      </h2>
+
+      <p class="text-brand-muted text-sm sm:text-base leading-relaxed mb-6">
+        Tesseract isn't looking only for professional gamers, experienced developers, seasoned designers, or veteran organizers. We are looking for students who want to build.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left my-8">
+        <div class="p-4 rounded-xl bg-brand-card border border-brand-border/60">
+          <span class="text-brand-crimson font-bold text-sm block mb-1">✦ Have the skills?</span>
+          <span class="text-xs text-brand-muted">Step into leadership as a Wing Head or Co-Head and run major initiatives.</span>
+        </div>
+        <div class="p-4 rounded-xl bg-brand-card border border-brand-border/60">
+          <span class="text-brand-cyan font-bold text-sm block mb-1">✦ Starting out?</span>
+          <span class="text-xs text-brand-muted">Join as a Volunteer or Executive, learn from peers, and build real projects.</span>
+        </div>
+        <div class="p-4 rounded-xl bg-brand-card border border-brand-border/60">
+          <span class="text-brand-gold font-bold text-sm block mb-1">✦ Have an event idea?</span>
+          <span class="text-xs text-brand-muted">Pitch it, take ownership, and we will help you bring it to life across the BS community.</span>
+        </div>
+      </div>
+
+      <p class="text-sm font-semibold text-white">
+        What matters most is your <span class="text-brand-cyan">interest</span>, <span class="text-brand-crimson">initiative</span>, <span class="text-brand-gold">willingness to learn</span>, and willingness to take ownership.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- 7. FINAL CALL TO ACTION                        -->
+  <!-- ============================================== -->
+  <section class="py-24 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden bg-radial-gradient">
+    <div class="max-w-4xl mx-auto relative z-10">
+      
+      <span class="font-mono text-xs font-bold tracking-widest text-brand-crimson uppercase">Step Into The Arena</span>
+      <h2 class="text-4xl sm:text-6xl font-black text-white mt-2 uppercase tracking-tight mb-6">
+        Build Tesseract With Us.
+      </h2>
+      <p class="text-brand-muted text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-10">
+        If you want to play, organize, create, compete, broadcast, build or lead — there's a place for you here. Find your wing. Bring your ideas. Build Tesseract.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="https://forms.gle/NFLeVpiFziPjYY2m8" target="_blank" class="w-full sm:w-auto px-10 py-5 rounded-2xl bg-gradient-to-r from-brand-crimson via-brand-ember to-brand-crimson text-white font-mono font-extrabold text-base uppercase tracking-widest shadow-2xl glow-crimson hover:scale-105 transition-transform flex items-center justify-center gap-3">
+          <span>🚀 Fill Application Form</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+
+        <a href="https://chat.whatsapp.com/LRgZ03jPCJLAfKt5Nl3G7H" target="_blank" class="w-full sm:w-auto px-8 py-5 rounded-2xl glass text-emerald-400 font-mono font-bold text-sm uppercase tracking-widest hover:bg-emerald-500/10 border border-emerald-500/30 transition-all flex items-center justify-center gap-2">
+          <span>💬 Join WhatsApp Community</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- 8. FOOTER WITH SOCIALS & IDENTITY              -->
+  <!-- ============================================== -->
+  <footer class="bg-black/90 border-t border-brand-border/80 pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-brand-border/60">
+        
+        <!-- COL 1: BRAND IDENTITY -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <img src="https://res.cloudinary.com/da5r9juak/image/upload/v1780382748/PHOTO-2026-06-02-11-19-17_ehmpql.jpg" alt="Tesseract Logo" class="w-10 h-10 rounded-full border border-brand-crimson">
+            <div>
+              <span class="font-mono font-extrabold text-white text-base uppercase block">TESSERACT</span>
+              <span class="text-xs font-semibold text-brand-cyan uppercase block">Esports Society</span>
+            </div>
+          </div>
+          <p class="text-xs text-brand-muted leading-relaxed">
+            The official Esports Society of the IIT Madras BS Program.<br>
+            <em>Competitive Esports &bull; Casual Gaming &bull; Mind Games &amp; Strategy &bull; Community</em>
+          </p>
+        </div>
+
+        <!-- COL 2: QUICK LINKS -->
+        <div class="space-y-3">
+          <span class="font-mono text-xs font-bold text-slate-300 uppercase tracking-wider block">Official Portal</span>
+          <a href="https://tesseractiitm.in" target="_blank" class="inline-flex items-center gap-2 text-sm text-brand-cyan hover:underline font-mono font-semibold">
+            <span>🌐 tesseractiitm.in</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+          <p class="text-xs text-brand-muted">
+            Email: <a href="mailto:24f3000984@ds.study.iitm.ac.in" class="text-brand-gold hover:underline">24f3000984@ds.study.iitm.ac.in</a>
+          </p>
+        </div>
+
+        <!-- COL 3: CONNECT / SOCIALS -->
+        <div class="space-y-4">
+          <span class="font-mono text-xs font-bold text-slate-300 uppercase tracking-wider block">Connect With Us</span>
+          
+          <div class="flex items-center gap-3">
+            
+            <!-- WEBSITE -->
+            <a href="https://tesseractiitm.in" target="_blank" title="Website" class="w-10 h-10 rounded-xl bg-brand-card border border-brand-border hover:border-brand-cyan hover:bg-brand-cyan/10 flex items-center justify-center text-slate-300 hover:text-brand-cyan transition-all">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+            </a>
+
+            <!-- INSTAGRAM -->
+            <a href="https://www.instagram.com/tesseract_iitm" target="_blank" title="Instagram" class="w-10 h-10 rounded-xl bg-brand-card border border-brand-border hover:border-pink-400 hover:bg-pink-400/10 flex items-center justify-center text-slate-300 hover:text-pink-400 transition-all">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+
+            <!-- LINKEDIN -->
+            <a href="https://www.linkedin.com/company/tesseract-iitm/" target="_blank" title="LinkedIn" class="w-10 h-10 rounded-xl bg-brand-card border border-brand-border hover:border-blue-400 hover:bg-blue-400/10 flex items-center justify-center text-slate-300 hover:text-blue-400 transition-all">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+
+            <!-- WHATSAPP -->
+            <a href="https://chat.whatsapp.com/LRgZ03jPCJLAfKt5Nl3G7H" target="_blank" title="WhatsApp Community" class="w-10 h-10 rounded-xl bg-brand-card border border-brand-border hover:border-emerald-400 hover:bg-emerald-400/10 flex items-center justify-center text-slate-300 hover:text-emerald-400 transition-all">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </a>
+
+            <!-- DISCORD -->
+            <a href="https://discord.gg/DvgqqB9rXd" target="_blank" title="Discord" class="w-10 h-10 rounded-xl bg-brand-card border border-brand-border hover:border-indigo-400 hover:bg-indigo-400/10 flex items-center justify-center text-slate-300 hover:text-indigo-400 transition-all">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COPYRIGHT -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-muted gap-4">
+        <p>&copy; 2026 Tesseract Esports Society &middot; Official Esports Society of the IIT Madras BS Program.</p>
+        <p class="font-mono">Secretary: Aryan Goyal</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================== -->
+  <!-- JAVASCRIPT FOR DYNAMIC FILTERING & NAVIGATION  -->
+  <!-- ============================================== -->
+  <script>
+    function filterWings(category) {
+      // Update Buttons
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => {
+        if (btn.dataset.filter === category) {
+          btn.classList.remove('bg-brand-card', 'text-brand-muted', 'border', 'border-brand-border');
+          btn.classList.add('bg-brand-crimson', 'text-white');
+        } else {
+          btn.classList.remove('bg-brand-crimson', 'text-white');
+          btn.classList.add('bg-brand-card', 'text-brand-muted', 'border', 'border-brand-border');
+        }
+      });
+
+      // Filter Cards
+      const cards = document.querySelectorAll('.wing-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'flex';
+          card.classList.add('animate-fadeIn');
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
