@@ -32,6 +32,7 @@ const updateSettingsSchema = z.object({
   certificatesEnabled: z.boolean().optional(),
   attendanceEnabled: z.boolean().optional(),
   competitionEnabled: z.boolean().optional(),
+  teamLeadershipCount: z.coerce.number().int().min(0).max(24).optional(),
   // Email notification controls
   emailWelcomeEnabled: z.boolean().optional(),
   emailEventCreationEnabled: z.boolean().optional(),
@@ -190,6 +191,7 @@ settingsRouter.get('/public', async (req: Request, res: Response) => {
         attendanceEnabled: true,
         announcementsEnabled: true,
         competitionEnabled: true,
+        teamLeadershipCount: true,
         githubUrl: true,
         linkedinUrl: true,
         twitterUrl: true,
@@ -292,6 +294,7 @@ settingsRouter.put('/', authMiddleware, requireRole('PRESIDENT'), async (req: Re
       certificatesEnabled,
       attendanceEnabled,
       competitionEnabled,
+      teamLeadershipCount,
       emailWelcomeEnabled,
       emailEventCreationEnabled,
       emailRegistrationEnabled,
@@ -327,6 +330,7 @@ settingsRouter.put('/', authMiddleware, requireRole('PRESIDENT'), async (req: Re
       ...(certificatesEnabled !== undefined && { certificatesEnabled }),
       ...(attendanceEnabled !== undefined && { attendanceEnabled }),
       ...(competitionEnabled !== undefined && { competitionEnabled }),
+      ...(teamLeadershipCount !== undefined && { teamLeadershipCount }),
       ...(emailWelcomeEnabled !== undefined && { emailWelcomeEnabled }),
       ...(emailEventCreationEnabled !== undefined && { emailEventCreationEnabled }),
       ...(emailRegistrationEnabled !== undefined && { emailRegistrationEnabled }),
@@ -592,6 +596,7 @@ settingsRouter.patch('/:key', authMiddleware, requireRole('ADMIN'), async (req: 
       'certificatesEnabled',
       'attendanceEnabled',
       'competitionEnabled',
+      'teamLeadershipCount',
       'emailWelcomeEnabled',
       'emailEventCreationEnabled',
       'emailRegistrationEnabled',
@@ -649,6 +654,17 @@ settingsRouter.patch('/:key', authMiddleware, requireRole('ADMIN'), async (req: 
       return res.status(400).json({ success: false, error: { message: `${key} must be a boolean` } });
     }
 
+    const parsedLeadershipCount = key === 'teamLeadershipCount' ? Number(value) : undefined;
+    if (
+      key === 'teamLeadershipCount' &&
+      (parsedLeadershipCount === undefined ||
+        !Number.isInteger(parsedLeadershipCount) ||
+        parsedLeadershipCount < 0 ||
+        parsedLeadershipCount > 24)
+    ) {
+      return res.status(400).json({ success: false, error: { message: 'teamLeadershipCount must be an integer between 0 and 24' } });
+    }
+
     const parsedMaxEvents = key === 'maxEventsPerUser' ? Number(value) : undefined;
     if (
       key === 'maxEventsPerUser' &&
@@ -684,7 +700,10 @@ settingsRouter.patch('/:key', authMiddleware, requireRole('ADMIN'), async (req: 
       }
     }
 
-    let normalizedValue: unknown = key === 'maxEventsPerUser' ? parsedMaxEvents : value;
+    let normalizedValue: unknown =
+      key === 'maxEventsPerUser' ? parsedMaxEvents
+      : key === 'teamLeadershipCount' ? parsedLeadershipCount
+      : value;
     if (
       ['githubUrl', 'linkedinUrl', 'twitterUrl', 'instagramUrl', 'discordUrl', 'whatsappCommunityUrl', 'emailTestRecipients'].includes(key) &&
       typeof value === 'string' &&

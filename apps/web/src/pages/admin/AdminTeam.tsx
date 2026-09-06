@@ -54,7 +54,7 @@ export default function AdminTeam() {
   const [form, setForm] = useState({
     name: '',
     role: '',
-    team: 'Technical',
+    team: 'Core Team',
     imageUrl: '',
     linkedin: '',
     github: '',
@@ -90,7 +90,7 @@ export default function AdminTeam() {
     setForm({
       name: '',
       role: '',
-      team: 'Technical',
+      team: 'Core Team',
       imageUrl: '',
       linkedin: '',
       github: '',
@@ -413,12 +413,16 @@ export default function AdminTeam() {
                     className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
                     required
                   >
-                    <option value="Technical">Technical</option>
+                    <option value="Core Team">Core Team</option>
                     <option value="Management">Management</option>
-                    <option value="Content">Content</option>
-                    <option value="Design">Design</option>
-                    <option value="Admin">Admin</option>
-                    <option value="DSA">DSA</option>
+                    <option value="Game Wing">Game Wing</option>
+                    <option value="Escape Wing">Escape Wing</option>
+                    <option value="PR &amp; Outreach Wing">PR &amp; Outreach Wing</option>
+                    <option value="Sponsorship &amp; Research Wing">Sponsorship &amp; Research Wing</option>
+                    <option value="Streamer &amp; Caster Wing">Streamer &amp; Caster Wing</option>
+                    <option value="Graphic Design Wing">Graphic Design Wing</option>
+                    <option value="Video Editing Wing">Video Editing Wing</option>
+                    <option value="WebOps Wing">WebOps Wing</option>
                   </select>
                 </div>
                 <div className="space-y-2">
