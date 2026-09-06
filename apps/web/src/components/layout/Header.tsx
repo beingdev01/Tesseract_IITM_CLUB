@@ -6,10 +6,15 @@ import { useAuth } from '@/context/AuthContext';
 
 // `static: true` means the path is served outside the SPA (see render.yaml), so it
 // needs a real navigation rather than a client-side route change.
-const NAV_ITEMS: { label: string; href: string; static?: boolean }[] = [
+// `aliases` lists other paths that mean the same destination, so the item stays
+// highlighted across them — /team and /members render the same pages, and member
+// profiles canonicalise to /team/:slug.
+type NavItem = { label: string; href: string; static?: boolean; aliases?: string[] };
+
+const NAV_ITEMS: NavItem[] = [
   { label: '[01] games',  href: '/games' },
   { label: '[02] events', href: '/events' },
-  { label: '[03] ranks',  href: '/leaderboard' },
+  { label: '[03] team',   href: '/members', aliases: ['/team'] },
   { label: '[04] about',  href: '/about' },
   { label: '[05] recruitment', href: '/recruitment', static: true },
 ];
@@ -51,9 +56,12 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  const isActive = useCallback((href: string) => {
-    if (href === '/') return location.pathname === '/';
-    return location.pathname === href || location.pathname.startsWith(href + '/');
+  const isActive = useCallback((item: NavItem) => {
+    const paths = [item.href, ...(item.aliases ?? [])];
+    return paths.some((path) => {
+      if (path === '/') return location.pathname === '/';
+      return location.pathname === path || location.pathname.startsWith(path + '/');
+    });
   }, [location.pathname]);
 
   return (
@@ -80,7 +88,7 @@ export function Header() {
               <Link
                 key={item.href}
                 to={item.href}
-                className={isActive(item.href) ? 'active' : ''}
+                className={isActive(item) ? 'active' : ''}
                 style={style}
               >
                 {item.label}
@@ -160,9 +168,9 @@ export function Header() {
                 const style = {
                   display: 'block', padding: '12px 16px', textDecoration: 'none',
                   fontFamily: '"JetBrains Mono", monospace', fontSize: '12px',
-                  color: isActive(item.href) ? 'var(--c-yellow)' : 'rgba(255,255,255,0.6)',
-                  background: isActive(item.href) ? 'rgba(255,217,59,0.06)' : 'transparent',
-                  borderLeft: isActive(item.href) ? '2px solid var(--c-yellow)' : '2px solid transparent',
+                  color: isActive(item) ? 'var(--c-yellow)' : 'rgba(255,255,255,0.6)',
+                  background: isActive(item) ? 'rgba(255,217,59,0.06)' : 'transparent',
+                  borderLeft: isActive(item) ? '2px solid var(--c-yellow)' : '2px solid transparent',
                   transition: 'color 0.2s, border-color 0.2s',
                   letterSpacing: '0.05em',
                 } as const;

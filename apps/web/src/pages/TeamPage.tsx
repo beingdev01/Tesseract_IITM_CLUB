@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin, Twitter, Instagram, Globe, Loader2, type LucideIcon } from 'lucide-react';
 import { api, type TeamMember } from '@/lib/api';
 import { Brackets, Pill, type Accent } from '@/components/tesseract';
+import { useSettings } from '@/context/SettingsContext';
 
 const TEAM_ACCENTS: Accent[] = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
 
@@ -19,6 +20,7 @@ const SOCIAL_ICONS: Record<string, LucideIcon> = {
 };
 
 export default function TeamPage() {
+  const { settings } = useSettings();
   const [activeTeam, setActiveTeam] = useState('All');
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,16 +49,30 @@ export default function TeamPage() {
     [teamMembers, activeTeam],
   );
 
+  /**
+   * Leadership strip: the first N members in display order (the API already sorts by
+   * `order` then `createdAt`). Only shown on the unfiltered view, so nobody can appear
+   * twice, and only when there are more members than N — a strip above an empty grid
+   * reads as broken.
+   */
+  const { leaders, gridMembers } = useMemo(() => {
+    const n = settings?.teamLeadershipCount ?? 4;
+    const showStrip = activeTeam === 'All' && n > 0 && teamMembers.length > n;
+    return showStrip
+      ? { leaders: teamMembers.slice(0, n), gridMembers: teamMembers.slice(n) }
+      : { leaders: [] as TeamMember[], gridMembers: filteredMembers };
+  }, [settings?.teamLeadershipCount, activeTeam, teamMembers, filteredMembers]);
+
   return (
     <Layout>
       <SEO
-        title="Members — Tesseract"
+        title="Team — Tesseract"
         description="Meet the people building Tesseract — the IITM BS student community."
         url="/team"
       />
       <BreadcrumbSchema items={[
         { name: 'Home', url: 'https://tesseract.iitm.ac.in' },
-        { name: 'Members', url: 'https://tesseract.iitm.ac.in/team' },
+        { name: 'Team', url: 'https://tesseract.iitm.ac.in/team' },
       ]} />
 
       {/* Hero */}
@@ -104,113 +120,145 @@ export default function TeamPage() {
           </div>
         </section>
       ) : (
-        <section className="lb-modules">
-          <div className="lb-sect-head">
-            <div>
-              <div className="lb-kicker">// {activeTeam.toLowerCase()} · {filteredMembers.length}</div>
-              <h2 className="lb-section-title">CREW INDEX</h2>
-            </div>
-            <div className="lb-kicker-right">filter · {activeTeam.toLowerCase()}</div>
-          </div>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTeam}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="lb-module-grid"
-              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
-            >
-              {filteredMembers.map((member, i) => {
-                const accent = TEAM_ACCENTS[i % TEAM_ACCENTS.length];
-                const initial = member.name?.charAt(0)?.toUpperCase() || '?';
-                const socials: Array<{ key: string; href?: string }> = [
-                  { key: 'github', href: member.github },
-                  { key: 'linkedin', href: member.linkedin },
-                  { key: 'twitter', href: member.twitter },
-                  { key: 'instagram', href: member.instagram },
-                ].filter((s) => s.href);
-
-                const slugOrId = member.slug || member.id;
-                return (
-                  <motion.div
-                    key={member.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: Math.min(i * 0.04, 0.4) }}
-                    className={`lb-module-wrap lb-c-${accent}`}
-                  >
-                    <Link to={`/team/${slugOrId}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                      <Brackets tag={`mem.${String(i + 1).padStart(2, '0')}`} accent={accent}>
-                        <div className="lb-module" style={{ minHeight: 280 }}>
-                          {/* Avatar */}
-                          <div
-                            className={`lb-hatch lb-c-${accent}`}
-                            style={{ height: 120, marginBottom: 14, position: 'relative' }}
-                          >
-                            {member.imageUrl ? (
-                              <img
-                                src={member.imageUrl}
-                                alt={member.name}
-                                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                              />
-                            ) : (
-                              <div className="lb-hatch-glyph" style={{ fontSize: 56 }}>{initial}</div>
-                            )}
-                          </div>
-                          <div className="lb-mono text-[10px] uppercase" style={{ color: `var(--c-${accent === 'red' ? 'red' : accent === 'yellow' ? 'yellow' : accent === 'green' ? 'green' : accent === 'blue' ? 'blue' : accent === 'purple' ? 'purple' : 'orange'})`, letterSpacing: '0.15em', marginBottom: 6 }}>
-                            #{member.team.toLowerCase().replace(/\s+/g, '_')}
-                          </div>
-                          <h3 className="lb-module-title" style={{ fontSize: 18 }}>{member.name}</h3>
-                          <p className="lb-mono text-xs" style={{ color: 'var(--fg-dim)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            {member.role}
-                          </p>
-
-                          {socials.length > 0 && (
-                            <div className="flex gap-2 mt-auto pt-3" style={{ borderTop: '1px dashed var(--line)' }}>
-                              {socials.map((s) => {
-                                const Icon = SOCIAL_ICONS[s.key] ?? Globe;
-                                return (
-                                  <a
-                                    key={s.key}
-                                    href={s.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
-                                    aria-label={s.key}
-                                    style={{ color: 'var(--fg-dim)' }}
-                                    className="hover:!text-white transition-colors"
-                                  >
-                                    <Icon className="h-4 w-4" />
-                                  </a>
-                                );
-                              })}
-                            </div>
-                          )}
-                          <div className="lb-module-link" style={{ marginTop: socials.length === 0 ? 'auto' : 12, paddingTop: socials.length === 0 ? 12 : 0, borderTop: socials.length === 0 ? '1px dashed var(--line)' : 'none' }}>
-                            VIEW PROFILE →
-                          </div>
-                        </div>
-                      </Brackets>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </AnimatePresence>
-
-          {filteredMembers.length === 0 && (
-            <div className="lb-module-grid" style={{ marginTop: 24 }}>
-              <Brackets tag="empty" accent="yellow">
-                <p className="text-center py-6 lb-mono text-xs uppercase" style={{ color: 'var(--fg-mute)', letterSpacing: '0.12em' }}>
-                  no members in this team
-                </p>
-              </Brackets>
-            </div>
+        <>
+          {leaders.length > 0 && (
+            <section className="lb-modules" style={{ paddingBottom: 0 }}>
+              <div className="lb-sect-head">
+                <div>
+                  <div className="lb-kicker">// running.the.society · {leaders.length}</div>
+                  <h2 className="lb-section-title">LEADERSHIP</h2>
+                </div>
+                <div className="lb-kicker-right">display order</div>
+              </div>
+              <div
+                className="lb-module-grid"
+                style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+              >
+                {leaders.map((member, i) => (
+                  <MemberCard key={member.id} member={member} index={i} />
+                ))}
+              </div>
+            </section>
           )}
-        </section>
+
+          <section className="lb-modules">
+            <div className="lb-sect-head">
+              <div>
+                <div className="lb-kicker">// {activeTeam.toLowerCase()} · {gridMembers.length}</div>
+                <h2 className="lb-section-title">CREW INDEX</h2>
+              </div>
+              <div className="lb-kicker-right">filter · {activeTeam.toLowerCase()}</div>
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTeam}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="lb-module-grid"
+                style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+              >
+                {gridMembers.map((member, i) => (
+                  // Continue numbering past the strip so mem.NN tags stay unique and sequential.
+                  <MemberCard key={member.id} member={member} index={i + leaders.length} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+
+            {gridMembers.length === 0 && (
+              <div className="lb-module-grid" style={{ marginTop: 24 }}>
+                <Brackets tag="empty" accent="yellow">
+                  <p className="text-center py-6 lb-mono text-xs uppercase" style={{ color: 'var(--fg-mute)', letterSpacing: '0.12em' }}>
+                    no members in this team
+                  </p>
+                </Brackets>
+              </div>
+            )}
+          </section>
+        </>
       )}
     </Layout>
+  );
+}
+
+/**
+ * One member tile. Shared by the leadership strip and the crew grid so the two can
+ * never drift apart. `index` drives the accent cycle and the mem.NN bracket tag, so
+ * the grid passes an offset index to continue numbering past the strip.
+ */
+function MemberCard({ member, index }: { member: TeamMember; index: number }) {
+  const accent = TEAM_ACCENTS[index % TEAM_ACCENTS.length];
+  const initial = member.name?.charAt(0)?.toUpperCase() || '?';
+  const socials: Array<{ key: string; href?: string }> = [
+    { key: 'github', href: member.github },
+    { key: 'linkedin', href: member.linkedin },
+    { key: 'twitter', href: member.twitter },
+    { key: 'instagram', href: member.instagram },
+  ].filter((s) => s.href);
+
+  const slugOrId = member.slug || member.id;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.04, 0.4) }}
+      className={`lb-module-wrap lb-c-${accent}`}
+    >
+      <Link to={`/team/${slugOrId}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+        <Brackets tag={`mem.${String(index + 1).padStart(2, '0')}`} accent={accent}>
+          <div className="lb-module" style={{ minHeight: 280 }}>
+            {/* Avatar */}
+            <div
+              className={`lb-hatch lb-c-${accent}`}
+              style={{ height: 120, marginBottom: 14, position: 'relative' }}
+            >
+              {member.imageUrl ? (
+                <img
+                  src={member.imageUrl}
+                  alt={member.name}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <div className="lb-hatch-glyph" style={{ fontSize: 56 }}>{initial}</div>
+              )}
+            </div>
+            <div className="lb-mono text-[10px] uppercase" style={{ color: `var(--c-${accent})`, letterSpacing: '0.15em', marginBottom: 6 }}>
+              #{member.team.toLowerCase().replace(/\s+/g, '_')}
+            </div>
+            <h3 className="lb-module-title" style={{ fontSize: 18 }}>{member.name}</h3>
+            <p className="lb-mono text-xs" style={{ color: 'var(--fg-dim)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {member.role}
+            </p>
+
+            {socials.length > 0 && (
+              <div className="flex gap-2 mt-auto pt-3" style={{ borderTop: '1px dashed var(--line)' }}>
+                {socials.map((s) => {
+                  const Icon = SOCIAL_ICONS[s.key] ?? Globe;
+                  return (
+                    <a
+                      key={s.key}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={s.key}
+                      style={{ color: 'var(--fg-dim)' }}
+                      className="hover:!text-white transition-colors"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+            <div className="lb-module-link" style={{ marginTop: socials.length === 0 ? 'auto' : 12, paddingTop: socials.length === 0 ? 12 : 0, borderTop: socials.length === 0 ? '1px dashed var(--line)' : 'none' }}>
+              VIEW PROFILE →
+            </div>
+          </div>
+        </Brackets>
+      </Link>
+    </motion.div>
   );
 }

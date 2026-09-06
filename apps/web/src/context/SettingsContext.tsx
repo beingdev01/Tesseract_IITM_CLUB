@@ -16,6 +16,7 @@ const defaultSettings: Settings = {
   clubDescription: 'The official Esports Society of the IIT Madras BS Program. Competitive esports, casual gaming, mind games, puzzles, and the community that brings it all together.',
   registrationOpen: true,
   maxEventsPerUser: 5,
+  teamLeadershipCount: 4,
   announcementsEnabled: true,
   showLeaderboard: false,
   showAchievements: true,

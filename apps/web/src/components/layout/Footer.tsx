@@ -247,7 +247,7 @@ export function Footer() {
             <div className="tf-col">
               <h4>CORE</h4>
               <Link to="/about">About</Link>
-              <Link to="/members">Members</Link>
+              <Link to="/members">Team</Link>
               <Link to="/achievements">Achievements</Link>
               <Link to="/announcements">Announcements</Link>
             </div>

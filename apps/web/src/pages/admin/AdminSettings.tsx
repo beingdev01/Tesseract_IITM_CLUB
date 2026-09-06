@@ -35,6 +35,7 @@ export default function AdminSettings() {
     clubDescription: '',
     registrationOpen: true,
     maxEventsPerUser: 5,
+    teamLeadershipCount: 4,
     announcementsEnabled: true,
     showLeaderboard: false,
     showAchievements: true,
@@ -235,6 +236,22 @@ export default function AdminSettings() {
                 value={settings.maxEventsPerUser}
                 onChange={(e) => setSettings({ ...settings, maxEventsPerUser: parseInt(e.target.value) || 5 })}
               />
+            </Field>
+            <Field label="LEADERSHIP STRIP SIZE">
+              <input
+                className="t-input"
+                type="number"
+                min={0}
+                max={24}
+                value={settings.teamLeadershipCount ?? 4}
+                onChange={(e) => {
+                  const parsed = parseInt(e.target.value);
+                  setSettings({ ...settings, teamLeadershipCount: Number.isNaN(parsed) ? 0 : parsed });
+                }}
+              />
+              <span className="lb-mono text-[10px] block mt-1" style={{ color: 'var(--fg-mute)' }}>
+                // first N members by display order appear above the crew index · 0 disables
+              </span>
             </Field>
           </div>
         </Brackets>

@@ -135,6 +135,10 @@ model Settings {
   // Competition feature toggle
   competitionEnabled Boolean @default(false) @map("competition_enabled")
 
+  // How many team members (first N in display order) render in the leadership
+  // strip at the top of the team page. 0 disables the strip.
+  teamLeadershipCount Int @default(4) @map("team_leadership_count")
+
   @@map("settings")
 }
 

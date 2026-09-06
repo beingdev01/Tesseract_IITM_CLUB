@@ -425,6 +425,7 @@ export interface Settings {
   clubDescription: string;
   registrationOpen: boolean;
   maxEventsPerUser: number;
+  teamLeadershipCount?: number;
   announcementsEnabled: boolean;
   showLeaderboard?: boolean;
   showAchievements?: boolean;
