@@ -206,59 +206,71 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
       transition={{ delay: Math.min(index * 0.04, 0.4) }}
       className={`lb-module-wrap lb-c-${accent}`}
     >
-      <Link to={`/team/${slugOrId}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-        <Brackets tag={`mem.${String(index + 1).padStart(2, '0')}`} accent={accent}>
-          <div className="lb-module" style={{ minHeight: 280 }}>
-            {/* Avatar */}
-            <div
-              className={`lb-hatch lb-c-${accent}`}
-              style={{ height: 120, marginBottom: 14, position: 'relative' }}
-            >
-              {member.imageUrl ? (
-                <img
-                  src={member.imageUrl}
-                  alt={member.name}
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              ) : (
-                <div className="lb-hatch-glyph" style={{ fontSize: 56 }}>{initial}</div>
-              )}
-            </div>
-            <div className="lb-mono text-[10px] uppercase" style={{ color: `var(--c-${accent})`, letterSpacing: '0.15em', marginBottom: 6 }}>
-              #{member.team.toLowerCase().replace(/\s+/g, '_')}
-            </div>
-            <h3 className="lb-module-title" style={{ fontSize: 18 }}>{member.name}</h3>
-            <p className="lb-mono text-xs" style={{ color: 'var(--fg-dim)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {member.role}
-            </p>
-
-            {socials.length > 0 && (
-              <div className="flex gap-2 mt-auto pt-3" style={{ borderTop: '1px dashed var(--line)' }}>
-                {socials.map((s) => {
-                  const Icon = SOCIAL_ICONS[s.key] ?? Globe;
-                  return (
-                    <a
-                      key={s.key}
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      aria-label={s.key}
-                      style={{ color: 'var(--fg-dim)' }}
-                      className="hover:!text-white transition-colors"
-                    >
-                      <Icon className="h-4 w-4" />
-                    </a>
-                  );
-                })}
-              </div>
+      {/*
+        The whole card links to the profile, but the social icons are anchors too —
+        and an anchor inside an anchor is invalid HTML with unreliable click and
+        keyboard behaviour. So the profile link is laid over the card as a sibling
+        (.lb-module-wrap is already position:relative) and the icons sit above it in
+        the stacking order, keeping both clickable without nesting.
+      */}
+      <Link
+        to={`/team/${slugOrId}`}
+        aria-label={`View ${member.name}'s profile`}
+        style={{ position: 'absolute', inset: 0, zIndex: 1 }}
+      />
+      <Brackets tag={`mem.${String(index + 1).padStart(2, '0')}`} accent={accent}>
+        <div className="lb-module" style={{ minHeight: 280 }}>
+          {/* Avatar */}
+          <div
+            className={`lb-hatch lb-c-${accent}`}
+            style={{ height: 120, marginBottom: 14, position: 'relative' }}
+          >
+            {member.imageUrl ? (
+              <img
+                src={member.imageUrl}
+                alt={member.name}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <div className="lb-hatch-glyph" style={{ fontSize: 56 }}>{initial}</div>
             )}
-            <div className="lb-module-link" style={{ marginTop: socials.length === 0 ? 'auto' : 12, paddingTop: socials.length === 0 ? 12 : 0, borderTop: socials.length === 0 ? '1px dashed var(--line)' : 'none' }}>
-              VIEW PROFILE →
-            </div>
           </div>
-        </Brackets>
-      </Link>
+          <div className="lb-mono text-[10px] uppercase" style={{ color: `var(--c-${accent})`, letterSpacing: '0.15em', marginBottom: 6 }}>
+            #{member.team.toLowerCase().replace(/\s+/g, '_')}
+          </div>
+          <h3 className="lb-module-title" style={{ fontSize: 18 }}>{member.name}</h3>
+          <p className="lb-mono text-xs" style={{ color: 'var(--fg-dim)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            {member.role}
+          </p>
+
+          {socials.length > 0 && (
+            <div
+              className="flex gap-2 mt-auto pt-3"
+              style={{ borderTop: '1px dashed var(--line)', position: 'relative', zIndex: 2 }}
+            >
+              {socials.map((s) => {
+                const Icon = SOCIAL_ICONS[s.key] ?? Globe;
+                return (
+                  <a
+                    key={s.key}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} on ${s.key}`}
+                    style={{ color: 'var(--fg-dim)' }}
+                    className="hover:!text-white transition-colors"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
+            </div>
+          )}
+          <div className="lb-module-link" style={{ marginTop: socials.length === 0 ? 'auto' : 12, paddingTop: socials.length === 0 ? 12 : 0, borderTop: socials.length === 0 ? '1px dashed var(--line)' : 'none' }}>
+            VIEW PROFILE →
+          </div>
+        </div>
+      </Brackets>
     </motion.div>
   );
 }
