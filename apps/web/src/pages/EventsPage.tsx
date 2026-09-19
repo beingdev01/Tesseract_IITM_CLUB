@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Layout } from '@/components/layout/Layout';
@@ -396,6 +396,9 @@ export default function EventsPage() {
                 {list.map((e, i) => {
                   const accent = ROW_ACCENTS[i % ROW_ACCENTS.length];
                   const isRegistered = registeredEventIds.has(e.id);
+                  const regStatus = getRegistrationStatus(e);
+                  const isExternalReg = e.registrationUrl && e.status !== 'PAST' && regStatus.canRegister;
+                  
                   return (
                     <motion.div
                       key={e.id}
@@ -422,18 +425,31 @@ export default function EventsPage() {
                           </div>
                           <div className="event-row-host">venue · {e.venue || e.location || 'TBA'}</div>
                         </div>
-                        <button
-                          disabled={isRegistered || registering === e.id || e.status === 'PAST'}
-                          onClick={(ev) => {
-                            ev.preventDefault();
-                            ev.stopPropagation();
-                            void handleRegister(e);
-                          }}
-                          className="lb-btn-primary event-row-btn"
-                          style={{ opacity: isRegistered || e.status === 'PAST' ? 0.5 : 1 }}
-                        >
-                          {e.status === 'PAST' ? 'PAST' : isRegistered ? '✓' : registering === e.id ? '…' : 'RSVP'}
-                        </button>
+                        {isExternalReg ? (
+                          <a
+                            href={e.registrationUrl}
+                            target="_self"
+                            rel="noopener noreferrer"
+                            className="lb-btn-primary event-row-btn flex items-center justify-center gap-1"
+                            style={{ opacity: isRegistered || e.status === 'PAST' ? 0.5 : 1 }}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                            Saavan
+                          </a>
+                        ) : (
+                          <button
+                            disabled={isRegistered || registering === e.id || e.status === 'PAST'}
+                            onClick={(ev) => {
+                              ev.preventDefault();
+                              ev.stopPropagation();
+                              void handleRegister(e);
+                            }}
+                            className="lb-btn-primary event-row-btn"
+                            style={{ opacity: isRegistered || e.status === 'PAST' ? 0.5 : 1 }}
+                          >
+                            {e.status === 'PAST' ? 'PAST' : isRegistered ? '✓' : registering === e.id ? '…' : 'RSVP'}
+                          </button>
+                        )}
                       </Link>
                     </motion.div>
                   );

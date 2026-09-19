@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, ArrowRight, Loader2, Users, Clock } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, Loader2, Users, Clock, ExternalLink } from 'lucide-react';
 import { api, type HomeEventPreview } from '@/lib/api';
 import { formatTime, getWeekdayShort, getMonthShort, getDayOfMonth } from '@/lib/dateUtils';
 import { processImageUrl } from '@/lib/imageUtils';
@@ -138,6 +138,8 @@ export function UpcomingEvents() {
               const eventUrl = regStatus.canRegister && hasCustomFields && !isRegistered
                 ? `/events/${event.slug}?register=1`
                 : `/events/${event.slug}`;
+              // External registration link takes priority
+              const isExternalReg = event.registrationUrl && event.status !== 'PAST' && regStatus.canRegister;
               
               return (
                 <motion.div
@@ -237,13 +239,23 @@ export function UpcomingEvents() {
                         )}
                       </div>
                       
-                      {/* CTA */}
+{/* CTA */}
                       {isRegistered ? (
                         <Button 
                           className="w-full border border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-200 dark:hover:bg-emerald-500/20"
                         >
                           Registered - View Details
                         </Button>
+                      ) : isExternalReg ? (
+                        <a
+                          href={event.registrationUrl!}
+                          target="_self"
+                          rel="noopener noreferrer"
+                          className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-colors"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Register on Saavan
+                        </a>
                       ) : (
                         <Button 
                           className={`w-full ${
@@ -256,7 +268,7 @@ export function UpcomingEvents() {
                         </Button>
                       )}
                     </div>
-                  </div>
+                    </div>
                   </Link>
                 </motion.div>
               );

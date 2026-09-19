@@ -518,6 +518,21 @@ export default function EventDetailPage() {
     </Button>
   );
 
+  // External registration link handler
+  const externalRegLink = event?.registrationUrl
+    ? (
+      <a
+        href={event.registrationUrl}
+        target="_self"
+        rel="noopener noreferrer"
+        className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-colors"
+      >
+        <ExternalLink className="h-4 w-4 mr-2" />
+        Register on Saavan
+      </a>
+    )
+    : null;
+
   const handleShare = async () => {
     const url = window.location.href;
     if (navigator.share) {
@@ -902,7 +917,10 @@ export default function EventDetailPage() {
                   {/* Register Button - different UI for team events */}
                   {acceptedInvitation ? (
                     acceptedGuestTicket
-                  ) : pendingInvitation ? null : event.teamRegistration ? (
+                  ) : pendingInvitation ? null : event.registrationUrl && event.status !== 'PAST' && regStatus.canRegister ? (
+                    // External registration link (Saavan)
+                    externalRegLink
+                  ) : event.teamRegistration ? (
                     // Team Registration UI
                     <>
                       {teamLoading ? (
@@ -964,6 +982,9 @@ export default function EventDetailPage() {
                     <>
                       {isRegistered ? (
                         qrTicketCta
+                      ) : event.registrationUrl && event.status !== 'PAST' && regStatus.canRegister ? (
+                        // External registration link (Saavan)
+                        externalRegLink
                       ) : event.status !== 'PAST' && regStatus.canRegister ? (
                         user ? (
                             <Button
@@ -1275,7 +1296,10 @@ export default function EventDetailPage() {
                     {/* Register Button - different UI for team events */}
                     {acceptedInvitation ? (
                       acceptedGuestTicket
-                    ) : pendingInvitation ? null : event.teamRegistration ? (
+                    ) : pendingInvitation ? null : event.registrationUrl && event.status !== 'PAST' && regStatus.canRegister ? (
+                      // External registration link (Saavan)
+                      externalRegLink
+                    ) : event.teamRegistration ? (
                       // Team Registration UI (Desktop)
                       <>
                         {teamLoading ? (
@@ -1335,6 +1359,9 @@ export default function EventDetailPage() {
                       <>
                         {isRegistered ? (
                           qrTicketCta
+                        ) : event.registrationUrl && event.status !== 'PAST' && regStatus.canRegister ? (
+                          // External registration link (Saavan)
+                          externalRegLink
                         ) : event.status !== 'PAST' && regStatus.canRegister ? (
                           user ? (
                             <Button

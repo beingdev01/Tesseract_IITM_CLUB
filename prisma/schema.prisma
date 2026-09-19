@@ -192,6 +192,7 @@ model Event {
   tags                  String[]    @default([])
   targetAudience        String?     @map("target_audience")
   videoUrl              String?     @map("video_url")
+  registrationUrl       String?     @map("registration_url")
   slug                  String      @unique @default("")
   allowLateRegistration Boolean     @default(false) @map("allow_late_registration")
   eventDays             Int         @default(1) @map("event_days")

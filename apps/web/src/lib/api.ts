@@ -767,6 +767,7 @@ export interface Event {
   faqs?: FAQ[];
   imageGallery?: string[];
   videoUrl?: string;
+  registrationUrl?: string;
   tags?: string[];
   featured?: boolean;
   allowLateRegistration?: boolean;
@@ -1557,6 +1558,7 @@ export interface HomeEventPreview {
   eventType?: string | null;
   capacity?: number | null;
   imageUrl?: string | null;
+  registrationUrl?: string | null;
   registrationFields?: EventRegistrationField[] | null;
   _count?: { registrations: number };
 }
