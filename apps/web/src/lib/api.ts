@@ -761,6 +761,7 @@ export interface Event {
   faqs?: FAQ[];
   imageGallery?: string[];
   videoUrl?: string;
+  registrationUrl?: string;
   tags?: string[];
   featured?: boolean;
   allowLateRegistration?: boolean;
@@ -1551,6 +1552,7 @@ export interface HomeEventPreview {
   eventType?: string | null;
   capacity?: number | null;
   imageUrl?: string | null;
+  registrationUrl?: string | null;
   registrationFields?: EventRegistrationField[] | null;
   _count?: { registrations: number };
 }
@@ -1625,6 +1627,26 @@ export interface HomePageData {
   featuredAchievements: HomeAchievementPreview[];
   teamHighlights: HomeTeamPreview[];
   networkHighlights: HomeNetworkPreview[];
+}
+
+export interface Redirect {
+  id: string;
+  slug: string;
+  destinationUrl: string;
+  enabled: boolean;
+  hits: number;
+  lastUsedAt: string | null;
+  note: string | null;
+  createdBy: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RedirectInput {
+  slug: string;
+  destinationUrl: string;
+  note?: string | null;
+  enabled?: boolean;
 }
 
 export const api = {
@@ -1932,6 +1954,18 @@ export const api = {
     ),
   resetSettings: (token: string) =>
     request<Settings>('/settings/reset', { method: 'POST', token }),
+
+  // Redirects (short links)
+  resolveRedirect: (slug: string) =>
+    request<{ destinationUrl: string }>(`/redirects/resolve/${encodeURIComponent(slug)}`),
+  getRedirects: (token: string) =>
+    request<Redirect[]>('/redirects', { token }),
+  createRedirect: (data: RedirectInput, token: string) =>
+    request<Redirect>('/redirects', { method: 'POST', body: JSON.stringify(data), token }),
+  updateRedirect: (id: string, data: Partial<RedirectInput>, token: string) =>
+    request<Redirect>(`/redirects/${id}`, { method: 'PATCH', body: JSON.stringify(data), token }),
+  deleteRedirect: (id: string, token: string) =>
+    request<{ id: string }>(`/redirects/${id}`, { method: 'DELETE', token }),
 
   // Mail (admin)
   getMailRecipients: (search: string, type: 'users' | 'network', token: string) =>
