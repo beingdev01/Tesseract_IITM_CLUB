@@ -34,6 +34,7 @@ import { normalizeTrustedVideoEmbedUrl } from '@/lib/videoEmbed';
 import { LightboxGallery } from '@/components/media/LightboxGallery';
 import QRTicket from '@/components/attendance/QRTicket';
 import ChiefGuestsStrip from '@/components/events/ChiefGuestsStrip';
+import { getSaavanEventBySlug } from '@/data/saavanEvents';
 import { toast } from 'sonner';
 
 type EventStatus = 'UPCOMING' | 'ONGOING' | 'PAST';
@@ -50,6 +51,28 @@ const registrationOutlineActionClass = 'event-register-outline-action';
 const registrationTeamBadgeClass = 'event-register-team-badge';
 const registrationMetricValueClass = 'event-register-metric-value';
 const registrationProgressFillClass = 'event-register-progress-fill';
+
+// Saavan'26 hardcoded events (work without any backend record)
+const SAAVAN_MARKER = 'saavan-26';
+const isSaavanEvent = (idOrSlug?: string | null) =>
+  !!idOrSlug && (idOrSlug.endsWith('-saavan-26') || idOrSlug === SAAVAN_MARKER);
+function mapSaavanToEvent(s: import('@/data/saavanEvents').SaavanEvent): import('@/lib/api').Event {
+  return {
+    id: s.id, title: s.title, slug: s.slug, description: s.description,
+    shortDescription: s.shortDescription, status: s.status,
+    startDate: s.startDate, endDate: s.endDate, location: s.location, venue: s.venue,
+    eventType: s.eventType, capacity: s.capacity ?? undefined, imageUrl: s.imageUrl,
+    registrationUrl: s.registrationUrl, createdBy: SAAVAN_MARKER,
+    teamRegistration: s.teamRegistration, teamMinSize: s.teamMinSize, teamMaxSize: s.teamMaxSize,
+    eventDays: s.eventDays, dayLabels: s.dayLabels, featured: s.featured,
+    prerequisites: s.prerequisites, learningOutcomes: s.learningOutcomes, targetAudience: s.targetAudience,
+    allowLateRegistration: true, registrationStartDate: undefined, registrationEndDate: s.endDate,
+    registrationFields: [], speakers: [], resources: s.rulebookUrl ? [{ title: 'Rulebook', url: s.rulebookUrl, type: 'link' }] : [],
+    faqs: [], imageGallery: [], videoUrl: undefined, tags: [s.eventType, "Saavan'26"], guests: [],
+    agenda: undefined, highlights: s.prizes ? `Prize Pool: ${s.prizes}` : undefined,
+    _count: { registrations: 0 }, isRegistered: false, userInvitation: null,
+  } as unknown as import('@/lib/api').Event;
+}
 
 // Resource type icons
 const resourceIcons: Record<string, React.ReactNode> = {
@@ -257,6 +280,13 @@ export default function EventDetailPage() {
         setAutoRegisterTriggered(false);
         setLoading(true);
         setError(null);
+        const saavan = getSaavanEventBySlug(id);
+        if (saavan) {
+          setEvent(mapSaavanToEvent(saavan));
+          setIsRegistered(false);
+          setLoading(false);
+          return;
+        }
         const eventData = await api.getEvent(id, token || undefined);
         setEvent(eventData);
         setIsRegistered(Boolean(eventData.isRegistered || eventData.userInvitation?.status === 'ACCEPTED'));
@@ -273,6 +303,10 @@ export default function EventDetailPage() {
   // Fetch team data for team events
   useEffect(() => {
     const fetchTeam = async () => {
+      if (!event || isSaavanEvent(event.id) || event.createdBy === SAAVAN_MARKER) {
+        setMyTeam(null);
+        return;
+      }
       if (!event?.teamRegistration || !token || !event.id) {
         setMyTeam(null);
         return;
@@ -343,6 +377,7 @@ export default function EventDetailPage() {
 
   const handleTeamChange = async () => {
     if (!event?.id || !token) return;
+    if (isSaavanEvent(event?.id)) return;
     try {
       const team = await api.getMyTeam(event.id, token);
       setMyTeam(team);
@@ -358,6 +393,12 @@ export default function EventDetailPage() {
 
   const performRegistration = useCallback(async (additionalFields?: RegistrationAdditionalFieldInput[]) => {
     if (!event || !token) {
+      return;
+    }
+    if (isSaavanEvent(event?.id)) {
+      if (event.registrationUrl) {
+        window.location.assign(event.registrationUrl);
+      }
       return;
     }
 
@@ -405,6 +446,11 @@ export default function EventDetailPage() {
 
   const handleRegister = useCallback(async () => {
     if (!event) return;
+
+    if (event.registrationUrl) {
+      window.location.assign(event.registrationUrl);
+      return;
+    }
 
     if (authLoading) {
       return;

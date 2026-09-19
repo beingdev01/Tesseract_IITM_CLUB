@@ -47,7 +47,7 @@ export const SAAVAN_EVENTS: SaavanEvent[] = [
     venue: 'Google Forms / Google Meet',
     eventType: 'Puzzle & Mind Games',
     capacity: null,
-    imageUrl: 'https://drive.google.com/uc?export=view&id=11e3UjcO6IicQ9kT3BIE5UvVsqeFlJt8a',
+    imageUrl: 'https://res.cloudinary.com/da5r9juak/image/upload/v1789851883/escape_room_tvo1wx.png',
     registrationUrl: 'https://saavan.iitmparadox.org/events/sports/escape-room',
     teamRegistration: false,
     teamMinSize: 1,
@@ -81,7 +81,7 @@ export const SAAVAN_EVENTS: SaavanEvent[] = [
     venue: 'Google Forms / Google Meet',
     eventType: 'Nostalgic Competitive Event',
     capacity: null,
-    imageUrl: 'https://drive.google.com/uc?export=view&id=1RmWbFRuOVn1mjSFX-qkgmit5oELf7dcC',
+    imageUrl: 'https://res.cloudinary.com/da5r9juak/image/upload/v1789851882/back2bachpan_whrafo.png',
     registrationUrl: 'https://saavan.iitmparadox.org/events/sports/back2bachpan',
     teamRegistration: false,
     teamMinSize: 1,
@@ -117,7 +117,7 @@ export const SAAVAN_EVENTS: SaavanEvent[] = [
     venue: 'BGMI Application',
     eventType: 'Esports Tournament',
     capacity: null,
-    imageUrl: 'https://drive.google.com/uc?export=view&id=14ZzDJQJ6C0T3eWJ_4umbLISCvu2Wxgcm',
+    imageUrl: 'https://res.cloudinary.com/da5r9juak/image/upload/v1789851884/bgmi_woqf4b.png',
     registrationUrl: 'https://saavan.iitmparadox.org/events/sports/the-battleground-bgmi',
     teamRegistration: true,
     teamMinSize: 2,
@@ -153,7 +153,7 @@ export const SAAVAN_EVENTS: SaavanEvent[] = [
     venue: 'Free Fire Max Application',
     eventType: 'Esports Tournament',
     capacity: null,
-    imageUrl: 'https://drive.google.com/uc?export=view&id=1kiNp7dLzj8bkJ_zB-tAnvR4Aq5RS4lvx',
+    imageUrl: 'https://res.cloudinary.com/da5r9juak/image/upload/v1789851883/free_fire_i4ehpt.png',
     registrationUrl: 'https://saavan.iitmparadox.org/events/sports/the-battleground-free-fire',
     teamRegistration: true,
     teamMinSize: 2,
@@ -170,7 +170,7 @@ export const SAAVAN_EVENTS: SaavanEvent[] = [
 ];
 
 export function getSaavanEventBySlug(slug: string): SaavanEvent | undefined {
-  return SAAVAN_EVENTS.find(e => e.slug === slug);
+  return SAAVAN_EVENTS.find(e => e.slug === slug || e.id === slug);
 }
 
 export function getUpcomingSaavanEvents(): SaavanEvent[] {
@@ -179,4 +179,22 @@ export function getUpcomingSaavanEvents(): SaavanEvent[] {
 
 export function getFeaturedSaavanEvent(): SaavanEvent | undefined {
   return SAAVAN_EVENTS.find(e => e.featured && e.status === 'UPCOMING');
+}
+
+// Registration is ON for every Saavan'26 event: any UPCOMING event is
+// registrable. Dates are informational only and never block registration.
+export function getSaavanRegistrationStatus(event: SaavanEvent): {
+  status: 'not_started' | 'open' | 'closed' | 'full' | 'past';
+  message: string;
+  canRegister: boolean;
+} {
+  if (event.status === 'PAST') {
+    return { status: 'past', message: 'Event has ended', canRegister: false };
+  }
+
+  if (event.capacity && event.capacity <= 0) {
+    return { status: 'full', message: 'Event is full', canRegister: false };
+  }
+
+  return { status: 'open', message: 'Registration open', canRegister: true };
 }

@@ -17,24 +17,14 @@ function getRegistrationStatus(event: SaavanEvent): {
   message: string;
   canRegister: boolean;
 } {
-  const now = new Date();
-  const regStart = new Date(event.startDate);
-  const regEnd = new Date(event.startDate);
-
+  // Registration is ON for every Saavan'26 event. Dates are informational
+  // only and never block registration.
   if (event.status === 'PAST') {
     return { status: 'past', message: 'Event ended', canRegister: false };
   }
 
   if (event.capacity && event.capacity <= 0) {
     return { status: 'full', message: 'Sold out', canRegister: false };
-  }
-
-  if (regStart && now < regStart) {
-    return { status: 'not_started', message: 'Coming soon', canRegister: false };
-  }
-
-  if (regEnd && now > regEnd) {
-    return { status: 'closed', message: 'Closed', canRegister: false };
   }
 
   return { status: 'open', message: 'Register now', canRegister: true };

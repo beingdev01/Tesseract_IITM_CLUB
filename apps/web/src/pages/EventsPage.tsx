@@ -37,26 +37,14 @@ function getSaavanRegistrationStatus(event: SaavanEvent): {
   message: string;
   canRegister: boolean;
 } {
-  const now = new Date();
-  const eventStart = new Date(event.startDate);
-  const eventEnd = event.endDate ? new Date(event.endDate) : eventStart;
-  const regStart = eventStart; // Registration opens at event start for Saavan events
-  const regEnd = eventEnd; // Registration closes at event end
-
+  // Registration is ON for every Saavan'26 event. Dates are informational
+  // only and never block registration.
   if (event.status === 'PAST') {
     return { status: 'past', message: 'Event has ended', canRegister: false };
   }
 
   if (event.capacity && event.capacity <= 0) {
     return { status: 'full', message: 'Event is full', canRegister: false };
-  }
-
-  if (regStart && now < regStart) {
-    return { status: 'not_started', message: 'Registration opens soon', canRegister: false };
-  }
-
-  if (now > regEnd) {
-    return { status: 'closed', message: 'Registration closed', canRegister: false };
   }
 
   return { status: 'open', message: 'Registration open', canRegister: true };
@@ -72,6 +60,11 @@ export default function EventsPage() {
   const events = SAAVAN_EVENTS;
 
   const handleRegister = async (event: SaavanEvent) => {
+    // Saavan'26 events register on the Saavan site (same tab) — no login needed.
+    if (event.registrationUrl) {
+      window.location.assign(event.registrationUrl);
+      return;
+    }
     const regStatus = getSaavanRegistrationStatus(event);
     if (!regStatus.canRegister) {
       toast.error(regStatus.message);
@@ -169,13 +162,24 @@ export default function EventsPage() {
                   {featured.shortDescription || featured.description?.slice(0, 240) || 'No description.'}
                 </p>
                 <div className="event-feat-actions">
-                  <button
-                    disabled={registeredEventIds.has(featured.id)}
-                    onClick={() => void handleRegister(featured)}
-                    className="lb-btn-primary lb-btn-lg"
-                  >
-                    {registeredEventIds.has(featured.id) ? '✓ REGISTERED' : 'RSVP ✓'}
-                  </button>
+                  {featured.registrationUrl ? (
+                    <a
+                      href={featured.registrationUrl}
+                      target="_self"
+                      rel="noopener noreferrer"
+                      className="lb-btn-primary lb-btn-lg"
+                    >
+                      REGISTER ON SAAVAN →
+                    </a>
+                  ) : (
+                    <button
+                      disabled={registeredEventIds.has(featured.id)}
+                      onClick={() => void handleRegister(featured)}
+                      className="lb-btn-primary lb-btn-lg"
+                    >
+                      {registeredEventIds.has(featured.id) ? '✓ REGISTERED' : 'RSVP ✓'}
+                    </button>
+                  )}
                   <Link to={`/events/${featured.slug}`} className="lb-btn-ghost lb-btn-lg">
                     DETAILS →
                   </Link>
