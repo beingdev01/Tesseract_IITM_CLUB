@@ -4,30 +4,28 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowRight, Loader2, Users, Clock, ExternalLink } from 'lucide-react';
-import { api, type HomeEventPreview } from '@/lib/api';
 import { formatTime, getWeekdayShort, getMonthShort, getDayOfMonth } from '@/lib/dateUtils';
 import { processImageUrl } from '@/lib/imageUtils';
 import { useMotionConfig } from '@/hooks/useMotionConfig';
 import { useAuth } from '@/context/AuthContext';
-import { useHomePageData } from '@/hooks/useHomePageData';
+import { getUpcomingSaavanEvents, type SaavanEvent } from '@/data/saavanEvents';
 
 const EMPTY_REGISTERED_IDS = new Set<string>();
 
-function getRegistrationStatus(event: HomeEventPreview): {
+function getRegistrationStatus(event: SaavanEvent): {
   status: 'not_started' | 'open' | 'closed' | 'full' | 'past';
   message: string;
   canRegister: boolean;
 } {
   const now = new Date();
-  const eventStart = new Date(event.startDate);
-  const regStart = event.registrationStartDate ? new Date(event.registrationStartDate) : null;
-  const regEnd = event.registrationEndDate ? new Date(event.registrationEndDate) : eventStart;
+  const regStart = new Date(event.startDate);
+  const regEnd = new Date(event.startDate);
 
   if (event.status === 'PAST') {
     return { status: 'past', message: 'Event ended', canRegister: false };
   }
 
-  if (event.capacity && event._count && event._count.registrations >= event.capacity) {
+  if (event.capacity && event.capacity <= 0) {
     return { status: 'full', message: 'Sold out', canRegister: false };
   }
 
@@ -43,36 +41,16 @@ function getRegistrationStatus(event: HomeEventPreview): {
 }
 
 export function UpcomingEvents() {
-  const { data: homeData, isLoading } = useHomePageData();
-  const events = homeData?.upcomingEvents ?? [];
+  const events = getUpcomingSaavanEvents();
   const { isMobile, shouldReduceMotion } = useMotionConfig();
   const { token } = useAuth();
-  const [registeredEventIds, setRegisteredEventIds] = useState<Set<string>>(EMPTY_REGISTERED_IDS);
+  const [registeredEventIds] = useState<Set<string>>(EMPTY_REGISTERED_IDS);
   const visibleRegisteredEventIds = token ? registeredEventIds : EMPTY_REGISTERED_IDS;
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-
-    if (!token) {
-      return () => {
-        isMounted = false;
-      };
-    }
-
-    api.getMyRegistrations(token)
-      .then((registrations) => {
-        if (!isMounted) return;
-        setRegisteredEventIds(new Set(registrations.map((registration) => registration.eventId)));
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setRegisteredEventIds(new Set());
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [token]);
+    setIsLoading(false);
+  }, []);
 
   // Animation configs based on device
   const animationDuration = shouldReduceMotion ? 0.3 : 0.6;
@@ -100,7 +78,7 @@ export function UpcomingEvents() {
                 Events
               </span>
             </h2>
-            <p className="text-sm text-gray-600 dark:text-zinc-400 sm:text-lg">Join us for exciting workshops, hackathons, and learning sessions</p>
+            <p className="text-sm text-gray-600 dark:text-zinc-400 sm:text-lg">Saavan'26 — Escape Room, Back2Bachpan, BGMI & Free Fire</p>
           </div>
           
           <Link to="/events" className="hidden sm:block">
@@ -133,12 +111,6 @@ export function UpcomingEvents() {
             {events.map((event, index) => {
               const regStatus = getRegistrationStatus(event);
               const isRegistered = visibleRegisteredEventIds.has(event.id);
-              // Add ?register=1 if registration is open and event has custom fields
-              const hasCustomFields = event.registrationFields && event.registrationFields.length > 0;
-              const eventUrl = regStatus.canRegister && hasCustomFields && !isRegistered
-                ? `/events/${event.slug}?register=1`
-                : `/events/${event.slug}`;
-              // External registration link takes priority
               const isExternalReg = event.registrationUrl && event.status !== 'PAST' && regStatus.canRegister;
               
               return (
@@ -151,7 +123,7 @@ export function UpcomingEvents() {
                   whileHover={!isMobile ? { y: -8 } : undefined}
                   className="group"
                 >
-                  <Link to={eventUrl} className="block h-full">
+                  <Link to={`/events/${event.slug}`} className="block h-full">
                     <div className="h-full overflow-hidden rounded-2xl border border-gray-100 dark:border-zinc-800 bg-white dark:bg-surface-1 shadow-sm transition-all duration-500 hover:shadow-xl dark:border-zinc-800 dark:bg-[#0f0f14] dark:hover:shadow-black/30">
                       {/* Image Container - 16:9 aspect ratio for wide posters */}
                       <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
@@ -234,12 +206,12 @@ export function UpcomingEvents() {
                         {event.capacity && (
                           <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400">
                             <Users className="h-4 w-4 text-amber-500 dark:text-rose-300" />
-                            <span>{event._count?.registrations || 0}/{event.capacity} spots filled</span>
+                            <span>{event.capacity} spots</span>
                           </div>
                         )}
                       </div>
                       
-{/* CTA */}
+                      {/* CTA */}
                       {isRegistered ? (
                         <Button 
                           className="w-full border border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-200 dark:hover:bg-emerald-500/20"
@@ -248,7 +220,7 @@ export function UpcomingEvents() {
                         </Button>
                       ) : isExternalReg ? (
                         <a
-                          href={event.registrationUrl!}
+                          href={event.registrationUrl}
                           target="_self"
                           rel="noopener noreferrer"
                           className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-lg hover:from-amber-600 hover:to-orange-600 transition-colors"
