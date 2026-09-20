@@ -14,7 +14,7 @@
  */
 
 // Image preset types for different contexts
-export type ImagePreset = 
+export type ImagePreset =
   | 'thumbnail'   // Small preview, filled
   | 'medium'      // Medium size, filled
   | 'large'       // Large, preserves aspect
@@ -24,6 +24,8 @@ export type ImagePreset =
   | 'square'      // Square for avatars (1:1)
   | 'gallery'     // Gallery images, fit within bounds
   | 'event-cover' // Event page cover, wide (16:9)
+  | 'poster'      // Event poster, preserves aspect (no crop — for portrait posters)
+  | 'poster-card' // Event poster thumbnail, smart-crop (portrait-aware)
   | 'team-avatar' // Team member avatars (1:1, face detection)
   | 'fit';        // Fit entire image, no crop (may letterbox)
 
@@ -78,8 +80,14 @@ function addCloudinaryTransformations(url: string, preset?: ImagePreset): string
     // Wide banner/hero images - 16:9 ratio for wide landscape posters
     cover: 'c_fill,g_center,w_1920,h_1080,q_auto,f_auto',
     
-    // Card thumbnails - 16:9 ratio to match wide posters
-    card: 'c_fill,g_center,w_640,h_360,q_auto,f_auto',
+    // Card thumbnails - 16:9 ratio to match wide posters (smart gravity for portrait sources)
+    card: 'c_fill,g_auto,w_640,h_360,q_auto,f_auto',
+
+    // Event poster (full) - no crop, preserve aspect ratio for portrait posters
+    poster: 'c_limit,w_1600,q_auto,f_auto',
+
+    // Event poster thumbnail - smart-crop, portrait-aware
+    'poster-card': 'c_fill,g_auto,w_640,h_360,q_auto,f_auto',
     
     // Square images for avatars
     square: 'c_fill,g_center,w_400,h_400,q_auto,f_auto',

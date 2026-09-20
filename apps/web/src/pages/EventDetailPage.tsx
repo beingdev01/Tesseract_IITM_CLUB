@@ -624,7 +624,7 @@ export default function EventDetailPage() {
 
   const regStatus = getRegistrationStatus(event);
   const statusInfo = statusConfig[event.status];
-  const coverImage = event.imageUrl ? processImageUrl(event.imageUrl, 'event-cover') : null;
+  const coverImage = event.imageUrl ? processImageUrl(event.imageUrl, 'poster') : null;
   const showAttendanceSummary = event.status === 'PAST' && !!attendanceSummary && attendanceSummary.attended > 0;
   const attendanceDayBreakdown = showAttendanceSummary
     && (attendanceSummary.eventDays ?? 1) > 1
@@ -856,17 +856,18 @@ export default function EventDetailPage() {
       {/* Hero Section with Cover Image */}
       <section className="relative">
         {coverImage ? (
-          <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+          <div className="relative w-full bg-[#07070b] flex items-center justify-center overflow-hidden" style={{ aspectRatio: '16/9', maxHeight: '62vh' }}>
             <img
               src={coverImage}
               alt={event.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
+              loading="eager"
               onError={(e) => {
                 // Hide the image and show gradient background instead
                 (e.target as HTMLImageElement).style.display = 'none';
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
           </div>
         ) : (
           <div className="h-[30vh] bg-gradient-to-br from-[#1c1307] via-[#2b1d09] to-[#07070b]" />
@@ -917,7 +918,7 @@ export default function EventDetailPage() {
                 </Badge>
               )}
             </div>
-            <h1 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl lg:text-5xl">
+            <h1 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl lg:text-5xl break-words [overflow-wrap:anywhere]">
               {event.title}
             </h1>
           </div>
@@ -927,7 +928,7 @@ export default function EventDetailPage() {
       {/* Main Content */}
       <section className="event-detail-main py-6 sm:py-8 md:py-12 bg-amber-50">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
             {/* Mobile: Registration Card First */}
             <div className="lg:hidden">
               <Card className={registrationCardClass}>
@@ -1080,13 +1081,13 @@ export default function EventDetailPage() {
             </div>
 
             {/* Left Column - Main Content */}
-            <div className="lg:col-span-2 space-y-6 lg:space-y-8">
+            <div className="lg:col-span-2 min-w-0 space-y-6 lg:space-y-8">
               {/* Quick Info Bar */}
               <Card className="border-amber-200">
                 <CardContent className="p-3 sm:p-4">
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex flex-col items-center justify-center">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 bg-amber-100 rounded-lg flex flex-col items-center justify-center">
                         <span className="text-[10px] sm:text-xs text-amber-600 font-medium">{getMonthShort(event.startDate)}</span>
                         <span className="text-sm sm:text-lg font-bold text-amber-900">{getDayOfMonth(event.startDate)}</span>
                       </div>
@@ -1096,34 +1097,34 @@ export default function EventDetailPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 bg-amber-100 rounded-lg flex items-center justify-center">
                         <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400">Time</p>
-                        <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-zinc-100">{formatTime(event.startDate)}</p>
+                        <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-zinc-100 truncate">{formatTime(event.startDate)}</p>
                       </div>
                     </div>
 
                     {event.location && (
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 bg-amber-100 rounded-lg flex items-center justify-center">
                           <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400">Location</p>
-                          <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-zinc-100 line-clamp-1">{event.location}</p>
+                          <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-zinc-100 line-clamp-1 break-words">{event.location}</p>
                         </div>
                       </div>
                     )}
 
                     {event.capacity && (
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 bg-amber-100 rounded-lg flex items-center justify-center">
                           <Users className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400">Capacity</p>
                           <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-zinc-100">
                             {event._count?.registrations || 0} / {event.capacity}
@@ -1259,29 +1260,29 @@ export default function EventDetailPage() {
 
               {/* Resources */}
               {event.resources && event.resources.length > 0 && (
-                <Card>
+                <Card className="min-w-0 overflow-hidden">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <LinkIcon className="h-5 w-5 text-amber-600" />
-                      Resources & Materials
+                    <CardTitle className="flex items-center gap-2 min-w-0">
+                      <LinkIcon className="h-5 w-5 text-amber-600 shrink-0" />
+                      <span className="truncate">Resources & Materials</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-3">
+                  <CardContent className="min-w-0">
+                    <div className="grid grid-cols-1 gap-3 min-w-0">
                       {event.resources.map((resource, index) => (
                         <a
                           key={index}
                           href={resource.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-zinc-800 hover:border-amber-300 hover:bg-amber-50 transition-colors"
+                          className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-zinc-800 hover:border-amber-300 hover:bg-amber-50 transition-colors min-w-0 max-w-full overflow-hidden"
                         >
-                          <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
+                          <div className="w-10 h-10 shrink-0 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
                             {resourceIcons[resource.type || 'other']}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 dark:text-zinc-100">{resource.title}</p>
-                            <p className="text-sm text-gray-500 dark:text-zinc-400 truncate">{resource.url}</p>
+                            <p className="font-medium text-gray-900 dark:text-zinc-100 truncate">{resource.title}</p>
+                            <p className="text-sm text-gray-500 dark:text-zinc-400 truncate" title={resource.url}>{resource.url}</p>
                           </div>
                           <ExternalLink className="h-4 w-4 text-gray-400 dark:text-zinc-500 shrink-0" />
                         </a>
@@ -1308,8 +1309,8 @@ export default function EventDetailPage() {
             </div>
 
             {/* Right Column - Sticky Sidebar (Desktop only) */}
-            <div className="hidden lg:block lg:col-span-1">
-              <div className="sticky top-[calc(var(--site-header-height)+1rem)] space-y-6">
+            <div className="hidden lg:block lg:col-span-1 min-w-0">
+              <div className="sticky top-[calc(var(--site-header-height)+1rem)] space-y-6 min-w-0">
                 {/* Registration Card */}
                 <Card className={registrationCardClass}>
                   <CardHeader className={registrationCardHeaderClass}>
@@ -1461,11 +1462,11 @@ export default function EventDetailPage() {
                     <CardTitle className="text-lg">Event Details</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <Calendar className="h-5 w-5 text-amber-600 mt-0.5" />
-                      <div>
+                    <div className="flex items-start gap-3 min-w-0">
+                      <Calendar className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+                      <div className="min-w-0 flex-1">
                         <p className="font-medium text-gray-900 dark:text-zinc-100">Date & Time</p>
-                        <p className="text-sm text-gray-600 dark:text-zinc-400">
+                        <p className="text-sm text-gray-600 dark:text-zinc-400 break-words">
                           {formatDateTime(event.startDate)}
                           {event.endDate && (
                             <>
@@ -1478,11 +1479,11 @@ export default function EventDetailPage() {
                     </div>
 
                     {event.location && (
-                      <div className="flex items-start gap-3">
-                        <MapPin className="h-5 w-5 text-amber-600 mt-0.5" />
-                        <div>
+                      <div className="flex items-start gap-3 min-w-0">
+                        <MapPin className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+                        <div className="min-w-0 flex-1">
                           <p className="font-medium text-gray-900 dark:text-zinc-100">Location</p>
-                          <p className="text-sm text-gray-600 dark:text-zinc-400">
+                          <p className="text-sm text-gray-600 dark:text-zinc-400 break-words">
                             {event.location}
                             {event.venue && <><br />{event.venue}</>}
                           </p>
@@ -1491,21 +1492,21 @@ export default function EventDetailPage() {
                     )}
 
                     {event.targetAudience && (
-                      <div className="flex items-start gap-3">
-                        <Users className="h-5 w-5 text-amber-600 mt-0.5" />
-                        <div>
+                      <div className="flex items-start gap-3 min-w-0">
+                        <Users className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+                        <div className="min-w-0 flex-1">
                           <p className="font-medium text-gray-900 dark:text-zinc-100">Who Should Attend</p>
-                          <p className="text-sm text-gray-600 dark:text-zinc-400">{event.targetAudience}</p>
+                          <p className="text-sm text-gray-600 dark:text-zinc-400 break-words">{event.targetAudience}</p>
                         </div>
                       </div>
                     )}
 
                     {event.prerequisites && (
-                      <div className="flex items-start gap-3">
-                        <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
-                        <div>
+                      <div className="flex items-start gap-3 min-w-0">
+                        <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+                        <div className="min-w-0 flex-1">
                           <p className="font-medium text-gray-900 dark:text-zinc-100">Prerequisites</p>
-                          <p className="text-sm text-gray-600 dark:text-zinc-400">{event.prerequisites}</p>
+                          <p className="text-sm text-gray-600 dark:text-zinc-400 break-words">{event.prerequisites}</p>
                         </div>
                       </div>
                     )}
@@ -1524,7 +1525,7 @@ export default function EventDetailPage() {
                     <CardContent>
                       <div className="flex flex-wrap gap-2">
                         {event.tags.map((tag, index) => (
-                          <Badge key={index} variant="outline" className="bg-amber-50">
+                          <Badge key={index} variant="outline" className="bg-amber-50 max-w-full break-all">
                             {tag}
                           </Badge>
                         ))}
@@ -1535,13 +1536,13 @@ export default function EventDetailPage() {
 
                 {/* Registration Timeline */}
                 {(event.registrationStartDate || event.registrationEndDate) && (
-                  <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/40">
-                    <CardContent className="p-4">
+                  <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/40 overflow-hidden">
+                    <CardContent className="p-4 min-w-0">
                       <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
+                        <Clock className="h-4 w-4 shrink-0" />
                         Registration Window
                       </h4>
-                      <div className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
+                      <div className="text-sm text-blue-800 dark:text-blue-300 space-y-1 break-words min-w-0">
                         {event.registrationStartDate && (
                           <p>Opens: {formatDateTime(event.registrationStartDate)}</p>
                         )}

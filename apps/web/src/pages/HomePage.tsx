@@ -5,6 +5,8 @@ import { Brackets, TesseractHero, GateBar } from '@/components/tesseract';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
+import { processImageUrl } from '@/lib/imageUtils';
+import { getUpcomingSaavanEvents } from '@/data/saavanEvents';
 
 const MODULES = [
   {
@@ -68,7 +70,7 @@ export default function HomePage() {
   const leaderRows = leaderData?.leaderboard ?? [];
 
   const stats = homeData?.stats;
-  const upcomingEvents = homeData?.upcomingEvents ?? [];
+  const upcomingEvents = getUpcomingSaavanEvents();
 
   return (
     <Layout>
@@ -171,38 +173,52 @@ export default function HomePage() {
       <section className="lb-board-section" style={{ paddingBottom: 0 }}>
         <div className="lb-sect-head">
           <div>
-            <div className="lb-kicker">// upcoming · this_week</div>
+            <div className="lb-kicker">// upcoming · saavan'26</div>
             <h2 className="lb-section-title">EVENTS DROP</h2>
           </div>
           <Link to="/events" className="lb-kicker-right" style={{ color: 'var(--c-yellow)' }}>VIEW ALL →</Link>
         </div>
         <Brackets tag="schedule.live" accent="green">
           {upcomingEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lb-mono text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {upcomingEvents.slice(0, 3).map((event, index) => {
                 const accent = EVENT_ACCENTS[index % EVENT_ACCENTS.length];
                 const eventTag = event.eventType ? event.eventType.toLowerCase().replace(/\s+/g, '_') : 'event';
+                const posterUrl = event.imageUrl ? processImageUrl(event.imageUrl, 'poster-card') : null;
                 return (
                   <Link
                     key={event.id}
                     to={`/events/${event.slug || event.id}`}
-                    className={`lb-c-${accent}`}
+                    className={`lb-c-${accent} group relative overflow-hidden`}
                     style={{
-                      padding: 14,
+                      padding: 0,
                       border: '1px solid var(--line)',
                       borderLeft: '3px solid var(--acc)',
                       background: 'linear-gradient(90deg, var(--acc-glow), transparent 60%)',
                       textDecoration: 'none',
                     }}
                   >
-                    <div className="font-display text-base mb-1" style={{ color: 'var(--acc)', letterSpacing: '0.04em' }}>
-                      {formatEventDay(event.startDate)}
-                    </div>
-                    <div className="lb-mono text-[10px] mb-2" style={{ color: 'var(--fg-mute)' }}>
-                      {formatEventTime(event.startDate)} · #{eventTag}
-                    </div>
-                    <div className="font-display text-sm" style={{ color: 'var(--fg)', letterSpacing: '0.04em' }}>
-                      {event.title}
+                    {posterUrl && (
+                      <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                        <img
+                          src={posterUrl}
+                          alt={event.title}
+                          className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/70 transition-colors" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end">
+                      <div className="font-display text-base mb-1" style={{ color: 'var(--acc)', letterSpacing: '0.04em' }}>
+                        {formatEventDay(event.startDate)}
+                      </div>
+                      <div className="lb-mono text-[10px] mb-2" style={{ color: 'var(--fg-mute)' }}>
+                        {formatEventTime(event.startDate)} · #{eventTag}
+                      </div>
+                      <div className="font-display text-sm" style={{ color: 'var(--fg)', letterSpacing: '0.04em' }}>
+                        {event.title}
+                      </div>
                     </div>
                   </Link>
                 );

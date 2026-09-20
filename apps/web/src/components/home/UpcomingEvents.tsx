@@ -119,10 +119,13 @@ export function UpcomingEvents() {
                       <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
                         {event.imageUrl ? (
                           <img
-                            src={processImageUrl(event.imageUrl, 'card')}
+                            src={processImageUrl(event.imageUrl, 'poster-card')}
                             alt={event.title}
                             loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 dark:from-rose-500 dark:via-red-500 dark:to-orange-500">
