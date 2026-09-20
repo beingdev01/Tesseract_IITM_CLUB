@@ -8,6 +8,7 @@ import { SEO } from '@/components/SEO';
 import { BreadcrumbSchema } from '@/components/ui/schema';
 import { Brackets, Pill, type Accent } from '@/components/tesseract';
 import { useAuth } from '@/context/AuthContext';
+import { processImageUrl } from '@/lib/imageUtils';
 import { SAAVAN_EVENTS, type SaavanEvent, getFeaturedSaavanEvent } from '@/data/saavanEvents';
 
 type EventStatus = 'UPCOMING' | 'ONGOING' | 'PAST';
@@ -147,7 +148,19 @@ export default function EventsPage() {
           <Brackets tag="featured · next_up" accent="red">
             <div className="event-feat lb-c-red">
               <div className="event-feat-art">
-                <div className="event-feat-glyph">▶</div>
+                {featured.imageUrl ? (
+                  <img
+                    src={processImageUrl(featured.imageUrl, 'poster-card')}
+                    alt={featured.title}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover object-top"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="event-feat-glyph">▶</div>
+                )}
                 <div className="event-feat-tag">{featured.eventType ? `#${featured.eventType.toLowerCase().replace(/\s+/g, '_')}` : '#event'}</div>
               </div>
               <div>
@@ -229,11 +242,26 @@ export default function EventsPage() {
                       <div className="event-row-time">{formatEventTime(e.startDate)}</div>
                     </div>
                     <div className="event-row-divider" />
-                    <div>
+                    <div className="min-w-0">
                       <div className="event-row-tag">#{e.eventType?.toLowerCase().replace(/\s+/g, '_') || 'event'}</div>
-                      <div className="event-row-title">{e.title}</div>
-                      <div className="event-row-desc">
-                        {e.shortDescription || e.description?.slice(0, 140) || ''}
+                      <div className="flex items-center gap-3 min-w-0">
+                        {e.imageUrl && (
+                          <img
+                            src={processImageUrl(e.imageUrl, 'poster-card')}
+                            alt={e.title}
+                            loading="lazy"
+                            className="w-16 h-16 shrink-0 rounded object-cover object-top"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        )}
+                        <div className="min-w-0">
+                          <div className="event-row-title break-words">{e.title}</div>
+                          <div className="event-row-desc">
+                            {e.shortDescription || e.description?.slice(0, 140) || ''}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="event-row-stats">

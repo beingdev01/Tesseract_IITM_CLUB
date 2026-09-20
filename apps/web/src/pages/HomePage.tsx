@@ -180,8 +180,8 @@ export default function HomePage() {
         </div>
         <Brackets tag="schedule.live" accent="green">
           {upcomingEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {upcomingEvents.slice(0, 3).map((event, index) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {upcomingEvents.slice(0, 4).map((event, index) => {
                 const accent = EVENT_ACCENTS[index % EVENT_ACCENTS.length];
                 const eventTag = event.eventType ? event.eventType.toLowerCase().replace(/\s+/g, '_') : 'event';
                 const posterUrl = event.imageUrl ? processImageUrl(event.imageUrl, 'poster-card') : null;
@@ -205,6 +205,9 @@ export default function HomePage() {
                           alt={event.title}
                           className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/70 transition-colors" />
                       </div>
